@@ -1,0 +1,22 @@
+select DISTINCT GLA.ACCOUNT,
+(CASE WHEN ASX.NATION_CURR='USD' THEN 'USA'WHEN ASX.NATION_CURR='CAD' THEN 'CAN' ELSE 'CURRENCY: ' ||ASX.NATION_CURR END)  AS COUNTRY_INDICATOR
+,PSA.descr as description
+,lag.report_type
+,cast(lag.trx_lag as integer)as trx_lag
+,LAG.FACTOR
+from  OTR_TRANE_ACCOUNTS_PS PSA
+,GL_ACCOUNT_SCD GLA,ACTUATE_SEC_XREF ASX,sy_ext_lag_rules_upd Lag
+WHERE
+ GLA.ACCOUNT = PSA.ACCOUNT (+)
+AND GLA.COMPANY=(CASE WHEN ASX.PSGL IS NULL  THEN GLA.COMPANY ELSE ASX.PSGL END ) 
+AND PSA.TRANE_ACCOUNT_IND='X'
+AND GLA.ACCOUNT IN  ('523500','526892','526893','528100','528200','528300','532100')
+and lag.report_type ='2-16'
+--AND CASE WHEN ASX.NATION_CURR='USD' THEN 'USA'WHEN ASX.NATION_CURR='CAD' THEN 'CAN' ELSE 'CURRENCY: ' ||ASX.NATION_CURR END ='CAN'
+
+
+--select report_type, cast(trx_lag as number(12)) trx_lag, factor,
+--case when REPORT_TYPE ='1-15' then '523500'  end as account,
+--case when REPORT_TYPE ='1-15' then 'USA'  end AS  COUNTRY_INDICATOR,
+--case when REPORT_TYPE ='1-15' THEN '1st Year Labor Warr' END  DESCRIPTION
+-- from sy_ext_lag_rules_upd

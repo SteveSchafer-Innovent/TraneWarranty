@@ -1,0 +1,83 @@
+OTR_BI_ACCT_ENTRY_PSB
+OTR_BI_HDR_PSB
+OTR_BI_LINE_PSB
+OTR_TRNBI_BI_HDR_PSB
+
+text outside of single quotes for case conversion
+([^']*)('[^']*')
+replace with
+\L$1\E$2
+repeat until end, it will miss last segment
+
+function DBO.f_get_r12_account_string (
+p_recname_xref IN varchar2, 
+p_business_unit IN varchar2, 
+p_account IN varchar2, 
+p_dept IN varchar2, 
+p_product IN varchar2, 
+p_affiliate IN varchar2)
+return varchar2 IS r12_xrefvalue varchar2(10);
+
+New functions:
+    DBO.F_GET_R12_PRODUCT_ONLY
+    DBO.F_GET_R12_ENTITY_ONLY
+    DBO.F_GET_R12_LOCATION_ONLY
+    DBO.F_GET_R12_COSTCENTER_ONLY
+    DBO.F_GET_R12_ACCOUNT_ONLY
+    DBO.F_GET_R12_INTERCOMPANY_ONLY
+
+These are the values that can be passed into the function  for p_recname_xref:
+ENTITY
+LOCATION
+COSTCENTER
+PRODUCT
+ACCOUNT
+INTERCOMPANY
+
+change data in-place in amortization schedule
+(rebuilt once per year)
+
+everything that's mapped to 282101 - 282156 = warranty accts in oracle
+
+DRTRNT
+Account ID : CCDCAS 
+Password : Qzseg_02
+
+DRTRNP
+Account ID : CCDCAS 
+Password : Anehy_02
+
+DWTRND
+Account ID : CCDCAS 
+Password : Fqeaw_02
+
+DWTRNT
+Account ID : CCDCAS 
+Password : Nbogg_02
+
+DWTRNP
+Account ID : CCDCAS 
+Password : Vnwlq_02
+
+DWTRNT – I believe everything is in DBO schema.
+DRTRNT – We will be using BH, DBO, and ODS_EBS schemas.
+BH holds the old Oracle R9 Billing history data.
+DBO holds all of the current application tables including PeopleSoft.
+ODS_EBS will hold the new R12 tables.
+
+DWTRNT DBO Summer4
+DRTRNT DBO Summer@01
+
+Reserve Sales Detail Report
+GL_ACCOUNT [mapSalesData1.GL_ACCOUNT]
+	OTR_ORACLE_PS_REV_RCPO.PLNT_GL_ACCT2
+	OTR_JRNL_LN_PS.ACCOUNT
+	OTR_LEDGER2_PS.ACCOUNT
+	R12_BI_ACCT_ENTRY_PSB.ACCOUNT
+	AP_135_PROJ_RESOURCE.ACCOUNT
+PROD_ID [mapSalesData1.DIST_GL_PRODUCT]
+	OTR_ORACLE_PS_REV_RCPO.GL_PROD
+	OTR_JRNL_LN_PS.PRODUCT
+	OTR_LEDGER2_PS.PRODUCT
+	OTR_BI_ACCT_ENTRY_PSB.PRODUCT
+	MD_PRODUCT_CODE.DIST_PROD_CODE

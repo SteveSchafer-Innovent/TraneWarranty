@@ -98,7 +98,7 @@ AS
                  END */
                     AS country_indicator,
                  TO_CHAR (comm.gl_posted_date, 'YYYYMM') AS jrnl_year_month,
-                 gl_code.segment2 AS gl_account,
+                 GL_CODE.R12_ACCOUNT /* -SS- SEGMENT2 */ AS gl_account,
                  TRUNC (comm.gl_posted_date, 'MM') AS journal_date,
                  CASE
                     WHEN    comm.debit_amount = 0
@@ -111,19 +111,20 @@ AS
                  END
                     AS commission_amount
             FROM bh.cms_commission_distributions comm,
-                 bh.gl_code_combinations gl_code,
+                 BH.R12_GL_CODE_COMBINATIONS /* -SS- OTR */ GL_CODE,
                  R12_TRANE_ACCOUNTS_PS /* -SS- OTR */ PSA /* -SS- ,
                  actuate_sec_xref asx */
            WHERE     comm.code_combination_id = gl_code.code_combination_id
                  AND dist.R12_ENTITY <> '5773' /* -SS- asx.nation_curr = 'USD' */
-                 AND gl_code.segment2 = PSA.R12_ACCOUNT /* -SS- ACCOUNT */(+)
+                 AND GL_CODE.R12_ACCOUNT /* -SS- SEGMENT2 */ = PSA.R12_ACCOUNT /* -SS- ACCOUNT */(+)
                  AND PSA.trane_account_ind = 'X'
                  /* -SS- AND gl_code.segment1 = asx.psgl(+) */
-                 AND (gl_code.segment3 IS NULL OR gl_code.segment3 = 'SL00')
+                 AND (GL_CODE.R12_LOCATION /* -SS- SEGMENT3 */ IS NULL OR 
+                  GL_CODE.R12_LOCATION /* -SS- SEGMENT3 */ = 'SL00' /* -SS- ???? */)
                  AND comm.gl_posted_date BETWEEN '1-JAN-2000' AND '31-OCT-2004'
-                 AND (   gl_code.segment2 LIKE '52%'
-                      OR gl_code.segment2 LIKE '53%'
-                      OR gl_code.segment2 LIKE '54%')
+                 AND (   GL_CODE.R12_ACCOUNT /* -SS- SEGMENT2 */ LIKE '52%'
+                      OR GL_CODE.R12_ACCOUNT /* -SS- SEGMENT2 */ LIKE '53%'
+                      OR GL_CODE.R12_ACCOUNT /* -SS- SEGMENT2 */ LIKE '54%')
           UNION ALL
           SELECT CASE WHEN dist.R12_ENTITY = '5773' THEN 'CAN' ELSE 'USA' END
                 /* -SS- CASE UPPER (TRIM (asx.nation_curr))
@@ -133,7 +134,7 @@ AS
                  END */
                     AS country_indicator,
                  TO_CHAR (comm.gl_posted_date, 'YYYYMM') AS jrnl_year_month,
-                 gl_code.segment2 AS gl_account,
+                 GL_CODE.R12_ACCOUNT /* -SS- SEGMENT2 */ AS gl_account,
                  TRUNC (comm.gl_posted_date, 'MM') AS journal_date,
                  CASE
                     WHEN    comm.debit_amount = 0
@@ -146,20 +147,20 @@ AS
                  END
                     AS commission_amount
             FROM bh.cms_commission_distributions comm,
-                 bh.gl_code_combinations gl_code,
+                 BH.R12_GL_CODE_COMBINATIONS /* -SS- OTR */ GL_CODE,
                  R12_TRANE_ACCOUNTS_PS /* -SS- OTR */ PSA /* -SS- ,
                  actuate_sec_xref asx */
            WHERE     comm.code_combination_id = gl_code.code_combination_id
                  AND GL_CODE.R12_ENTITY /* -SS- SEGMENT3 */ <> '5773' /* -SS- asx.nation_curr = 'CAD' */
-                 AND gl_code.segment2 = PSA.R12_ACCOUNT /* -SS- ACCOUNT */(+)
+                 AND GL_CODE.R12_ACCOUNT /* -SS- SEGMENT2 */ = PSA.R12_ACCOUNT /* -SS- ACCOUNT */(+)
                  AND PSA.trane_account_ind = 'X'
                  /* -SS- AND gl_code.segment1 = asx.psgl(+) */
-                 AND (gl_code.segment3 IS NULL
-                      OR gl_code.segment3 IN ('TCA0', 'SL00'))
+                 AND (GL_CODE.R12_LOCATION /* -SS- SEGMENT3 */ IS NULL
+                      OR GL_CODE.R12_LOCATION /* -SS- SEGMENT3 */ IN ('TCA0' /* -SS- ???? */, 'SL00' /* -SS- ???? */))
                  AND comm.gl_posted_date BETWEEN '1-JAN-2000' AND '31-OCT-2004'
-                 AND (   gl_code.segment2 LIKE '52%'
-                      OR gl_code.segment2 LIKE '53%'
-                      OR gl_code.segment2 LIKE '54%')
+                 AND (   GL_CODE.R12_ACCOUNT /* -SS- SEGMENT2 */ LIKE '52%'
+                      OR GL_CODE.R12_ACCOUNT /* -SS- SEGMENT2 */ LIKE '53%'
+                      OR GL_CODE.R12_ACCOUNT /* -SS- SEGMENT2 */ LIKE '54%')
           UNION ALL
           SELECT upd.country_indicator AS country_indicator,
                  TO_CHAR (upd.jrnl_date, 'YYYYMM') AS jrnl_year_month,

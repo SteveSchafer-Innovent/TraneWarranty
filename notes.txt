@@ -81,3 +81,17 @@ PROD_ID [mapSalesData1.DIST_GL_PRODUCT]
 	OTR_LEDGER2_PS.PRODUCT
 	OTR_BI_ACCT_ENTRY_PSB.PRODUCT
 	MD_PRODUCT_CODE.DIST_PROD_CODE
+
+
+Some product code info in "Oracle PC mapping for 804180, 804120, 804190.xlsx"  41% PS codes
+
+Kelly commented that we need to ensure that these distribution product codes are eliminated from the parts revenue in sales detail reports that she uses for balancing as well as the revenue inputs for standard warranty reserves (1st yr, 2-5 yr, concession, retrofit)
+
+Can you please document this in the notes?
+
+AND '805100' <> D.PRODUCT         
+   AND '802921' <> D.PRODUCT       
+   AND '801270' <> D.PRODUCT         
+   AND '803270' <> D.PRODUCT   
+   AND '804140' <> D.PRODUCT
+

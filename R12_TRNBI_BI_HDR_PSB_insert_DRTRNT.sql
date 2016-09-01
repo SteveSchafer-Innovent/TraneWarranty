@@ -1,0 +1,17 @@
+--truncate table R12_TRNBI_BI_HDR_PSB;
+insert into R12_TRNBI_BI_HDR_PSB
+(
+BUSINESS_UNIT, -- VARCHAR2(5), DM_030_EXT_SALES_MVW, mapSalesData68, mapExtendedWarrantySaleData1, mapExtendedYTD, mapSalesData1
+INVOICE, -- VARCHAR2(22), DM_030_EXT_SALES_MVW, mapSalesData68, mapExtendedWarrantySaleData1, mapExtendedYTD, mapSalesData1
+TRNBI_PROJECT_TYPE, -- VARCHAR2(10), mapSalesData68, mapSalesData1
+R12_ENTITY
+)
+select
+BUSINESS_UNIT, -- VARCHAR2(5)
+INVOICE, -- VARCHAR2(22)
+TRNBI_PROJECT_TYPE, -- VARCHAR2(10)
+DBO.F_GET_R12_ACCOUNT_STRING ('ENTITY', BUSINESS_UNIT, ACCOUNT, DEPTID, PRODUCT, null) as R12_ENTITY
+from
+OTR_TRNBI_BI_HDR_PSB;
+
+commit;

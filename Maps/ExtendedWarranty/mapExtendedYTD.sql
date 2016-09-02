@@ -21,22 +21,22 @@ rev.LONG_TERM_BALA as LONG_TERM_BALA,
 from 
 (/* Begning Balance DRTRNP */
 SELECT    
-l.ACCOUNT, 
+L.R12_ACCOUNT /* -SS- ACCOUNT */, 
 l.ledger,    
 L.fiscal_year,               
 SUM(DECODE (l.accounting_period, 0, l.posted_base_amt, 0))   AS begbal_base
 --100*(SUM(DECODE (l.accounting_period, 0, l.posted_base_amt, 0))  - TRUNC( SUM(DECODE (l.accounting_period, 0, l.posted_base_amt, 0))) )   AS begbal_base_DEC
           
-FROM OTR_LEDGER2_PS l,                  
+FROM R12_LEDGER2_PS /* -SS- OTR */ l,            
 actuate_sec_xref asx
 WHERE l.fiscal_year = TO_CHAR(TO_DATE('1-'||:RunDate,'dd-mon-yy'),'YYYY')
 AND l.ledger = 'ACTUALS'
 AND l.business_unit in  ('CAN' ,'CSD')
-AND l.ACCOUNT  between '523000' AND '546900'
-AND l.deptid LIKE 'SL00%'
+AND L.R12_ACCOUNT /* -SS- ACCOUNT */  between '523000' AND '546900' /* -SS- ???? */
+AND L.R12_LOCATION /* -SS- DEPTID */ LIKE 'SL00%' /* -SS- ???? */
 AND CASE WHEN ASX.NATION_CURR ='USD' THEN 'USA' ELSE 'CAN' END =UPPER(:COUNTRY)         
 AND l.business_unit = asx.psgl(+)
-group by l.ACCOUNT, L.fiscal_year, l.ledger 
+group by L.R12_ACCOUNT /* -SS- ACCOUNT */, L.fiscal_year, l.ledger 
 )begbalances,
                 
 
@@ -59,7 +59,7 @@ DECODE (SIGN (  TO_CHAR (ga.journal_date, 'MM')  - TO_CHAR(TO_DATE('1-'||:RunDat
 --DECODE (SIGN (  TO_CHAR (ga.journal_date, 'MM')  - TO_CHAR(TO_DATE('1-'||:RunDate,'dd-mon-yy'),'mm')   ), 1, 0,  l.monetary_amount  ) )))) AS  prdmonetaryamt_base_Dec
 
                
-FROM OTR_JRNL_LN_PS l, OTR_JRNL_HEADER_PS ga, actuate_sec_xref asx
+FROM R12_JRNL_LN_PS /* -SS- OTR */ l, OTR_JRNL_HEADER_PS ga, actuate_sec_xref asx
 WHERE ga.jrnl_hdr_status IN ('P', 'U')
 AND ga.fiscal_year = TO_CHAR(TO_DATE('1-'||:RunDate,'dd-mon-yy'),'YYYY')
 AND ga.journal_date <=LAST_DAY(to_date('1-'||:RunDate,'dd-mon-yy')) 

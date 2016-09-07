@@ -180,16 +180,16 @@ CREATE OR REPLACE PACKAGE BODY DBO.pkg_031_retrofit_reserve IS
                       SELECT
                             MLR.CLAIM_NBR AS CLAIM_NUMBER,
                             MLR.STEP_NBR AS STEP_NUMBER,
-                            GLA.COMPANY AS BUSINESS_UNIT,
+                            GLA.R12_ENTITY /* -SS- COMPANY */ AS BUSINESS_UNIT,
                             PRODGRP.PRODUCT_CATEGORY AS RESERVE_GROUP,
                             CTYPES.CLAIM_TYPE_DESCR AS CLAIM_TYPE,
                             SUM(MLR.EXP_TYPE_AMOUNT*-1) AS EXPENSE_AMOUNT,
                             --SUM(100*(MLR.EXP_TYPE_AMOUNT*-1-TRUNC(MLR.EXP_TYPE_AMOUNT*-1))) AS EXPENSE_AMOUNT_DEC,
                             RES_PCT.EXPENSE_TYPE_CATG AS MATERIAL_LABOR,
-                            GLA.ACCOUNT AS GL_ACCOUNT,
+                            GLA.R12_ACCOUNT /* -SS- ACCOUNT */ AS GL_ACCOUNT,
                             ETS.EXPENSE_TYPE_DESCR AS EXPENSE_TYPE_DESCR,
                             SOS.SUBMIT_OFFICE_NAME AS OFFICE_NAME,
-                            CASE WHEN GLA.PROD_CODE is null or GLA.PROD_CODE = '' then  PCS.PROD_CODE else GLA.PROD_CODE end AS GL_PROD_CODE,
+                            CASE WHEN GLA.R12_PRODUCT /* -SS- PROD_CODE */ is null or GLA.R12_PRODUCT /* -SS- PROD_CODE */ = '' then  PCS.PROD_CODE else GLA.R12_PRODUCT /* -SS- PROD_CODE */ end AS GL_PROD_CODE,
                             PCS.PROD_CODE AS MANF_PROD_CODE,
                             SOS.COMPANY_OWNED_IND AS COMPANY_OWNED,
                             CACCT.ACCOUNT_NUMBER AS CUSTOMER_NUMBER,
@@ -214,9 +214,18 @@ CREATE OR REPLACE PACKAGE BODY DBO.pkg_031_retrofit_reserve IS
                                 else 'Out of Standard Warranty'
                              end) AS WARRANTY_DURATION,
                             MLR.TRX_CURRENCY AS CURRENCY
-                            ,(CASE WHEN ASX.NATION_CURR='USD' THEN 'USA'WHEN ASX.NATION_CURR='CAD' THEN 'CAN' ELSE 'CURRENCY: ' ||ASX.NATION_CURR END)  AS COUNTRY_INDICATOR
+                            ,(
+                              CASE
+                              WHEN GLA.R12_ENTITY <> 5773 /* -SS- ASX.NATION_CURR='USD' */ THEN 'USA'
+                              ELSE 'CAN'
+                              /* -SS-
+                              WHEN ASX.NATION_CURR='CAD' THEN 'CAN' 
+                              ELSE 'CURRENCY: ' || ASX.NATION_CURR 
+                              */
+                              END
+                            ) AS COUNTRY_INDICATOR
                             ,MLR.RETRO_ID AS RETROFIT_ID
-                            ,GLA.COST_CENTER AS GL_DEPT
+                            ,GLA.R12_COST_CENTER /* -SS- COST_CENTER */ AS GL_DEPT
                             --, 10000*(CASE WHEN PCS.PROD_CODE='0061'  or FCW.WA_RANGE<>'1' THEN 0 ELSE RES_PCT.RESERVE_PCT  END) AS IN_RESERVE_PERCENT
 
                             ,(case when  a.CLAIM_NUMBER is null then 10000*(CASE WHEN (PCS.PROD_CODE IN ( '0054', '0197') ) OR (RD.NEW_RESOLVED_IND='R' and RD.SPECIFIC_RESERVE_IND ='Y' or RD.PCT_100_RECOVERY_IND ='Y'
@@ -237,14 +246,14 @@ CREATE OR REPLACE PACKAGE BODY DBO.pkg_031_retrofit_reserve IS
                             ,TIME_DAY TD
                             ,CLAIM_TASK_SCD CTASKS
                             ,CLAIM_TYPE_SCD CTYPES
-                            ,GL_ACCOUNT_SCD GLA
+                            , R12_GL_ACCOUNT_SCD /* -SS- */ GLA
                             ,EXPENSE_TYPE_SCD ETS
                             ,PROD_CODE_SCD PCS
                             ,CUST_ACCOUNT_SCD CACCT
                             ,SUBMIT_OFFICE_SCD SOS
                             ,PROD_CODE_XREF_RCPO_DR PRODGRP
                             --,OTR_PROD_CODE_XREF_RCPO@DR_INTFC_DW.LAX.TRANE.COM PRODGRP
-                            ,ACTUATE_SEC_XREF ASX
+                            /* -SS- ,ACTUATE_SEC_XREF ASX */
                             ,UD_031_RETROFIT_RULES RES_PCT
                             --, DM_WAR_CSN_RSV_PCT_REF RES_PCT
                             ,UD_031_RETROFIT_ID RD
@@ -269,7 +278,7 @@ CREATE OR REPLACE PACKAGE BODY DBO.pkg_031_retrofit_reserve IS
                       AND MLR.PROD_CODE_SCD_KEY= PCS.PROD_CODE_SCD_KEY
                       AND MLR.CUST_ACCOUNT_SCD_KEY= CACCT.CUST_ACCOUNT_SCD_KEY
                       AND MLR.SUBMIT_OFFICE_SCD_KEY= SOS.SUBMIT_OFFICE_SCD_KEY
-                      AND GLA.COMPANY=ASX.PSGL(+)
+                      /* -SS- AND GLA.COMPANY=ASX.PSGL(+) */
                       AND CTYPES.CLAIM_TYPE_DESCR = RES_PCT.CLAIM_TYPE
                       AND ETS.EXPENSE_TYPE_DESCR=RES_PCT.EXPENSE_TYPE_DESCR
                       AND SOS.COMPANY_OWNED_IND=RES_PCT.COMPANY_OWNED_IND
@@ -277,24 +286,24 @@ CREATE OR REPLACE PACKAGE BODY DBO.pkg_031_retrofit_reserve IS
                       and MLR.RETRO_ID = RD.RETROFIT_ID
                       -- NEW_RETROFIT_ID --
                       AND (CASE WHEN CACCT.CUST_CREDIT_CATG_CODE='Z1' THEN 'Y' ELSE 'N' END)=RES_PCT.CUST_CREDIT_CATG_CODE
-                      AND GLA.COMPANY=PRODGRP.GL_LEDGER
+                      AND GLA.R12_ENTITY /* -SS- COMPANY */=PRODGRP.GL_LEDGER
                       AND PCS.PROD_CODE = PRODGRP.MANF_PROD_CODE
                       AND PRODGRP.PRODUCT_CATEGORY IS NOT NULL
                       and TD3.FULL_DATE >= TO_DATE('1/1/2001','MM/DD/YYYY')
                       --and TD3.FULL_DATE <= TO_DATE('12/31/2008','MM/DD/YYYY')
-                      AND (GLA.ACCOUNT like '8062%' or GLA.ACCOUNT like '0620%')
+                      AND (GLA.R12_ACCOUNT /* -SS- ACCOUNT */ like '8062%' /* -SS- ???? */ or GLA.R12_ACCOUNT /* -SS- ACCOUNT */ like '0620%' /* -SS- ???? */)
 
                       GROUP BY
                       MLR.CLAIM_NBR,
                       MLR.STEP_NBR,
-                      GLA.COMPANY ,
+                      GLA.R12_ENTITY /* -SS- COMPANY */ ,
                       PRODGRP.PRODUCT_CATEGORY,
                       CTYPES.CLAIM_TYPE_DESCR ,
                       RES_PCT.EXPENSE_TYPE_CATG,
-                      GLA.ACCOUNT ,
+                      GLA.R12_ACCOUNT /* -SS- ACCOUNT */ ,
                       ETS.EXPENSE_TYPE_DESCR,
                       SOS.SUBMIT_OFFICE_NAME ,
-                      GLA.PROD_CODE ,
+                      GLA.R12_PRODUCT /* -SS- PROD_CODE */ ,
                       PCS.PROD_CODE ,
                       SOS.COMPANY_OWNED_IND,
                       CACCT.ACCOUNT_NUMBER ,
@@ -319,9 +328,18 @@ CREATE OR REPLACE PACKAGE BODY DBO.pkg_031_retrofit_reserve IS
                           else 'Out of Standard Warranty'
                        end) ,
                       MLR.TRX_CURRENCY
-                      ,(CASE WHEN ASX.NATION_CURR='USD' THEN 'USA'WHEN ASX.NATION_CURR='CAD' THEN 'CAN' ELSE 'CURRENCY: ' ||ASX.NATION_CURR END)
+                      ,(
+                        CASE
+                        WHEN GLA.R12_ENTITY <> 5773 /* -SS- ASX.NATION_CURR='USD' */ THEN 'USA'
+                        ELSE 'CAN'
+                        /* -SS-
+                        WHEN ASX.NATION_CURR='CAD' THEN 'CAN' 
+                        ELSE 'CURRENCY: ' || ASX.NATION_CURR 
+                        */
+                        END
+                      ) AS COUNTRY_INDICATOR
                       ,MLR.RETRO_ID
-                      ,GLA.COST_CENTER
+                      ,GLA.R12_COST_CENTER /* -SS- COST_CENTER */
                       , (case when  a.CLAIM_NUMBER is null then 10000*(CASE WHEN (PCS.PROD_CODE IN ( '0054', '0197') ) OR (RD.NEW_RESOLVED_IND='R' and RD.SPECIFIC_RESERVE_IND ='Y' or RD.PCT_100_RECOVERY_IND ='Y'
                       ) THEN 0 ELSE RES_PCT.RESERVE_PCT  END) ELSE RS_RES_PCT.RESERVE_PCT END)
                       ,RD.NEW_RESOLVED_IND
@@ -335,16 +353,16 @@ CREATE OR REPLACE PACKAGE BODY DBO.pkg_031_retrofit_reserve IS
                       SELECT
                             CCN_DATA.CLAIM_NBR AS CLAIM_NUMBER,
                             CCN_DATA.STEP_NBR AS STEP_NUMBER,
-                            GLA.COMPANY AS BUSINESS_UNIT,
+                            GLA.R12_ENTITY /* -SS- COMPANY */ AS BUSINESS_UNIT,
                             PRODGRP.PRODUCT_CATEGORY AS RESERVE_GROUP,
                             CCN_DATA.CLAIM_TYPE AS CLAIM_TYPE,
                             CCN_DATA.DOLLAR_AMOUNT AS EXPENSE_AMOUNT,
                             --100*(CCN_DATA.DOLLAR_AMOUNT-TRUNC(CCN_DATA.DOLLAR_AMOUNT)) AS EXPENSE_AMOUNT_DEC,
                             CCN_DATA.EXPENSE_TYPE_CATG AS MATERIAL_LABOR,
-                            GLA.ACCOUNT AS GL_ACCOUNT,
+                            GLA.R12_ACCOUNT /* -SS- ACCOUNT */ AS GL_ACCOUNT,
                             CCN_DATA.EXPENSE_TYPE_DESCR AS EXPENSE_TYPE_DESCR,
                             SOS.SUBMIT_OFFICE_NAME AS OFFICE_NAME,
-                            CASE WHEN GLA.PROD_CODE is null or GLA.PROD_CODE = '' then  PCS.PROD_CODE else GLA.PROD_CODE end AS GL_PROD_CODE,
+                            CASE WHEN GLA.R12_PRODUCT /* -SS- PROD_CODE */ is null or GLA.R12_PRODUCT /* -SS- PROD_CODE */ = '' then  PCS.PROD_CODE else GLA.R12_PRODUCT /* -SS- PROD_CODE */ end AS GL_PROD_CODE,
                             PCS.PROD_CODE AS MANF_PROD_CODE,
                             SOS.COMPANY_OWNED_IND AS COMPANY_OWNED,
                             CACCT.ACCOUNT_NUMBER AS CUSTOMER_NUMBER,
@@ -371,9 +389,18 @@ CREATE OR REPLACE PACKAGE BODY DBO.pkg_031_retrofit_reserve IS
                                           end)
                                       END) AS WARRANTY_DURATION,
                             CCN_DATA.TRX_CURRENCY AS CURRENCY
-                            ,(CASE WHEN ASX.NATION_CURR='USD' THEN 'USA'WHEN ASX.NATION_CURR='CAD' THEN 'CAN' ELSE 'CURRENCY: ' ||ASX.NATION_CURR END)  AS COUNTRY_INDICATOR
+                            ,(
+                              CASE
+                              WHEN GLA.R12_ENTITY <> 5773 /* -SS- ASX.NATION_CURR='USD' */ THEN 'USA'
+                              ELSE 'CAN'
+                              /* -SS-
+                              WHEN ASX.NATION_CURR='CAD' THEN 'CAN' 
+                              ELSE 'CURRENCY: ' || ASX.NATION_CURR 
+                              */
+                              END
+                            ) AS COUNTRY_INDICATOR
                             ,CCN_DATA.RETRO_ID AS RETROFIT_ID
-                            ,GLA.COST_CENTER AS GL_DEPT
+                            ,GLA.R12_COST_CENTER /* -SS- COST_CENTER */ AS GL_DEPT
                             ,(case when  a.CLAIM_NUMBER is null then 10000*(CASE WHEN (PCS.PROD_CODE IN ('0054', '0197') ) OR (RD.NEW_RESOLVED_IND='R' and RD.SPECIFIC_RESERVE_IND ='Y' or RD.PCT_100_RECOVERY_IND ='Y'
                             ) THEN 0 ELSE RES_PCT.RESERVE_PCT  END) ELSE RS_RES_PCT.RESERVE_PCT END)  AS IN_RESERVE_PERCENT
                             ,RD.NEW_RESOLVED_IND
@@ -409,7 +436,7 @@ CREATE OR REPLACE PACKAGE BODY DBO.pkg_031_retrofit_reserve IS
                                    WC_LABOR_ROLLUP LR
                                   ,TIME_DAY TD
                                   , CLAIM_TYPE_SCD CT
-                                  , GL_ACCOUNT_SCD GLA
+                                  , R12_GL_ACCOUNT_SCD /* -SS- */ GLA
 
                              WHERE 1=1
                              -- for 'RETROFIT LABOR'
@@ -422,20 +449,20 @@ CREATE OR REPLACE PACKAGE BODY DBO.pkg_031_retrofit_reserve IS
                              --and TD.FULL_DATE <= TO_DATE('12/31/2008','MM/DD/YYYY')
                              AND GLA.GL_ACCOUNT_SCD_KEY = LR.GL_ACCOUNT_SCD_KEY
                              AND LR.CLAIM_TYPE_SCD_KEY = CT.CLAIM_TYPE_SCD_KEY
-                             AND (GLA.ACCOUNT like '8062%' or GLA.ACCOUNT like '0620%')
+                             AND (GLA.R12_ACCOUNT /* -SS- ACCOUNT */ like '8062%' /* -SS- ???? */ or GLA.R12_ACCOUNT /* -SS- ACCOUNT */ like '0620%' /* -SS- ???? */)
                       ) CCN_DATA
                       ,(SELECT DISTINCT CLAIM_NBR, STEP_NBR,WA_POLICY_TYPE,WA_RANGE FROM DM_FAL_CLAIMS_WARRANTY_XRF ) FCW
                       ,TIME_DAY TD3
                       ,TIME_DAY TD2
                       ,TIME_DAY TD1
                       ,TIME_DAY TD
-                      ,GL_ACCOUNT_SCD GLA
+                      , R12_GL_ACCOUNT_SCD /* -SS- */ GLA
                       ,PROD_CODE_SCD PCS
                       ,CUST_ACCOUNT_SCD CACCT
                       ,SUBMIT_OFFICE_SCD SOS
                       ,PROD_CODE_XREF_RCPO_DR PRODGRP
                       --,OTR_PROD_CODE_XREF_RCPO@DR_INTFC_DW.LAX.TRANE.COM PRODGRP
-                      ,ACTUATE_SEC_XREF ASX
+                      /* -SS- ,ACTUATE_SEC_XREF ASX */
                       ,UD_031_RETROFIT_RULES RES_PCT
                       --, DM_WAR_CSN_RSV_PCT_REF RES_PCT
                       ,UD_031_RETROFIT_ID RD
@@ -454,13 +481,13 @@ CREATE OR REPLACE PACKAGE BODY DBO.pkg_031_retrofit_reserve IS
                       AND CCN_DATA.SUBMIT_OFFICE_SCD_KEY= SOS.SUBMIT_OFFICE_SCD_KEY
                       AND CCN_DATA.CLAIM_NBR=a.CLAIM_NUMBER (+) --TTP#12554
                       AND a.claim_type=RS_RES_PCT.claim_type(+)      --TTP#12554
-                      AND GLA.COMPANY=ASX.PSGL(+)
+                      /* -SS- AND GLA.COMPANY=ASX.PSGL(+) */
                       AND (case when CCN_DATA.CLAIM_TYPE ='EXTD PURCHASED LABOR' then 'EXTENDED PURCHASED LABOR' else CCN_DATA.CLAIM_TYPE  end)= RES_PCT.CLAIM_TYPE
                       AND CCN_DATA.EXPENSE_TYPE_DESCR=RES_PCT.EXPENSE_TYPE_DESCR
                       AND CCN_DATA.EXPENSE_TYPE_CATG= UPPER(RES_PCT.EXPENSE_TYPE_CATG)
                       AND SOS.COMPANY_OWNED_IND=RES_PCT.COMPANY_OWNED_IND
                       AND (CASE WHEN CACCT.CUST_CREDIT_CATG_CODE='Z1' THEN 'Y' ELSE 'N' END)=RES_PCT.CUST_CREDIT_CATG_CODE
-                      AND GLA.COMPANY=PRODGRP.GL_LEDGER
+                      AND GLA.R12_ENTITY /* -SS- COMPANY */=PRODGRP.GL_LEDGER
                       AND PCS.PROD_CODE = PRODGRP.MANF_PROD_CODE
                       AND PRODGRP.PRODUCT_CATEGORY IS NOT NULL
                       -- NEW_RETROFIT_ID -

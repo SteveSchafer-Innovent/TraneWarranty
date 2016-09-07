@@ -164,22 +164,22 @@ AS
           UNION ALL
           SELECT upd.country_indicator AS country_indicator,
                  TO_CHAR (upd.jrnl_date, 'YYYYMM') AS jrnl_year_month,
-                 upd.gl_account AS gl_account,
+                 upd.R12_ACCOUNT /* -SS- gl_account */ AS gl_account,
                  TRUNC (upd.jrnl_date, 'MM') AS journal_date,
                  upd.revenue_amount AS commission_amount
-            FROM md_030_commission_dtl_upd upd, R12_TRANE_ACCOUNTS_PS /* -SS- OTR */ PSA
-           WHERE     upd.gl_account = PSA.R12_ACCOUNT /* -SS- ACCOUNT */(+)
+            FROM MD_030_COMMISSION_DTL_UPD UPD, R12_TRANE_ACCOUNTS_PS /* -SS- OTR */ PSA
+           WHERE     upd.R12_ACCOUNT /* -SS- gl_account */ = PSA.R12_ACCOUNT /* -SS- ACCOUNT */(+)
                  AND PSA.trane_account_ind = 'X'
                  AND upd.jrnl_date BETWEEN '1-JAN-1998' AND '31-DEC-1999'
           UNION ALL
           SELECT DISTINCT
                  upd.country_indicator AS country_indicator,
                  TO_CHAR (upd.jrnl_date, 'YYYYMM') AS jrnl_year_month,
-                 upd.gl_account AS gl_account,
+                 upd.R12_ACCOUNT /* -SS- gl_account */ AS gl_account,
                  TRUNC (ADD_MONTHS (upd.jrnl_date, -24), 'MM') AS journal_date,
                  0 AS commission_amount
-            FROM md_030_commission_dtl_upd upd, R12_TRANE_ACCOUNTS_PS /* -SS- OTR */ PSA
-           WHERE     upd.gl_account = PSA.R12_ACCOUNT /* -SS- ACCOUNT */(+)
+            FROM MD_030_COMMISSION_DTL_UPD UPD, R12_TRANE_ACCOUNTS_PS /* -SS- OTR */ PSA
+           WHERE     upd.R12_ACCOUNT /* -SS- gl_account */ = PSA.R12_ACCOUNT /* -SS- ACCOUNT */(+)
                  AND PSA.trane_account_ind = 'X'
                  AND upd.jrnl_date BETWEEN '1-JAN-1998' AND '31-DEC-1999')
    WHERE journal_date BETWEEN TRUNC (ADD_MONTHS (SYSDATE, -144), 'MM')

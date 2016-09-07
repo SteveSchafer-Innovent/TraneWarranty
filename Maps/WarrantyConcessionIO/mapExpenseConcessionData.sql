@@ -2,7 +2,7 @@
 SELECT /*+ NO_CPU_COSTING */
       CCN_DATA.CLAIM_NBR AS CLAIM_NUMBER,
        CCN_DATA.STEP_NBR AS STEP_NUMBER,
-       GLA.COMPANY AS BUSINESS_UNIT,
+       GLA.R12_ENTITY /* -SS- COMPANY */ AS BUSINESS_UNIT,
        CCN_DATA.CLAIM_TYPE AS CLAIM_TYPE,
        /* 1 -- IN 548 DAYS; 0 -- OUT OF 548 DAYS */
        CASE
@@ -14,10 +14,10 @@ SELECT /*+ NO_CPU_COSTING */
        100 * (CCN_DATA.DOLLAR_AMOUNT - TRUNC (CCN_DATA.DOLLAR_AMOUNT))
           AS EXPENSE_AMOUNT_DEC,
        CCN_DATA.EXPENSE_TYPE_CATG AS MATERIAL_LABOR,
-       GLA.ACCOUNT AS GL_ACCOUNT,
+       GLA.R12_ACCOUNT /* -SS- ACCOUNT */ AS GL_ACCOUNT,
        CCN_DATA.EXPENSE_TYPE_DESCR AS EXPENSE_TYPE_DESCR,
        SOS.SUBMIT_OFFICE_NAME AS OFFICE_NAME,
-       GLA.PROD_CODE AS GL_PROD_CODE,
+       GLA.R12_PRODUCT /* -SS- PROD_CODE */ AS GL_PROD_CODE,
        PCS.PROD_CODE AS MANF_PROD_CODE,
        SOS.COMPANY_OWNED_IND AS COMPANY_OWNED,
        CACCT.ACCOUNT_NUMBER AS CUSTOMER_NUMBER,
@@ -49,15 +49,20 @@ SELECT /*+ NO_CPU_COSTING */
        TD1.FULL_DATE AS FAIL_DATE,
        ( (TD3.TIME_KEY - TD1.TIME_KEY) / 30.42) AS INTMONTHS_FAIL_TO_TRX,
        CCN_DATA.TRX_CURRENCY AS CURRENCY,
-       (CASE
-           WHEN ASX.NATION_CURR = 'USD' THEN 'USA'
-           WHEN ASX.NATION_CURR = 'CAD' THEN 'CAN'
-           ELSE 'CURRENCY:' || ASX.NATION_CURR
-        END)
-          AS COUNTRY_INDICATOR/* NEW FIELDS ADDED 5/21/07 */
+       (
+        CASE
+        WHEN GLA.R12_ENTITY <> 5773 /* -SS- ASX.NATION_CURR='USD' */ THEN 'USA'
+        ELSE 'CAN'
+        /* -SS-
+        WHEN ASX.NATION_CURR='CAD' THEN 'CAN' 
+        ELSE 'CURRENCY: ' || ASX.NATION_CURR 
+        */
+        END
+        ) AS COUNTRY_INDICATOR
+       /* NEW FIELDS ADDED 5/21/07 */
        ,
        CCN_DATA.RETRO_ID AS RETROFIT_ID,
-       GLA.COST_CENTER AS GL_DEPT/*New Logic by Jackie (6/12/07)Only for concession detail Report(All >548 days are ‘Not In Reserve no matter what) */
+       GLA.R12_COST_CENTER /* -SS- COST_CENTER */ AS GL_DEPT/*New Logic by Jackie (6/12/07)Only for concession detail Report(All >548 days are ‘Not In Reserve no matter what) */
        ,
        CASE
           WHEN a.CLAIM_NUMBER IS NULL
@@ -116,7 +121,7 @@ SELECT /*+ NO_CPU_COSTING */
                  TIME_DAY TD--, EXPENSE_TYPE_SCD ET
                             --, CLAIM_TYPE_SCD CT
                  ,
-                 GL_ACCOUNT_SCD GLA
+                 R12_GL_ACCOUNT_SCD /* -SS- */ GLA
            WHERE     TD.TIME_KEY = MLR.CCN_TRX_DATE_KEY
                  /* CONCESSION CLAIM TYPE ONLY */
                  AND MLR.CLAIM_TYPE_SCD_KEY = 11
@@ -132,7 +137,7 @@ SELECT /*+ NO_CPU_COSTING */
                  --AND MLR.CLAIM_TYPE_SCD_KEY = CT.CLAIM_TYPE_SCD_KEY
                  --AND CT.CLAIM_TYPE_CODE ='CONCESSION'
                  AND GLA.GL_ACCOUNT_SCD_KEY = MLR.GL_ACCOUNT_SCD_KEY
-                 AND GLA.ACCOUNT IN ('710000', '806300')
+                 AND GLA.R12_ACCOUNT /* -SS- ACCOUNT */ IN ('710000' /* -SS- ???? */, '806300' /* -SS- ???? */)
 --                 AND MLR.CLAIM_NBR IN ('8705840',
 --                                       '8667362',
 --                                       '8728663',
@@ -193,7 +198,7 @@ SELECT /*+ NO_CPU_COSTING */
                  TIME_DAY TD--, EXPENSE_TYPE_SCD ET
                             --, CLAIM_TYPE_SCD CT
                  ,
-                 GL_ACCOUNT_SCD GLA
+                 R12_GL_ACCOUNT_SCD /* -SS- */ GLA
            WHERE     TD.TIME_KEY = MLR.CCN_TRX_DATE_KEY
                  /* CONCESSION CLAIM TYPE ONLY */
                  AND MLR.CLAIM_TYPE_SCD_KEY = 11
@@ -209,7 +214,7 @@ SELECT /*+ NO_CPU_COSTING */
                  --AND MLR.CLAIM_TYPE_SCD_KEY = CT.CLAIM_TYPE_SCD_KEY
                  --AND CT.CLAIM_TYPE_CODE ='CONCESSION'
                  AND GLA.GL_ACCOUNT_SCD_KEY = MLR.GL_ACCOUNT_SCD_KEY
-                 AND GLA.ACCOUNT = '428000'
+                 AND GLA.R12_ACCOUNT /* -SS- ACCOUNT */ = '428000' /* -SS- ???? */
 --                 AND MLR.CLAIM_NBR IN ('8705840',
 --                                       '8667362',
 --                                       '8728663',
@@ -274,13 +279,13 @@ SELECT /*+ NO_CPU_COSTING */
                    WHERE     CLAIM_TYPE_SCD_KEY = 11
                          AND EXISTS
                                 (SELECT 'X'
-                                   FROM GL_ACCOUNT_SCD
+                                   FROM R12_GL_ACCOUNT_SCD /* -SS- */
                                   WHERE     lr1.GL_ACCOUNT_SCD_KEY =
                                                GL_ACCOUNT_SCD_KEY
-                                        AND ACCOUNT IN ('710000', '806300')))
+                                        AND R12_ACCOUNT /* -SS- ACCOUNT */ IN ('710000' /* -SS- ???? */, '806300' /* -SS- ???? */ )))
                  LR2--, CLAIM_TYPE_SCD CT
                  ,
-                 GL_ACCOUNT_SCD GLA
+                 R12_GL_ACCOUNT_SCD /* -SS- */ GLA
            WHERE     TD.TIME_KEY = MLR.CCN_TRX_DATE_KEY
                  /* CONCESSION CLAIM TYPE ONLY */
                  AND MLR.CLAIM_TYPE_SCD_KEY = 11
@@ -300,7 +305,7 @@ SELECT /*+ NO_CPU_COSTING */
                  --AND CT.CLAIM_TYPE_CODE ='CONCESSION'
                  AND GLA.GL_ACCOUNT_SCD_KEY = MLR.GL_ACCOUNT_SCD_KEY
                  AND GLA.GL_ACCOUNT_SCD_KEY = LR.GL_ACCOUNT_SCD_KEY
-                 AND GLA.ACCOUNT IN ('710000', '806300')
+                 AND GLA.R12_ACCOUNT /* -SS- ACCOUNT */ IN ('710000' /* -SS- ???? */, '806300' /* -SS- ???? */)
 --                 AND MLR.CLAIM_NBR IN ('8705840',
 --                                       '8667362',
 --                                       '8728663',
@@ -365,12 +370,12 @@ SELECT /*+ NO_CPU_COSTING */
                    WHERE     CLAIM_TYPE_SCD_KEY = 11
                          AND EXISTS
                                 (SELECT 'X'
-                                   FROM GL_ACCOUNT_SCD
+                                   FROM R12_GL_ACCOUNT_SCD /* -SS- */
                                   WHERE     lr1.GL_ACCOUNT_SCD_KEY =
                                                GL_ACCOUNT_SCD_KEY
-                                        AND ACCOUNT = '428000')) LR2--, CLAIM_TYPE_SCD CT
+                                        AND R12_ACCOUNT /* -SS- ACCOUNT */ = '428000' /* -SS- ???? */ )) LR2 --, CLAIM_TYPE_SCD CT
                  ,
-                 GL_ACCOUNT_SCD GLA
+                 R12_GL_ACCOUNT_SCD /* -SS- */ GLA
            WHERE     TD.TIME_KEY = MLR.CCN_TRX_DATE_KEY
                  /* CONCESSION CLAIM TYPE ONLY */
                  AND MLR.CLAIM_TYPE_SCD_KEY = 11
@@ -390,7 +395,7 @@ SELECT /*+ NO_CPU_COSTING */
                  --AND CT.CLAIM_TYPE_CODE ='CONCESSION'
                  AND GLA.GL_ACCOUNT_SCD_KEY = MLR.GL_ACCOUNT_SCD_KEY
                  AND GLA.GL_ACCOUNT_SCD_KEY = LR.GL_ACCOUNT_SCD_KEY
-                 AND GLA.ACCOUNT = '428000'
+                 AND GLA.R12_ACCOUNT /* -SS- ACCOUNT */ = '428000' /* -SS- ???? */
 --                 AND MLR.CLAIM_NBR IN ('8705840',
 --                                       '8667362',
 --                                       '8728663',
@@ -452,7 +457,7 @@ SELECT /*+ NO_CPU_COSTING */
                  TIME_DAY TD--, EXPENSE_TYPE_SCD ET
                             --, CLAIM_TYPE_SCD CT
                  ,
-                 GL_ACCOUNT_SCD GLA
+                 R12_GL_ACCOUNT_SCD /* -SS- */ GLA
            WHERE     TD.TIME_KEY = MLR.CCN_TRX_DATE_KEY
                  /* SPD CLAIM TYPE ONLY */
                  AND MLR.CLAIM_TYPE_SCD_KEY = 1
@@ -468,7 +473,7 @@ SELECT /*+ NO_CPU_COSTING */
                  AND GLA.GL_ACCOUNT_SCD_KEY = MLR.GL_ACCOUNT_SCD_KEY
                  --AND MLR.CLAIM_TYPE_SCD_KEY = CT.CLAIM_TYPE_SCD_KEY
                  --AND CT.CLAIM_TYPE_CODE  IN ('SPD')
-                 AND GLA.ACCOUNT IN ('710000', '806300')
+                 AND GLA.R12_ACCOUNT /* -SS- ACCOUNT */ IN ('710000' /* -SS- ???? */, '806300' /* -SS- ???? */)
 --                 AND MLR.CLAIM_NBR IN ('8705840',
 --                                       '8667362',
 --                                       '8728663',
@@ -526,7 +531,7 @@ SELECT /*+ NO_CPU_COSTING */
                  TIME_DAY TD--, EXPENSE_TYPE_SCD ET
                             --, CLAIM_TYPE_SCD CT
                  ,
-                 GL_ACCOUNT_SCD GLA
+                 R12_GL_ACCOUNT_SCD /* -SS- */ GLA
            WHERE     TD.TIME_KEY = MLR.CCN_TRX_DATE_KEY
                  /* SPD CLAIM TYPE ONLY */
                  AND MLR.CLAIM_TYPE_SCD_KEY = 1
@@ -542,7 +547,7 @@ SELECT /*+ NO_CPU_COSTING */
                  --AND MLR.CLAIM_TYPE_SCD_KEY = CT.CLAIM_TYPE_SCD_KEY
                  --AND CT.CLAIM_TYPE_CODE IN ('SPD')
                  AND GLA.GL_ACCOUNT_SCD_KEY = MLR.GL_ACCOUNT_SCD_KEY
-                 AND GLA.ACCOUNT IN ('710000', '806300')
+                 AND GLA.R12_ACCOUNT /* -SS- ACCOUNT */ IN ('710000' /* -SS- ???? */, '806300' /* -SS- ???? */)
 --                 AND MLR.CLAIM_NBR IN ('8705840',
 --                                       '8667362',
 --                                       '8728663',
@@ -568,12 +573,12 @@ SELECT /*+ NO_CPU_COSTING */
        TIME_DAY TD2,
        TIME_DAY TD1,
        TIME_DAY TD,
-       GL_ACCOUNT_SCD GLA--,EXPENSE_TYPE_SCD ETS
+       R12_GL_ACCOUNT_SCD /* -SS- */ GLA --, EXPENSE_TYPE_SCD ETS
        ,
        PROD_CODE_SCD PCS,
        CUST_ACCOUNT_SCD CACCT,
        SUBMIT_OFFICE_SCD SOS,
-       ACTUATE_SEC_XREF ASX,
+       /* -SS- ACTUATE_SEC_XREF ASX, */
        DM_WAR_CSN_RSV_PCT_REF RES_PCT,
        DM_WAR_CSN_RSV_PCT_REF RES_PCT1,
        UD_031_STDWTY_RSV_CLM_ADJ a
@@ -591,7 +596,7 @@ SELECT /*+ NO_CPU_COSTING */
        AND CCN_DATA.CUST_ACCOUNT_SCD_KEY = CACCT.CUST_ACCOUNT_SCD_KEY
        AND CCN_DATA.SUBMIT_OFFICE_SCD_KEY = SOS.SUBMIT_OFFICE_SCD_KEY
        /* NATION CURRENCY */
-       AND GLA.COMPANY = ASX.PSGL(+)
+       /* -SS- AND GLA.COMPANY = ASX.PSGL(+) */
        /* RESERVE PERCENT FROM LAB/MAT CLASSIFICATION */
        AND CCN_DATA.CLAIM_TYPE = RES_PCT.CLAIM_TYPE
        AND CCN_DATA.EXPENSE_TYPE_DESCR = RES_PCT.EXPENSE_TYPE_DESCR
@@ -617,7 +622,7 @@ UNION ALL
 SELECT /*+ NO_CPU_COSTING */
       MLR.CLAIM_NBR AS CLAIM_NUMBER,
        MLR.STEP_NBR AS STEP_NUMBER,
-       GLA.COMPANY AS BUSINESS_UNIT,
+       GLA.R12_ENTITY /* -SS- COMPANY */ AS BUSINESS_UNIT,
        'MATERIAL' AS CLAIM_TYPE,
        CASE
           WHEN TD1.FULL_DATE - TD2.FULL_DATE <= 548 THEN '<= 548 DAYS'
@@ -628,10 +633,10 @@ SELECT /*+ NO_CPU_COSTING */
        100 * (MLR.EXP_TYPE_AMOUNT * -1 - TRUNC (MLR.EXP_TYPE_AMOUNT * -1))
           AS EXPENSE_AMOUNT_DEC,
        RES_PCT.EXPENSE_TYPE_CATG AS MATERIAL_LABOR,
-       GLA.ACCOUNT AS GL_ACCOUNT,
+       GLA.R12_ACCOUNT /* -SS- ACCOUNT */ AS GL_ACCOUNT,
        ETS.EXPENSE_TYPE_DESCR AS EXPENSE_TYPE_DESCR,
        SOS.SUBMIT_OFFICE_NAME AS OFFICE_NAME,
-       GLA.PROD_CODE AS GL_PROD_CODE,
+       GLA.R12_PRODUCT /* -SS- PROD_CODE */ AS GL_PROD_CODE,
        PCS.PROD_CODE AS MANF_PROD_CODE,
        SOS.COMPANY_OWNED_IND AS COMPANY_OWNED,
        CACCT.ACCOUNT_NUMBER AS CUSTOMER_NUMBER,
@@ -664,15 +669,20 @@ SELECT /*+ NO_CPU_COSTING */
        TD1.FULL_DATE AS FAIL_DATE,
        ( (TD3.TIME_KEY - TD1.TIME_KEY) / 30.42) AS INTMONTHS_FAIL_TO_TRX,
        MLR.TRX_CURRENCY AS CURRENCY,
-       (CASE
-           WHEN ASX.NATION_CURR = 'USD' THEN 'USA'
-           WHEN ASX.NATION_CURR = 'CAD' THEN 'CAN'
-           ELSE 'CURRENCY:' || ASX.NATION_CURR
-        END)
-          AS COUNTRY_INDICATOR/* new fields added 5/21/07 */
+      (
+        CASE
+        WHEN GLA.R12_ENTITY <> 5773 /* -SS- ASX.NATION_CURR='USD' */ THEN 'USA'
+        ELSE 'CAN'
+        /* -SS-
+        WHEN ASX.NATION_CURR='CAD' THEN 'CAN' 
+        ELSE 'CURRENCY: ' || ASX.NATION_CURR 
+        */
+        END
+      ) AS COUNTRY_INDICATOR
+      /* new fields added 5/21/07 */
        ,
        MLR.RETRO_ID AS RETROFIT_ID,
-       GLA.COST_CENTER AS GL_DEPT/*New Logic by Jackie (6/12/07)Only for concession detail Report(All >548 days are ‘Not In Reserve no matter what) */
+       GLA.R12_COST_CENTER /* -SS- COST_CENTER */ AS GL_DEPT/*New Logic by Jackie (6/12/07)Only for concession detail Report(All >548 days are ‘Not In Reserve no matter what) */
        ,
        CASE
           WHEN a.CLAIM_NUMBER IS NULL
@@ -702,12 +712,12 @@ SELECT /*+ NO_CPU_COSTING */
        TIME_DAY TD,
        CLAIM_TASK_SCD CTASKS--,CLAIM_TYPE_SCD CTYPES
        ,
-       GL_ACCOUNT_SCD GLA,
+       R12_GL_ACCOUNT_SCD /* -SS- */ GLA,
        EXPENSE_TYPE_SCD ETS,
        PROD_CODE_SCD PCS,
        CUST_ACCOUNT_SCD CACCT,
        SUBMIT_OFFICE_SCD SOS,
-       ACTUATE_SEC_XREF ASX,
+       /* -SS- ACTUATE_SEC_XREF ASX, */
        DM_WAR_CSN_RSV_PCT_REF RES_PCT,
        DM_WAR_CSN_RSV_PCT_REF RES_PCT1,
        UD_031_STDWTY_RSV_CLM_ADJ a
@@ -732,7 +742,7 @@ SELECT /*+ NO_CPU_COSTING */
        AND MLR.CUST_ACCOUNT_SCD_KEY = CACCT.CUST_ACCOUNT_SCD_KEY
        AND MLR.SUBMIT_OFFICE_SCD_KEY = SOS.SUBMIT_OFFICE_SCD_KEY
        /* NATION CURRENCY */
-       AND GLA.COMPANY = ASX.PSGL(+)
+       /* -SS- AND GLA.COMPANY = ASX.PSGL(+) */
        /* reserve percent and lab/mat classification */
        AND 'MATERIAL' = RES_PCT.CLAIM_TYPE
        AND ETS.EXPENSE_TYPE_DESCR = RES_PCT.EXPENSE_TYPE_DESCR
@@ -748,7 +758,7 @@ SELECT /*+ NO_CPU_COSTING */
        ---AND (GLA.COMPANY ='CSD' or GLA.COMPANY ='CAN'   or GLA.COMPANY like 'GS%')
        --and TD3.FULL_DATE >= TO_DATE('1/1/2006','MM/DD/YYYY') and TD3.FULL_DATE < TO_DATE('6/1/2007','MM/DD/YYYY')
        AND TD3.FULL_DATE >= TO_DATE ('1/1/2001', 'MM/DD/YYYY')
-       AND (GLA.ACCOUNT IN ('710000', '428000', '806300'))
+       AND (GLA.R12_ACCOUNT /* -SS- ACCOUNT */ IN ('710000' /* -SS- ???? */, '428000' /* -SS- ???? */, '806300' /* -SS- ???? */))
 --       AND MLR.CLAIM_NBR IN ('8705840',
 --                             '8667362',
 --                             '8728663',

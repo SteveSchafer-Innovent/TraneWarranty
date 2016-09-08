@@ -47,7 +47,7 @@ AS
                  AND dist.R12_ENTITY NOT IN ('5773', '5588') /* -SS- asx.nation_curr = 'USD' */
                  AND PSA.trane_account_ind = 'X'
                  /* -SS- AND dist.business_unit_gl = asx.psgl */
-                 AND (dist.R12_LOCATION /* -SS- deptid */ IS NULL OR dist.deptid = 'SL00' /* -SS- ???? */ )
+                 AND (dist.R12_LOCATION /* -SS- deptid */ IS NULL OR dist.R12_LOCATION /* -SS- deptid */ = 'SL00' /* -SS- ???? */ )
                  AND dist.journal_date BETWEEN '1-NOV-2004'
                                            AND LAST_DAY (
                                                   ADD_MONTHS (SYSDATE, -1))
@@ -151,7 +151,7 @@ AS
                  R12_TRANE_ACCOUNTS_PS /* -SS- OTR */ PSA /* -SS- ,
                  actuate_sec_xref asx */
            WHERE     comm.code_combination_id = gl_code.code_combination_id
-                 AND GL_CODE.R12_ENTITY /* -SS- SEGMENT3 */ IN ('5773', '5588') /* -SS- asx.nation_curr = 'CAD' */
+                 AND GL_CODE.R12_ENTITY IN ('5773', '5588') /* -SS- asx.nation_curr = 'CAD' */
                  AND GL_CODE.R12_ACCOUNT /* -SS- SEGMENT2 */ = PSA.R12_ACCOUNT /* -SS- ACCOUNT */(+)
                  AND PSA.trane_account_ind = 'X'
                  /* -SS- AND gl_code.segment1 = asx.psgl(+) */

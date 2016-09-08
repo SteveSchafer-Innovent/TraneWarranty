@@ -20,7 +20,7 @@ AS
          gl_account,
          journal_date,
          NVL (SUM (commission_amount), 0) AS commission_amount
-    FROM (SELECT CASE WHEN dist.R12_ENTITY = '5773' THEN 'CAN' ELSE 'USA' END 
+    FROM (SELECT CASE WHEN dist.R12_ENTITY IN ('5773', '5588') THEN 'CAN' ELSE 'USA' END 
                 /* -SS- CASE UPPER (TRIM (asx.nation_curr))
                     WHEN 'CAD' THEN 'CAN'
                     WHEN 'USD' THEN 'USA'
@@ -44,7 +44,7 @@ AS
                  R12_TRANE_ACCOUNTS_PS /* -SS- OTR */ PSA /* -SS- ,
                  dbo.actuate_sec_xref asx */
            WHERE     dist.R12_ACCOUNT /* -SS- ACCOUNT */ = PSA.R12_ACCOUNT /* -SS- ACCOUNT */
-                 AND dist.R12_ENTITY <> 5773 /* -SS- asx.nation_curr = 'USD' */
+                 AND dist.R12_ENTITY NOT IN ('5773', '5588') /* -SS- asx.nation_curr = 'USD' */
                  AND PSA.trane_account_ind = 'X'
                  /* -SS- AND dist.business_unit_gl = asx.psgl */
                  AND (dist.R12_LOCATION /* -SS- deptid */ IS NULL OR dist.deptid = 'SL00' /* -SS- ???? */ )
@@ -55,7 +55,7 @@ AS
                       OR dist.R12_ACCOUNT /* -SS- ACCOUNT */ LIKE '53%' /* -SS- ???? */
                       OR dist.R12_ACCOUNT /* -SS- ACCOUNT */ LIKE '54%' /* -SS- ???? */ )
           UNION ALL
-          SELECT CASE WHEN dist.R12_ENTITY = '5773' THEN 'CAN' ELSE 'USA' END 
+          SELECT CASE WHEN dist.R12_ENTITY IN ('5773', '5588') THEN 'CAN' ELSE 'USA' END 
                 /* -SS- CASE UPPER (TRIM (asx.nation_curr))
                     WHEN 'CAD' THEN 'CAN'
                     WHEN 'USD' THEN 'USA'
@@ -79,7 +79,7 @@ AS
                  R12_TRANE_ACCOUNTS_PS /* -SS- OTR */ PSA /* -SS- ,
                  dbo.actuate_sec_xref asx */
            WHERE     dist.R12_ACCOUNT /* -SS- ACCOUNT */ = PSA.R12_ACCOUNT /* -SS- ACCOUNT */
-                 AND dist.R12_ENTITY <> '5773' /* -SS- asx.nation_curr = 'CAD' */
+                 AND dist.R12_ENTITY IN ('5773', '5588') /* -SS- asx.nation_curr = 'CAD' */
                  AND PSA.trane_account_ind = 'X'
                  /* -SS- AND dist.business_unit_gl = asx.psgl */
                  AND (dist.R12_LOCATOIN /* -SS- deptid */ IS NULL OR dist.R12_LOCATION /* -SS- deptid */ IN ('TCA0', 'SL00') /* -SS- ???? */ )
@@ -90,7 +90,7 @@ AS
                       OR dist.R12_ACCOUNT /* -SS- ACCOUNT */ LIKE '53%' /* -SS- ???? */
                       OR dist.R12_ACCOUNT /* -SS- ACCOUNT */ LIKE '54%' /* -SS- ???? */ )
           UNION ALL
-          SELECT CASE WHEN dist.R12_ENTITY = '5773' THEN 'CAN' ELSE 'USA' END
+          SELECT CASE WHEN dist.R12_ENTITY IN ('5773', '5588') THEN 'CAN' ELSE 'USA' END
                 /* -SS- CASE UPPER (TRIM (asx.nation_curr))
                     WHEN 'CAD' THEN 'CAN'
                     WHEN 'USD' THEN 'USA'
@@ -115,7 +115,7 @@ AS
                  R12_TRANE_ACCOUNTS_PS /* -SS- OTR */ PSA /* -SS- ,
                  actuate_sec_xref asx */
            WHERE     comm.code_combination_id = gl_code.code_combination_id
-                 AND dist.R12_ENTITY <> '5773' /* -SS- asx.nation_curr = 'USD' */
+                 AND dist.R12_ENTITY NOT IN ('5773', '5588') /* -SS- asx.nation_curr = 'USD' */
                  AND GL_CODE.R12_ACCOUNT /* -SS- SEGMENT2 */ = PSA.R12_ACCOUNT /* -SS- ACCOUNT */(+)
                  AND PSA.trane_account_ind = 'X'
                  /* -SS- AND gl_code.segment1 = asx.psgl(+) */
@@ -126,7 +126,7 @@ AS
                       OR GL_CODE.R12_ACCOUNT /* -SS- SEGMENT2 */ LIKE '53%'
                       OR GL_CODE.R12_ACCOUNT /* -SS- SEGMENT2 */ LIKE '54%')
           UNION ALL
-          SELECT CASE WHEN dist.R12_ENTITY = '5773' THEN 'CAN' ELSE 'USA' END
+          SELECT CASE WHEN dist.R12_ENTITY IN ('5773', '5588') THEN 'CAN' ELSE 'USA' END
                 /* -SS- CASE UPPER (TRIM (asx.nation_curr))
                     WHEN 'CAD' THEN 'CAN'
                     WHEN 'USD' THEN 'USA'
@@ -151,7 +151,7 @@ AS
                  R12_TRANE_ACCOUNTS_PS /* -SS- OTR */ PSA /* -SS- ,
                  actuate_sec_xref asx */
            WHERE     comm.code_combination_id = gl_code.code_combination_id
-                 AND GL_CODE.R12_ENTITY /* -SS- SEGMENT3 */ <> '5773' /* -SS- asx.nation_curr = 'CAD' */
+                 AND GL_CODE.R12_ENTITY /* -SS- SEGMENT3 */ IN ('5773', '5588') /* -SS- asx.nation_curr = 'CAD' */
                  AND GL_CODE.R12_ACCOUNT /* -SS- SEGMENT2 */ = PSA.R12_ACCOUNT /* -SS- ACCOUNT */(+)
                  AND PSA.trane_account_ind = 'X'
                  /* -SS- AND gl_code.segment1 = asx.psgl(+) */

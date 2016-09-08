@@ -22,7 +22,7 @@ SELECT JRNL_YEAR_MONTH,
   FROM (  SELECT                                             /*+ FIRST_ROWS */
                 TO_CHAR (A.GL_POSTED_DATE, 'YYYYMM') AS JRNL_YEAR_MONTH,
                  A.R12_ACCOUNT AS GL_ACCOUNT,
-                 CASE WHEN A.R12_ENTITY = '5773' THEN 'CDN' ELSE 'USD' END /* ASX.NATION_CURR */ AS COUNTRY_INDICATOR,
+                 CASE WHEN A.R12_ENTITY IN ('5773', '5588') THEN 'CDN' ELSE 'USD' END /* ASX.NATION_CURR */ AS COUNTRY_INDICATOR,
                  TRUNC (A.GL_POSTED_DATE, 'MM') AS JOURNAL_DATE,
                  SUM (A.AMOUNT * -1) AS REVENUE_AMOUNT
             FROM R12_AP_030_ARC_BILL A,
@@ -42,13 +42,13 @@ SELECT JRNL_YEAR_MONTH,
                  AND A.R12_ACCOUNT NOT LIKE '5268%' /* -SS- ???? convert */
         GROUP BY TO_CHAR (A.GL_POSTED_DATE, 'YYYYMM'),
                  A.R12_ACCOUNT,
-                 CASE WHEN A.R12_ENTITY = '5773' THEN 'CDN' ELSE 'USD' END /* -SS- ASX.NATION_CURR */,
+                 CASE WHEN A.R12_ENTITY IN ('5773', '5588') THEN 'CDN' ELSE 'USD' END /* -SS- ASX.NATION_CURR */,
                  TRUNC (A.GL_POSTED_DATE, 'MM')
         UNION ALL
           SELECT                                             /*+ FIRST_ROWS */
                 TO_CHAR (A.GL_POSTED_DATE, 'YYYYMM') AS JRNL_YEAR_MONTH,
                  A.R12_ACCOUNT AS GL_ACCOUNT,
-                 CASE WHEN A.R12_ENTITY = '5773' THEN 'CDN' ELSE 'USD' END /* -SS- ASX.NATION_CURR */ AS COUNTRY_INDICATOR,
+                 CASE WHEN A.R12_ENTITY IN ('5773', '5588') THEN 'CDN' ELSE 'USD' END /* -SS- ASX.NATION_CURR */ AS COUNTRY_INDICATOR,
                  TRUNC (A.GL_POSTED_DATE, 'MM') AS JOURNAL_DATE,
                  SUM (A.AMOUNT * -1) AS REVENUE_AMOUNT
             FROM R12_AP_030_ARC_BILL A,
@@ -65,13 +65,13 @@ SELECT JRNL_YEAR_MONTH,
                  AND (A.R12_ACCOUNT LIKE '5268%' /* -SS- ???? convert */ )
         GROUP BY TO_CHAR (A.GL_POSTED_DATE, 'YYYYMM'),
                  A.R12_ACCOUNT,
-                 CASE WHEN A.R12_ENTITY = '5773' THEN 'CDN' ELSE 'USD' END /* -SS- ASX.NATION_CURR */,
+                 CASE WHEN A.R12_ENTITY IN ('5773', '5588') THEN 'CDN' ELSE 'USD' END /* -SS- ASX.NATION_CURR */,
                  TRUNC (A.GL_POSTED_DATE, 'MM')
         UNION ALL
           SELECT                                             /*+ FIRST_ROWS */
                 TO_CHAR (A.JOURNAL_DATE, 'YYYYMM') AS JRNL_YEAR_MONTH,
                  A.R12_ACCOUNT /* -SS- ACCOUNT */ AS GL_ACCOUNT,
-                 CASE WHEN A.R12_ENTITY = '5773' THEN 'CDN' ELSE 'USD' END /* -SS- ASX.NATION_CURR */ AS COUNTRY_INDICATOR,
+                 CASE WHEN A.R12_ENTITY IN ('5773', '5588') THEN 'CDN' ELSE 'USD' END /* -SS- ASX.NATION_CURR */ AS COUNTRY_INDICATOR,
                  TRUNC (A.JOURNAL_DATE, 'MM') AS JOURNAL_DATE,
                  SUM (A.MONETARY_AMOUNT * -1) AS REVENUE_AMOUNT
             FROM R12_BI_ACCT_ENTRY_PSB /* -SS- OTR */ A,
@@ -96,13 +96,13 @@ SELECT JRNL_YEAR_MONTH,
                  AND A.R12_ACCOUNT NOT LIKE '5268%' /* -SS- ???? translate */
         GROUP BY TO_CHAR (A.JOURNAL_DATE, 'YYYYMM'),
                  A.R12_ACCOUNT,
-                 CASE WHEN A.R12_ENTITY = '5773' THEN 'CDN' ELSE 'USD' END /* ASX.NATION_CURR */,
+                 CASE WHEN A.R12_ENTITY IN ('5773', '5588') THEN 'CDN' ELSE 'USD' END /* ASX.NATION_CURR */,
                  TRUNC (A.JOURNAL_DATE, 'MM')
         UNION ALL
           SELECT                                             /*+ FIRST_ROWS */
                 TO_CHAR (A.JOURNAL_DATE, 'YYYYMM') AS JRNL_YEAR_MONTH,
                  A.R12_ACCOUNT /* ACCOUNT */ AS GL_ACCOUNT,
-                 CASE WHEN A.R12_ENTITY = '5773' THEN 'CDN' ELSE 'USD' END /* ASX.NATION_CURR */ AS COUNTRY_INDICATOR,
+                 CASE WHEN A.R12_ENTITY IN ('5773', '5588') THEN 'CDN' ELSE 'USD' END /* ASX.NATION_CURR */ AS COUNTRY_INDICATOR,
                  TRUNC (A.JOURNAL_DATE, 'MM') AS JOURNAL_DATE,
                  SUM (A.MONETARY_AMOUNT * -1) AS REVENUE_AMOUNT
             FROM R12_BI_ACCT_ENTRY_PSB /* -SS- OTR */ A,
@@ -125,7 +125,7 @@ SELECT JRNL_YEAR_MONTH,
                  AND (A.R12_ACCOUNT /* ACCOUNT */ LIKE '5268%') /* -SS- ???? */
         GROUP BY TO_CHAR (A.JOURNAL_DATE, 'YYYYMM'),
                  A.R12_ACCOUNT,
-                 CASE WHEN A.R12_ENTITY = '5773' THEN 'CDN' ELSE 'USD' END /* -SS- ASX.NATION_CURR */,
+                 CASE WHEN A.R12_ENTITY IN ('5773', '5588') THEN 'CDN' ELSE 'USD' END /* -SS- ASX.NATION_CURR */,
                  TRUNC (A.JOURNAL_DATE, 'MM')
         UNION ALL
           SELECT TO_CHAR (UPD.JRNL_DATE, 'YYYYMM') AS JRNL_YEAR_MONTH,

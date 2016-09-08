@@ -216,7 +216,7 @@ CREATE OR REPLACE PACKAGE BODY DBO.pkg_031_retrofit_reserve IS
                             MLR.TRX_CURRENCY AS CURRENCY
                             ,(
                               CASE
-                              WHEN GLA.R12_ENTITY <> 5773 /* -SS- ASX.NATION_CURR='USD' */ THEN 'USA'
+                              WHEN GLA.R12_ENTITY NOT IN ('5773', '5588') /* -SS- ASX.NATION_CURR='USD' */ THEN 'USA'
                               ELSE 'CAN'
                               /* -SS-
                               WHEN ASX.NATION_CURR='CAD' THEN 'CAN' 
@@ -286,7 +286,7 @@ CREATE OR REPLACE PACKAGE BODY DBO.pkg_031_retrofit_reserve IS
                       and MLR.RETRO_ID = RD.RETROFIT_ID
                       -- NEW_RETROFIT_ID --
                       AND (CASE WHEN CACCT.CUST_CREDIT_CATG_CODE='Z1' THEN 'Y' ELSE 'N' END)=RES_PCT.CUST_CREDIT_CATG_CODE
-                      AND GLA.R12_ENTITY /* -SS- COMPANY */=PRODGRP.GL_LEDGER
+                      AND GLA.R12_ENTITY /* -SS- COMPANY */=PRODGRP.GL_LEDGER /* -SS- FIXME */
                       AND PCS.PROD_CODE = PRODGRP.MANF_PROD_CODE
                       AND PRODGRP.PRODUCT_CATEGORY IS NOT NULL
                       and TD3.FULL_DATE >= TO_DATE('1/1/2001','MM/DD/YYYY')
@@ -330,7 +330,7 @@ CREATE OR REPLACE PACKAGE BODY DBO.pkg_031_retrofit_reserve IS
                       MLR.TRX_CURRENCY
                       ,(
                         CASE
-                        WHEN GLA.R12_ENTITY <> 5773 /* -SS- ASX.NATION_CURR='USD' */ THEN 'USA'
+                        WHEN GLA.R12_ENTITY NOT IN ('5773', '5588') /* -SS- ASX.NATION_CURR='USD' */ THEN 'USA'
                         ELSE 'CAN'
                         /* -SS-
                         WHEN ASX.NATION_CURR='CAD' THEN 'CAN' 
@@ -391,7 +391,7 @@ CREATE OR REPLACE PACKAGE BODY DBO.pkg_031_retrofit_reserve IS
                             CCN_DATA.TRX_CURRENCY AS CURRENCY
                             ,(
                               CASE
-                              WHEN GLA.R12_ENTITY <> 5773 /* -SS- ASX.NATION_CURR='USD' */ THEN 'USA'
+                              WHEN GLA.R12_ENTITY NOT IN ('5773', '5588') /* -SS- ASX.NATION_CURR='USD' */ THEN 'USA'
                               ELSE 'CAN'
                               /* -SS-
                               WHEN ASX.NATION_CURR='CAD' THEN 'CAN' 
@@ -487,7 +487,7 @@ CREATE OR REPLACE PACKAGE BODY DBO.pkg_031_retrofit_reserve IS
                       AND CCN_DATA.EXPENSE_TYPE_CATG= UPPER(RES_PCT.EXPENSE_TYPE_CATG)
                       AND SOS.COMPANY_OWNED_IND=RES_PCT.COMPANY_OWNED_IND
                       AND (CASE WHEN CACCT.CUST_CREDIT_CATG_CODE='Z1' THEN 'Y' ELSE 'N' END)=RES_PCT.CUST_CREDIT_CATG_CODE
-                      AND GLA.R12_ENTITY /* -SS- COMPANY */=PRODGRP.GL_LEDGER
+                      AND GLA.R12_ENTITY /* -SS- COMPANY */=PRODGRP.GL_LEDGER /* -SS- FIXME */
                       AND PCS.PROD_CODE = PRODGRP.MANF_PROD_CODE
                       AND PRODGRP.PRODUCT_CATEGORY IS NOT NULL
                       -- NEW_RETROFIT_ID -

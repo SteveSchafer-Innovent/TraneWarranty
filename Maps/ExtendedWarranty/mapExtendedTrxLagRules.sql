@@ -1,3 +1,9 @@
+/* SR: NOT USED ANY PLACE 
+	Query is probably not corrected as LAG table does is not bound to other queries.
+	In addition LAG query is DWT, but OTR_TRANE_ACCOUNTS_PS is in DRT
+	
+*/
+
 select DISTINCT GLA.R12_ACCOUNT /* -SS- ACCOUNT */,
 (
 	CASE

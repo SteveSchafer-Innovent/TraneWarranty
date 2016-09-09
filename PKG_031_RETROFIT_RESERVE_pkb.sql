@@ -287,7 +287,7 @@ CREATE OR REPLACE PACKAGE BODY DBO.pkg_031_retrofit_reserve IS
                       -- NEW_RETROFIT_ID --
                       AND (CASE WHEN CACCT.CUST_CREDIT_CATG_CODE='Z1' THEN 'Y' ELSE 'N' END)=RES_PCT.CUST_CREDIT_CATG_CODE
                       AND GLA.R12_ENTITY /* -SS- COMPANY */=PRODGRP.GL_LEDGER /* -SS- FIXME */
-                      AND PCS.PROD_CODE = PRODGRP.MANF_PROD_CODE
+                      AND PCS.PROD_CODE = PRODGRP.ORA_PRODUCT -- -SS- MANF_PROD_CODE, FIXME join won't work
                       AND PRODGRP.PRODUCT_CATEGORY IS NOT NULL
                       and TD3.FULL_DATE >= TO_DATE('1/1/2001','MM/DD/YYYY')
                       --and TD3.FULL_DATE <= TO_DATE('12/31/2008','MM/DD/YYYY')
@@ -488,7 +488,7 @@ CREATE OR REPLACE PACKAGE BODY DBO.pkg_031_retrofit_reserve IS
                       AND SOS.COMPANY_OWNED_IND=RES_PCT.COMPANY_OWNED_IND
                       AND (CASE WHEN CACCT.CUST_CREDIT_CATG_CODE='Z1' THEN 'Y' ELSE 'N' END)=RES_PCT.CUST_CREDIT_CATG_CODE
                       AND GLA.R12_ENTITY /* -SS- COMPANY */=PRODGRP.GL_LEDGER /* -SS- FIXME */
-                      AND PCS.PROD_CODE = PRODGRP.MANF_PROD_CODE
+                      AND PCS.PROD_CODE = PRODGRP.ORA_PRODUCT -- -SS- MANF_PROD_CODE, FIXME join won't work
                       AND PRODGRP.PRODUCT_CATEGORY IS NOT NULL
                       -- NEW_RETROFIT_ID -
                       and CCN_DATA.RETRO_ID = RD.RETROFIT_ID

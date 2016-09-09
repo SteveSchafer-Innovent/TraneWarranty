@@ -81,7 +81,7 @@ SELECT JRNL_YEAR_MONTH,
                  DBO.ACTUATE_SEC_XREF ASX */
            WHERE A.JOURNAL_DATE BETWEEN TO_DATE ('01/01/2003', 'MM/DD/YYYY')
                                     AND LAST_DAY (ADD_MONTHS (SYSDATE, -1))
-                 AND A.PS_BUSINESS_UNIT_GL IN ('CAN', 'CSD') /* -SS- ???? */
+                 AND ((A.PS_BUSINESS_UNIT_GL IS NOT NULL AND A.PS_BUSINESS_UNIT_GL IN ('CAN', 'CSD') /* -SS- ???? */) OR )
                  /* -SS- AND A.BUSINESS_UNIT_GL = ASX.PSGL(+) */
                  AND A.R12_ACCOUNT = PSA.R12_ACCOUNT /* -SS- ACCOUNT */(+)
                  AND PSA.TRANE_ACCOUNT_IND = 'X'

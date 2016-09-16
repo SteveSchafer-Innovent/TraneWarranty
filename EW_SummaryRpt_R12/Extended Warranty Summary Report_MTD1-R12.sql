@@ -132,7 +132,7 @@ LEFT OUTER JOIN
 	/* Ending Balance DRTRNP */
 	SELECT
 		/*+ NO_CPU_COSTING */
-		PSA.R12_ACCOUNT, -- -SS- Cross_Ref.PeopleSoft_ac AS ACCOUNT,
+		PSA.R12_ACCOUNT AS ACCOUNT, -- -SS- Cross_Ref.PeopleSoft_ac AS ACCOUNT,
 		gl_ledgers.ledger_id    AS ledger,
 		gl_balances.period_name AS fiscal_year,
 		CASE
@@ -244,7 +244,7 @@ LEFT OUTER JOIN
 			WHEN A.r12_entity IN(5773, 5588) THEN 'CAN'
 			ELSE 'USA'
 		END           AS COUNTRY_INDICATOR,
-		A.R12_ACCOUNT AS Account,
+		A.R12_ACCOUNT AS Account, -- -SS- A.PS_ACCOUNT
 		PSA.DESCR,
 		SUM(A.MONETARY_AMOUNT * - 1) AS REVENUE_AMOUNT
 		/*TAY:  FROM OTR_BI_ACCT_ENTRY_PSB A, OTR_TRNBI_BI_HDR_PSB B, OTR_BI_HDR_PSB C, OTR_TRANE_ACCOUNTS_PS psa, ACTUATE_SEC_XREF ASX*/
@@ -281,7 +281,7 @@ LEFT OUTER JOIN
 	AND A.R12_ACCOUNT LIKE '5%' -- -SS- ????
 		/*TAY:  GROUP BY ASX.NATION_CURR, A.ACCOUNT, PSA.DESCR*/
 	GROUP BY A.r12_entity,
-		A.PS_ACCOUNT,
+		A.R12_ACCOUNT, -- -SS- A.PS_ACCOUNT,
 		PSA.DESCR
 	) sales ON begbalances.ACCOUNT = sales.ACCOUNT -- -SS- (+)
 LEFT OUTER JOIN
@@ -289,7 +289,8 @@ LEFT OUTER JOIN
 	/*SHORT_TERM,LONG_TERM DWTRNP */
 	SELECT
 		/*+ NO_CPU_COSTING */
-		B.gl_account              AS account B.GL_ACCOUNT_DESCR AS DESCRIPTION,
+		B.gl_account              AS account,
+		B.GL_ACCOUNT_DESCR        AS DESCRIPTION,
 		SUM(B.SHORT_TERM_REVENUE) AS SHORT_TERM_BALA,
 		SUM(LONG_TERM_REVENUE)    AS LONG_TERM_BALA
 	FROM
@@ -302,14 +303,14 @@ LEFT OUTER JOIN
 			/*TAY:        FROM DBO.DM_030_REV_RELEASE@DW_INTFC_DR.LAX.TRANE.COM a, OTR_TRANE_ACCOUNTS_PS psa*/
 		FROM DW_DM_030_REV_RELEASE a
 		LEFT OUTER JOIN R12_TRANE_ACCOUNTS_PS psa
-		ON a.gl_account = PSA.PS_ACCOUNT
+		ON a.gl_account = PSA.R12_ACCOUNT -- -SS- ????
 		WHERE
 			-- -SS- a.gl_account        = PSA.PS_ACCOUNT (+) AND
 			PSA.TRANE_ACCOUNT_IND  = 'X'
 		AND a.country_indicator = UPPER(:COUNTRY)
 		AND a.RUN_PERIOD       >= TO_DATE('1-'||:RunDate, 'dd-mon-yy')
 		AND a.RUN_PERIOD        < add_months(to_date('1-'||:RunDate, 'dd-mon-yy'), 1)
-		AND a.R12_account LIKE '5%' -- -SS- ????
+		AND PSA.R12_account LIKE '5%' -- -SS- ???? A.ACCOUNT
 		AND A.FORECAST_PERIOD >=
 			CASE
 				WHEN to_date('1-' ||:RunDate, 'dd-mon-yy') = TRUNC(TO_DATE(TO_DATE('1-'||:RunDate, 'dd-mon-yy')), 'YEAR') THEN TRUNC(TRUNC(to_date('1-'||:RunDate, 'dd-mon-yy'), 'YEAR') - 1) - 30
@@ -479,7 +480,7 @@ AND NOT EXISTS
 		-- -SS- AND dept.Oracle_DEPT                = gl_code_combinations.segment2
 		-- AND Cross_Ref.PeopleSoft_ac (+) = PSA.PS_ACCOUNT
 	AND PSA.TRANE_ACCOUNT_IND = 'X'
-	GROUP BY Cross_Ref.PeopleSoft_ac,
+	GROUP BY PSA.R12_ACCOUNT, -- -SS- Cross_Ref.PeopleSoft_ac,
 		psa.DESCR,
 		gl_balances.period_name,
 		gl_ledgers.ledger_id,

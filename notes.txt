@@ -98,3 +98,11 @@ Oct 10 is the deploy date for PS data with R12 numbers.
 
 _SCD tables contain surrogate keys
 
+--------------------------------------
+Can you help Scott and Steve develop the R12 queries needed to get the data we need for these tables? They can provide a list of the required columns if you need them.
+OTR_BI_ACCT_ENTRY_PSB
+OTR_BI_HDR_PSB
+OTR_BI_LINE_PSB
+OTR_TRNBI_BI_HDR_PSB
+OTR_TRNCO_CM_DIST_PSB
+

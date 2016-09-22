@@ -480,6 +480,7 @@ AND NOT EXISTS
 		-- -SS- AND dept.Oracle_DEPT                = gl_code_combinations.segment2
 		-- AND Cross_Ref.PeopleSoft_ac (+) = PSA.PS_ACCOUNT
 	AND PSA.TRANE_ACCOUNT_IND = 'X'
+	AND GL_CODE_COMBINATIONS.SEGMENT4 = PSA.R12_ACCOUNT
 	GROUP BY PSA.R12_ACCOUNT, -- -SS- Cross_Ref.PeopleSoft_ac,
 		psa.DESCR,
 		gl_balances.period_name,

@@ -109,7 +109,7 @@ FROM
 		END                        = UPPER(:COUNTRY)
 	AND gl_ledgers.ledger_id   IN(2022, 2041)
 	AND GL_BALANCES.ACTUAL_FLAG = 'A'
-	AND GL_CODE_COMBINATIONS.SEGMENT2 LIKE 'SL00%'       -- -SS- ????
+	AND GL_CODE_COMBINATIONS.SEGMENT2 LIKE 'SL00%' -- -SS- ????
 	AND GL_CODE_COMBINATIONS.SEGMENT1 IN('5773', '5588') -- -SS- SEGMENT1 = R12 ENTITY
 		-- -SS- AND Cross_Ref.Oracle_Acc            = gl_code_combinations.segment4
 		-- -SS- Cross_ref_BU and DEPT joins exist in order to filter by BU in ('CAN','CSD') and DEPT like 'SL00%'
@@ -213,7 +213,7 @@ LEFT OUTER JOIN
 		END                        = UPPER(:COUNTRY)
 	AND gl_ledgers.ledger_id   IN(2022, 2041)
 	AND GL_BALANCES.ACTUAL_FLAG = 'A'
-	AND GL_CODE_COMBINATIONS.SEGMENT2 LIKE 'SL00%'       -- -SS- ????
+	AND GL_CODE_COMBINATIONS.SEGMENT2 LIKE 'SL00%' -- -SS- ????
 	AND GL_CODE_COMBINATIONS.SEGMENT1 IN('5773', '5588') -- -SS- SEGMENT1 = R12 ENTITY = CANADA
 		-- -SS- AND Cross_Ref.Oracle_Acc            = gl_code_combinations.segment4
 		-- -SS- Cross_ref_BU and DEPT joins exist in order to filter by BU in ('CAN','CSD') and DEPT like 'SL00%'
@@ -471,7 +471,7 @@ AND NOT EXISTS
 		END                        = UPPER(:COUNTRY)
 	AND gl_ledgers.ledger_id   IN(2022, 2041)
 	AND GL_BALANCES.ACTUAL_FLAG = 'A'
-	AND GL_CODE_COMBINATIONS.SEGMENT2 LIKE 'SL00%'       -- -SS- ????
+	AND GL_CODE_COMBINATIONS.SEGMENT2 LIKE 'SL00%' -- -SS- ????
 	AND GL_CODE_COMBINATIONS.SEGMENT1 IN('5773', '5588') -- -SS- SEGMENT1 = R12 ENTITY = CANADA
 		-- -SS- AND Cross_Ref.Oracle_Acc            = gl_code_combinations.segment4
 		-- -SS- Cross_ref_BU and DEPT joins exist in order to filter by BU in ('CAN','CSD') and DEPT like 'SL00%'

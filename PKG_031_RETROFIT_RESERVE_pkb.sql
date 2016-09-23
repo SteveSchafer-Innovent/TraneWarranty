@@ -253,7 +253,7 @@ CREATE OR REPLACE PACKAGE BODY DBO.pkg_031_retrofit_reserve IS
                             ,SUBMIT_OFFICE_SCD SOS
                             ,PROD_CODE_XREF_RCPO_DR PRODGRP
                             --,OTR_PROD_CODE_XREF_RCPO@DR_INTFC_DW.LAX.TRANE.COM PRODGRP
-                            /* -SS- ,ACTUATE_SEC_XREF ASX */
+                            -- -SS- ,ACTUATE_SEC_XREF ASX
                             ,UD_031_RETROFIT_RULES RES_PCT
                             --, DM_WAR_CSN_RSV_PCT_REF RES_PCT
                             ,UD_031_RETROFIT_ID RD
@@ -278,7 +278,7 @@ CREATE OR REPLACE PACKAGE BODY DBO.pkg_031_retrofit_reserve IS
                       AND MLR.PROD_CODE_SCD_KEY= PCS.PROD_CODE_SCD_KEY
                       AND MLR.CUST_ACCOUNT_SCD_KEY= CACCT.CUST_ACCOUNT_SCD_KEY
                       AND MLR.SUBMIT_OFFICE_SCD_KEY= SOS.SUBMIT_OFFICE_SCD_KEY
-                      /* -SS- AND GLA.COMPANY=ASX.PSGL(+) */
+                      -- -SS- AND GLA.COMPANY=ASX.PSGL(+)
                       AND CTYPES.CLAIM_TYPE_DESCR = RES_PCT.CLAIM_TYPE
                       AND ETS.EXPENSE_TYPE_DESCR=RES_PCT.EXPENSE_TYPE_DESCR
                       AND SOS.COMPANY_OWNED_IND=RES_PCT.COMPANY_OWNED_IND
@@ -462,7 +462,7 @@ CREATE OR REPLACE PACKAGE BODY DBO.pkg_031_retrofit_reserve IS
                       ,SUBMIT_OFFICE_SCD SOS
                       ,PROD_CODE_XREF_RCPO_DR PRODGRP
                       --,OTR_PROD_CODE_XREF_RCPO@DR_INTFC_DW.LAX.TRANE.COM PRODGRP
-                      /* -SS- ,ACTUATE_SEC_XREF ASX */
+                      -- -SS- ,ACTUATE_SEC_XREF ASX
                       ,UD_031_RETROFIT_RULES RES_PCT
                       --, DM_WAR_CSN_RSV_PCT_REF RES_PCT
                       ,UD_031_RETROFIT_ID RD
@@ -481,7 +481,7 @@ CREATE OR REPLACE PACKAGE BODY DBO.pkg_031_retrofit_reserve IS
                       AND CCN_DATA.SUBMIT_OFFICE_SCD_KEY= SOS.SUBMIT_OFFICE_SCD_KEY
                       AND CCN_DATA.CLAIM_NBR=a.CLAIM_NUMBER (+) --TTP#12554
                       AND a.claim_type=RS_RES_PCT.claim_type(+)      --TTP#12554
-                      /* -SS- AND GLA.COMPANY=ASX.PSGL(+) */
+                      -- -SS- AND GLA.COMPANY=ASX.PSGL(+)
                       AND (case when CCN_DATA.CLAIM_TYPE ='EXTD PURCHASED LABOR' then 'EXTENDED PURCHASED LABOR' else CCN_DATA.CLAIM_TYPE  end)= RES_PCT.CLAIM_TYPE
                       AND CCN_DATA.EXPENSE_TYPE_DESCR=RES_PCT.EXPENSE_TYPE_DESCR
                       AND CCN_DATA.EXPENSE_TYPE_CATG= UPPER(RES_PCT.EXPENSE_TYPE_CATG)

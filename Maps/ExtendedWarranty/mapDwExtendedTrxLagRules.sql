@@ -1,45 +1,58 @@
-/* SR: NOT USED ANY PLACE 
-	Query is probably not corrected as LAG table does is not bound to other queries.
-	In addition LAG query is DWT, but OTR_TRANE_ACCOUNTS_PS is in DRT
-	
+/* SR: NOT USED ANY PLACE
+Query is probably not corrected as LAG table does is not bound to other queries.
+In addition LAG query is DWT, but OTR_TRANE_ACCOUNTS_PS is in DRT
 */
-
-select DISTINCT GLA.R12_ACCOUNT /* -SS- ACCOUNT */,
-(
+SELECT DISTINCT GLA.R12_ACCOUNT
+	/* -SS- ACCOUNT */
+	,
+	(
 	CASE
-	WHEN GLA.R12_ENTITY NOT IN ('5773', '5588') /* -SS- ASX.NATION_CURR='USD' */ THEN 'USA'
-	ELSE 'CAN'
-	/* -SS-
-	WHEN ASX.NATION_CURR='CAD' THEN 'CAN' 
-	ELSE 'CURRENCY: ' || ASX.NATION_CURR 
-	*/
-	END
-) AS COUNTRY_INDICATOR
-,PSA.descr as description
-,lag.report_type
-,cast(lag.trx_lag as integer)as trx_lag
-,LAG.FACTOR
-from R12_TRANE_ACCOUNTS_PS /* -SS- OTR */ PSA
-,R12_GL_ACCOUNT_SCD /* -SS- */ GLA
-/* -SS- ,ACTUATE_SEC_XREF ASX */
-,sy_ext_lag_rules_upd Lag
+		WHEN GLA.R12_ENTITY NOT IN('5773', '5588')
+			/* -SS- ASX.NATION_CURR='USD' */
+		THEN 'USA'
+		ELSE 'CAN'
+			/* -SS-
+			WHEN ASX.NATION_CURR='CAD' THEN 'CAN'
+			ELSE 'CURRENCY: ' || ASX.NATION_CURR
+			*/
+	END)      AS COUNTRY_INDICATOR,
+	PSA.DESCR AS DESCRIPTION,
+	LAG.REPORT_TYPE,
+	CAST(LAG.TRX_LAG AS INTEGER) AS TRX_LAG,
+	LAG.FACTOR
+FROM R12_GL_ACCOUNT_SCD GLA -- -SS-
+	-- -SS- NEW
+INNER JOIN R12_ACCOUNT_FILTER_UPD AFU
+ON AFU.R12_ACCOUNT = GLA.R12_ACCOUNT
+	-- -SS- /NEW
+INNER JOIN SY_EXT_LAG_RULES_UPD LAG
+ON LAG.REPORT_TYPE = '2-16'
+LEFT OUTER JOIN R12_TRANE_ACCOUNTS_PS PSA -- -SS- OTR
+ON GLA.R12_ACCOUNT        = PSA.R12_ACCOUNT
+AND PSA.TRANE_ACCOUNT_IND = 'X'
+	-- -SS- ,ACTUATE_SEC_XREF ASX
 WHERE
- GLA.R12_ACCOUNT /* -SS- ACCOUNT */ = PSA.R12_ACCOUNT /* -SS- ACCOUNT */ (+)
-/* -SS- AND GLA.COMPANY=(CASE WHEN ASX.PSGL IS NULL  THEN GLA.COMPANY ELSE ASX.PSGL END ) */ 
-AND PSA.TRANE_ACCOUNT_IND='X'
-AND GLA.R12_ACCOUNT /* -SS- ACCOUNT */ IN  (
-	'523500' /* -SS- ???? */,
-	'526892' /* -SS- ???? */,
-	'526893' /* -SS- ???? */,
-	'528100' /* -SS- ???? */,
-	'528200' /* -SS- ???? */,
-	'528300' /* -SS- ???? */,
-	'532100' /* -SS- ???? */)
-and lag.report_type ='2-16'
---AND CASE WHEN ASX.NATION_CURR='USD' THEN 'USA'WHEN ASX.NATION_CURR='CAD' THEN 'CAN' ELSE 'CURRENCY: ' ||ASX.NATION_CURR END ='CAN'
-
---select report_type, cast(trx_lag as number(12)) trx_lag, factor,
---case when REPORT_TYPE ='1-15' then '523500'  end as account,
---case when REPORT_TYPE ='1-15' then 'USA'  end AS  COUNTRY_INDICATOR,
---case when REPORT_TYPE ='1-15' THEN '1st Year Labor Warr' END  DESCRIPTION
--- from sy_ext_lag_rules_upd
+	-- -SS- GLA.ACCOUNT = PSA.ACCOUNT (+)
+	-- -SS- AND GLA.COMPANY=(CASE WHEN ASX.PSGL IS NULL  THEN GLA.COMPANY ELSE ASX.PSGL END )
+	-- -SS- AND PSA.TRANE_ACCOUNT_IND='X'
+	-- -SS- NEW
+	((GLA.PS_ACCOUNT   = 'NA'
+AND(AFU.LIKE_523500 = 'Y'
+OR AFU.LIKE_526892  = 'Y'
+OR AFU.LIKE_526893  = 'Y'
+OR AFU.LIKE_528100  = 'Y'
+OR AFU.LIKE_528200  = 'Y'
+OR AFU.LIKE_528300  = 'Y'
+OR AFU.LIKE_532100  = 'Y'))
+OR(GLA.PS_ACCOUNT  <> 'NA'
+AND GLA.PS_ACCOUNT IN('523500', '526892', '526893', '528100', '528200', '528300', '532100')))
+	-- -SS- /NEW
+	-- -SS- OLD: AND GLA.ACCOUNT IN ('523500', '526892', '526893', '528100', '528200', '528300', '532100')
+	-- -SS- and lag.report_type ='2-16'
+	--AND CASE WHEN ASX.NATION_CURR='USD' THEN 'USA'WHEN ASX.NATION_CURR='CAD' THEN 'CAN' ELSE 'CURRENCY: ' ||ASX.NATION_CURR END ='CAN'
+	--select report_type, cast(trx_lag as number(12)) trx_lag, factor,
+	--case when REPORT_TYPE ='1-15' then '523500'  end as account,
+	--case when REPORT_TYPE ='1-15' then 'USA'  end AS  COUNTRY_INDICATOR,
+	--case when REPORT_TYPE ='1-15' THEN '1st Year Labor Warr' END  DESCRIPTION
+	-- from sy_ext_lag_rules_upd
+	;

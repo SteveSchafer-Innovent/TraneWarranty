@@ -98,3 +98,39 @@ Oct 10 is the deploy date for PS data with R12 numbers.
 
 _SCD tables contain surrogate keys
 
+--------------------------------------
+Can you help Scott and Steve develop the R12 queries needed to get the data we need for these tables? They can provide a list of the required columns if you need them.
+OTR_BI_ACCT_ENTRY_PSB
+OTR_BI_HDR_PSB
+OTR_BI_LINE_PSB
+OTR_TRNBI_BI_HDR_PSB
+OTR_TRNCO_CM_DIST_PSB
+
+TODO
+--------------------------------------
+FIXME
+????
+52 53 54 - done
+SL00 - done
+EQUAL_428000 - done (only in mapDwExpenseConcessionData)
+EQUAL_523500 - done
+EQUAL_526892 - done
+EQUAL_526893 - done
+EQUAL_528100 - done
+EQUAL_528200 - done
+EQUAL_528300 - done
+EQUAL_532100 - done
+EQUAL_700000 - done
+EQUAL_700020 - done
+EQUAL_710000 - done
+EQUAL_806300 - done (only in mapDwExpenseConcessionData)
+EQUAL_490650
+LIKE_523500 - done
+LIKE_5268 - done (only in DM_030_EXT_SALES_MVW)
+LIKE_8062 - done
+WHERE 1=2 - done
+ANSI JOINS
+FORMAT
+RUN QUERY
+null -> NA - done for accounts, SL00, locations
+products

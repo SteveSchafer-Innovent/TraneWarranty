@@ -124,13 +124,13 @@ EQUAL_700000 - done
 EQUAL_700020 - done
 EQUAL_710000 - done
 EQUAL_806300 - done (only in mapDwExpenseConcessionData)
-EQUAL_490650
+EQUAL_490650 - (only in report MTD2, YTD2 queries)
 LIKE_523500 - done
 LIKE_5268 - done (only in DM_030_EXT_SALES_MVW)
 LIKE_8062 - done
 WHERE 1=2 - done
-ANSI JOINS
-FORMAT
-RUN QUERY
+ANSI JOINS - partial
+FORMAT - partial
+RUN QUERY - partial
 null -> NA - done for accounts, SL00, locations
 products

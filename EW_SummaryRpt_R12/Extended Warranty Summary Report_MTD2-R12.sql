@@ -98,10 +98,10 @@ FROM
     and dept.Oracle_DEPT                  = gl_code_combinations.segment2
     AND Cross_Ref.PeopleSoft_ac (+)       = PSA.ACCOUNT*/
   AND PSA.TRANE_ACCOUNT_IND ='X'
+    /*TAY: Need R12 filter WIP*/
   AND GL_CODE_COMBINATIONS.Segment1 IN ('GS001','GS165')
     /*TAY: Need R12 filter WIP*/
   AND GL_CODE_COMBINATIONS.Segment2 LIKE 'GL00%'
-    /*TAY: Need R12 filter WIP*/
   AND gl_code_combinations.Segment4 = '195462'
     /*TAY:      GROUP BY Cross_Ref.PeopleSoft_ac, gl_ledgers.ledger_id, gl_balances.period_name, psa.DESCR,*/
   GROUP BY PSA.R12_Account, gl_ledgers.ledger_id, gl_balances.period_name, psa.DESCR,
@@ -205,12 +205,12 @@ RIGHT OUTER JOIN
     /*TAY:     AND Cross_Ref.PeopleSoft_ac(+) = PSA.ACCOUNT WIP*/
     /*TAY:     AND Cross_Ref.PeopleSoft_ac(+) = PSA.PS_ACCOUNT*/
   AND PSA.TRANE_ACCOUNT_IND ='X'
-    /*TAY:   GROUP BY Cross_Ref.PeopleSoft_ac, gl_ledgers.ledger_id, gl_balances.period_name,*/
+    /*TAY: Need R12 filter WIP*/
   AND gl_code_combinations.Segment1 IN ('GS001', 'GS165')
     /*TAY: Need R12 filter WIP*/
   AND gl_code_combinations.Segment2 LIKE ('GL00%')
-    /*TAY: Need R12 filter WIP*/
   AND gl_code_combinations.Segment4 = '195462'
+    /*TAY:   GROUP BY Cross_Ref.PeopleSoft_ac, gl_ledgers.ledger_id, gl_balances.period_name,*/
   GROUP BY PSA.R12_Account, gl_ledgers.ledger_id, gl_balances.period_name,
     CASE
       WHEN gl_ledgers.ledger_id=2022

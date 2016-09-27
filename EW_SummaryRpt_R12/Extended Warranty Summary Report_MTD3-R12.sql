@@ -42,7 +42,13 @@ FROM (SELECT /*+ NO_CPU_COSTING */
 /*TAY:        and ASX.NATION_CURR = 'USD' WIP*/ -- Not sure this is correct way to implement
         and DIST.r12_entity NOT IN (5773, 5588)
 /*TAY:        and (dist.deptid IS NULL OR (dist.deptid = 'SL00')) WIP*/
-        and (dist.PS_deptid IS NULL OR (dist.PS_deptid = 'SL00'))
+        -- -SS- NEW
+        AND((DIST.PS_DEPTID    = 'NA'
+        AND DIST.R12_LOCATION IN('113602', '115615', '119001', '119007', '129001', '129003', '129004'))
+        OR(DIST.PS_DEPTID     <> 'NA'
+        AND DIST.PS_DEPTID    = 'SL00'))
+        -- -SS- /NEW
+        -- -SS- and (dist.PS_deptid IS NULL OR (dist.PS_deptid = 'SL00'))
 /*TAY:      GROUP BY CASE WHEN ASX.NATION_CURR ='USD' THEN 'USA' ELSE 'CAN' END, DIST.ACCOUNT, psa.DESCR*/
       GROUP BY CASE WHEN DIST.r12_entity IN (5773, 5588) THEN 'CAN' ELSE 'USA' END, DIST.PS_ACCOUNT, psa.DESCR
       UNION ALL
@@ -76,7 +82,13 @@ FROM (SELECT /*+ NO_CPU_COSTING */
 /*TAY:        and ASX.NATION_CURR = 'CAD' WIP*/ -- Not sure that this is the right way to get the same effect
         and DIST.r12_entity IN (5773, 5588)
 /*TAY:        and ( dist.deptid IS NULL OR (dist.deptid = 'TCA0') OR (dist.deptid = 'SL00') ) WIP*/
-        and ( dist.PS_deptid IS NULL OR (dist.PS_deptid = 'TCA0') OR (dist.PS_deptid = 'SL00') )
+        -- -SS- NEW
+        AND((DIST.PS_DEPTID    = 'NA'
+        AND DIST.R12_LOCATION IN('113602', '115615', '119001', '119007', '129001', '129003', '129004'))
+        OR(DIST.PS_DEPTID     <> 'NA'
+        AND DIST.PS_DEPTID    = 'SL00'))
+        -- -SS- /NEW
+        -- -SS- and ( dist.PS_deptid IS NULL OR (dist.PS_deptid = 'TCA0') OR (dist.PS_deptid = 'SL00') )
 /*TAY:       GROUP BY CASE WHEN ASX.NATION_CURR ='USD' THEN 'USA' ELSE 'CAN' END, DIST.ACCOUNT, psa.DESCR*/
        GROUP BY CASE WHEN DIST.r12_entity IN (5773, 5588) THEN 'CAN' ELSE 'USA' END, DIST.PS_ACCOUNT, psa.DESCR
      ) a,

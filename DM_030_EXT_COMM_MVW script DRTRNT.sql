@@ -44,8 +44,8 @@ FROM
 		-- -SS- asx.nation_curr = 'USD'
 		-- -SS- AND PSA.trane_account_ind = 'X'
 		-- -SS- AND dist.business_unit_gl = asx.psgl
-	AND((DIST.PS_DEPTID   = 'NA'
-	AND DIST.R12_LOCATION IN('113602, 115615, 119001, 119007, 129001, 129003, 129004'))
+	AND((DIST.PS_DEPTID    = 'NA'
+	AND DIST.R12_LOCATION IN('113602', '115615', '119001', '119007', '129001', '129003', '129004'))
 	OR(DIST.PS_DEPTID     <> 'NA'
 	AND DIST.PS_DEPTID    IN('TCA0', 'SL00')))
 	AND
@@ -96,7 +96,7 @@ FROM
 		-- -SS- asx.nation_curr = 'CAD'
 		-- -SS- AND PSA.trane_account_ind = 'X'
 		-- -SS- AND dist.business_unit_gl = asx.psgl
-	AND((DIST.PS_DEPTID   = 'NA'
+	AND((DIST.PS_DEPTID    = 'NA'
 	AND DIST.R12_LOCATION IN('113602', '115615', '119001', '119007', '129001', '129003', '129004'))
 	OR(DIST.PS_DEPTID     <> 'NA'
 	AND DIST.PS_DEPTID    IN('TCA0', 'SL00')))
@@ -152,7 +152,7 @@ FROM
 		-- -SS- AND GL_CODE.SEGMENT2 = PSA.ACCOUNT (+)
 		-- -SS- AND PSA.trane_account_ind = 'X'
 		-- -SS- AND gl_code.segment1 = asx.psgl(+)
-	AND((GL_CODE.PS_SEGMENT3 = 'NA'
+	AND((GL_CODE.PS_SEGMENT3  = 'NA'
 	AND GL_CODE.R12_LOCATION IN('113602', '115615', '119001', '119007', '129001', '129003', '129004'))
 	OR(GL_CODE.PS_SEGMENT3   <> 'NA'
 	AND GL_CODE.PS_SEGMENT3   = 'SL00'))
@@ -208,7 +208,7 @@ FROM
 		-- -SS- AND GL_CODE.SEGMENT2 = PSA.ACCOUNT (+)
 		-- -SS- AND PSA.trane_account_ind = 'X'
 		-- -SS- AND gl_code.segment1 = asx.psgl(+)
-	AND((GL_CODE.PS_SEGMENT3 = 'NA'
+	AND((GL_CODE.PS_SEGMENT3  = 'NA'
 	AND GL_CODE.R12_LOCATION IN('113602', '115615', '119001', '119007', '129001', '129003', '129004'))
 	OR(GL_CODE.PS_SEGMENT3   <> 'NA'
 	AND GL_CODE.PS_SEGMENT3  IN('TCA0', 'SL00')))

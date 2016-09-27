@@ -99,7 +99,10 @@ FROM
     AND Cross_Ref.PeopleSoft_ac (+)       = PSA.ACCOUNT*/
   AND PSA.TRANE_ACCOUNT_IND ='X'
     /*TAY: Need R12 filter WIP*/
-  AND GL_CODE_COMBINATIONS.Segment1 IN ('GS001','GS165')
+  -- -SS- NEW
+  AND GL_CODE_COMBINATIONS.SEGMENT1 IN ('119007', '129004')
+  -- -SS- /NEW
+  -- -SS- AND GL_CODE_COMBINATIONS.Segment1 IN ('GS001','GS165')
     /*TAY: Need R12 filter WIP*/
   AND GL_CODE_COMBINATIONS.Segment2 LIKE 'GL00%'
   AND gl_code_combinations.Segment4 = '195462'
@@ -206,7 +209,10 @@ RIGHT OUTER JOIN
     /*TAY:     AND Cross_Ref.PeopleSoft_ac(+) = PSA.PS_ACCOUNT*/
   AND PSA.TRANE_ACCOUNT_IND ='X'
     /*TAY: Need R12 filter WIP*/
-  AND gl_code_combinations.Segment1 IN ('GS001', 'GS165')
+  -- -SS- NEW
+  AND GL_CODE_COMBINATIONS.SEGMENT1 IN ('119007', '129004')
+  -- -SS- /NEW
+  -- -SS- AND gl_code_combinations.Segment1 IN ('GS001', 'GS165')
     /*TAY: Need R12 filter WIP*/
   AND gl_code_combinations.Segment2 LIKE ('GL00%')
   AND gl_code_combinations.Segment4 = '195462'

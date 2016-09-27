@@ -28,15 +28,31 @@ FROM (SELECT /*+ NO_CPU_COSTING */
        0 AS SHORT_TERM_COMM,
        0 AS LONG_TERM_COMM
 /*TAY:      FROM dbo.otr_trnco_cm_dist_psb dist, dbo.otr_TRANE_ACCOUNTS_ps psa, dbo.ACTUATE_SEC_XREF ASX*/
-      FROM dbo.R12_TRNCO_CM_DIST_PSB Dist, dbo.R12_TRANE_ACCOUNTS_PS psa --, dbo.ACTUATE_SEC_XREF ASX
+      FROM dbo.R12_TRNCO_CM_DIST_PSB Dist
+        -- -SS- NEW
+      INNER JOIN R12_ACCOUNT_FILTER_UPD AFU
+      ON AFU.R12_ACCOUNT = DIST.R12_ACCOUNT
+        -- -SS- /NEW
+      INNER JOIN
+      dbo.R12_TRANE_ACCOUNTS_PS psa
+      ON DIST.R12_ACCOUNT = PSA.R12_ACCOUNT AND PSA.TRANE_ACCOUNT_IND = 'X'
+      --, dbo.ACTUATE_SEC_XREF ASX
 /*TAY:      WHERE DIST.ACCOUNT = PSA.ACCOUNT*/
-      WHERE DIST.R12_ACCOUNT = PSA.R12_ACCOUNT
-        AND PSA.TRANE_ACCOUNT_IND = 'X'
+      WHERE 
+      -- -SS- DIST.R12_ACCOUNT = PSA.R12_ACCOUNT
+      -- -SS-  AND PSA.TRANE_ACCOUNT_IND = 'X'
 /*TAY:        AND DIST.BUSINESS_UNIT_GL = ASX.PSGL*/
         --AND DIST.BUSINESS_UNIT_GL = ASX.PSGL
-        AND DIST.JOURNAL_DATE BETWEEN TO_DATE('1-'||:RunDate, 'dd-mon-yy') AND LAST_DAY(to_date('1-'||:RunDate, 'dd-mon-yy'))
+        -- -SS- AND
+        DIST.JOURNAL_DATE BETWEEN TO_DATE('1-'||:RunDate, 'dd-mon-yy') AND LAST_DAY(to_date('1-'||:RunDate, 'dd-mon-yy'))
 /*TAY:        AND DIST.ACCOUNT LIKE '5%' WIP*/
-        AND DIST.PS_ACCOUNT LIKE '5%'
+          -- -SS- NEW
+        AND((DIST.PS_ACCOUNT  = 'NA'
+        AND AFU.LIKE_5 = 'Y')
+        OR(DIST.PS_ACCOUNT   <> 'NA'
+        AND DIST.PS_ACCOUNT LIKE '5%'))
+        -- -SS- /NEW
+        -- -SS- AND DIST.ACCOUNT LIKE '5%'
 /*TAY:        and CASE WHEN ASX.NATION_CURR ='USD' THEN 'USA' ELSE 'CAN' END = UPPER(:COUNTRY)*/
         and CASE WHEN DIST.r12_entity IN (5773, 5588) THEN 'CAN' ELSE 'USA' END = UPPER(:COUNTRY)
 /*TAY:        and ASX.NATION_CURR = 'USD' WIP*/ -- Not sure this is correct way to implement
@@ -68,15 +84,30 @@ FROM (SELECT /*+ NO_CPU_COSTING */
        0 AS SHORT_TERM_COMM,
        0 AS LONG_TERM_COMM
 /*TAY:      FROM dbo.otr_trnco_cm_dist_psb dist, dbo.otr_TRANE_ACCOUNTS_ps psa, dbo.ACTUATE_SEC_XREF ASX*/
-      FROM dbo.R12_TRNCO_CM_DIST_PSB dist, dbo.R12_TRANE_ACCOUNTS_PS psa --, dbo.ACTUATE_SEC_XREF ASX
+      FROM dbo.R12_TRNCO_CM_DIST_PSB dist
+        -- -SS- NEW
+      INNER JOIN R12_ACCOUNT_FILTER_UPD AFU
+      ON AFU.R12_ACCOUNT = DIST.R12_ACCOUNT
+        -- -SS- /NEW
+      INNER JOIN
+      dbo.R12_TRANE_ACCOUNTS_PS psa
+      ON DIST.R12_ACCOUNT = PSA.R12_ACCOUNT AND PSA.TRANE_ACCOUNT_IND = 'X'
+      --, dbo.ACTUATE_SEC_XREF ASX
 /*TAY:      WHERE DIST.ACCOUNT = PSA.ACCOUNT*/
-      WHERE DIST.R12_ACCOUNT = PSA.R12_ACCOUNT
-        AND PSA.TRANE_ACCOUNT_IND = 'X'
+      WHERE -- -SS- DIST.R12_ACCOUNT = PSA.R12_ACCOUNT
+        -- -SS- AND PSA.TRANE_ACCOUNT_IND = 'X'
 /*TAY:        AND DIST.BUSINESS_UNIT_GL= ASX.PSGL*/
         --AND DIST.BUSINESS_UNIT_GL= ASX.PSGL
-        AND DIST.JOURNAL_DATE BETWEEN TO_DATE('1-'||:RunDate, 'dd-mon-yy') AND LAST_DAY(to_date('1-'||:RunDate, 'dd-mon-yy'))
+        -- -SS- AND
+        DIST.JOURNAL_DATE BETWEEN TO_DATE('1-'||:RunDate, 'dd-mon-yy') AND LAST_DAY(to_date('1-'||:RunDate, 'dd-mon-yy'))
 /*TAY:        AND DIST.ACCOUNT LIKE '5%' WIP*/
-        AND DIST.PS_ACCOUNT LIKE '5%'
+          -- -SS- NEW
+        AND((DIST.PS_ACCOUNT  = 'NA'
+        AND AFU.LIKE_5 = 'Y')
+        OR(DIST.PS_ACCOUNT   <> 'NA'
+        AND DIST.PS_ACCOUNT LIKE '5%'))
+        -- -SS- /NEW
+        -- -SS- AND DIST.ACCOUNT LIKE '5%'
 /*TAY:        and  CASE WHEN ASX.NATION_CURR ='USD' THEN 'USA' ELSE 'CAN' END = UPPER(:COUNTRY)*/
         and CASE WHEN DIST.r12_entity IN (5773, 5588) THEN 'CAN' ELSE 'USA' END = UPPER(:COUNTRY)
 /*TAY:        and ASX.NATION_CURR = 'CAD' WIP*/ -- Not sure that this is the right way to get the same effect
@@ -109,15 +140,26 @@ FROM (SELECT /*+ NO_CPU_COSTING */
                                              ELSE 0 END ) as Amort_Comm_and_prepaid_comm,
              A.forecast_period
 /*TAY:             from DM_030_COMM_AMORTIZATION@DW_INTFC_DR.LAX.TRANE.COM a,OTR_TRANE_ACCOUNTS_PS psa*/
-            from DW_DM_030_COMM_AMORTIZATION a, R12_TRANE_ACCOUNTS_PS psa
+            from DW_DM_030_COMM_AMORTIZATION a
+              -- -SS- NEW
+            INNER JOIN R12_ACCOUNT_FILTER_UPD AFU
+            ON AFU.R12_ACCOUNT = A.GL_ACCOUNT -- -SS- GL_ACCOUNT is R12
+              -- -SS- /NEW
+            LEFT OUTER JOIN
+            R12_TRANE_ACCOUNTS_PS psa
+            ON a.gl_account = PSA.PS_ACCOUNT AND PSA.TRANE_ACCOUNT_IND = 'X'
 /*TAY:            WHERE a.gl_account = PSA.ACCOUNT (+) WIP*/
-            WHERE a.gl_account = PSA.PS_ACCOUNT (+)
-              AND PSA.TRANE_ACCOUNT_IND = 'X'
-              and a.country_indicator = UPPER(:COUNTRY)
+            WHERE -- -SS- a.gl_account = PSA.PS_ACCOUNT (+)
+              -- -SS- AND PSA.TRANE_ACCOUNT_IND = 'X'
+              -- -SS- and
+              a.country_indicator = UPPER(:COUNTRY)
               AND a.RUN_PERIOD >= TO_DATE('1-'||UPPER(:RunDate), 'dd-mon-yy')
               and a.RUN_PERIOD< LAST_DAY(to_date('1-'||:RunDate, 'dd-mon-yy'))
 /*TAY:               AND a.gl_account like '5%' WIP*/
-              AND a.gl_account like '5%'
+                -- -SS- NEW
+              AND AFU.LIKE_5 = 'Y' -- -SS- ???? issue 67
+              -- -SS- /NEW
+              -- -SS- AND a.gl_account like '5%'
               AND A.FORECAST_PERIOD >= TO_DATE('1-'||UPPER(:RunDate), 'dd-mon-yy')
               AND A.FORECAST_PERIOD < (LAST_DAY(to_date('1-'||:RunDate, 'dd-mon-yy')))
             GROUP BY a.country_indicator, a.gl_account, A.GL_ACCOUNT_DESCR, A.forecast_period
@@ -141,11 +183,19 @@ FROM (SELECT /*+ NO_CPU_COSTING */
              MAX(a.long_term_pp_comm) as LONG_TERM_COMM,
              A.forecast_period
 /*TAY:            from DM_030_COMM_AMORTIZATION@DW_INTFC_DR.LAX.TRANE.COM a,OTR_TRANE_ACCOUNTS_PS psa*/
-            from DW_DM_030_COMM_AMORTIZATION a, R12_TRANE_ACCOUNTS_PS psa
+            from DW_DM_030_COMM_AMORTIZATION a
+              -- -SS- NEW
+            INNER JOIN R12_ACCOUNT_FILTER_UPD AFU
+            ON AFU.R12_ACCOUNT = DIST.R12_ACCOUNT
+              -- -SS- /NEW
+            LEFT OUTER JOIN
+            R12_TRANE_ACCOUNTS_PS psa
+            ON a.gl_account = PSA.PS_ACCOUNT AND PSA.TRANE_ACCOUNT_IND='X'
 /*TAY:            where a.gl_account = PSA.ACCOUNT (+) WIP*/
-            where a.gl_account = PSA.PS_ACCOUNT (+)
-              AND PSA.TRANE_ACCOUNT_IND='X'
-              and a.country_indicator  = UPPER(:COUNTRY)
+            where -- -SS- a.gl_account = PSA.PS_ACCOUNT (+)
+              -- -SS- AND PSA.TRANE_ACCOUNT_IND='X'
+              -- -SS- and
+              a.country_indicator  = UPPER(:COUNTRY)
               AND a.RUN_PERIOD >= TO_DATE('1-'||UPPER(:RunDate), 'dd-mon-yy')
               AND a.RUN_PERIOD < add_months(to_date('1-'||:RunDate, 'dd-mon-yy'),1)
 /*TAY:              AND  a.gl_account like '5%' WIP*/

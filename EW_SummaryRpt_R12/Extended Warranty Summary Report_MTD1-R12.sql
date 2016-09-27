@@ -263,6 +263,10 @@ LEFT OUTER JOIN
 	AND B.INVOICE      = C.INVOICE
 	INNER JOIN R12_TRANE_ACCOUNTS_PS psa
 	ON A.R12_ACCOUNT      = PSA.R12_ACCOUNT --, ACTUATE_SEC_XREF ASX
+		-- -SS- NEW
+	INNER JOIN R12_ACCOUNT_FILTER_UPD AFU
+	ON AFU.R12_ACCOUNT = A.R12_ACCOUNT
+		-- -SS- /NEW
 	WHERE A.JOURNAL_DATE >=(to_date('1-' ||:RunDate, 'dd-mon-yy'))
 	AND A.JOURNAL_DATE   <=(LAST_DAY(to_date('1-' ||:RunDate, 'dd-mon-yy')))
 		/*TAY:    AND A.BUSINESS_UNIT_GL IN ('CAN', 'CSD')*/
@@ -284,7 +288,13 @@ LEFT OUTER JOIN
 		-- -SS- AND B.BUSINESS_UNIT = C.PS_BUSINESS_UNIT
 		-- -SS- AND B.INVOICE       = C.INVOICE
 	AND C.ENTRY_TYPE = 'IN'
-	AND A.R12_ACCOUNT LIKE '5%' -- -SS- ????
+		-- -SS- NEW
+	AND((A.PS_ACCOUNT = 'NA'
+	AND AFU.LIKE_5 = 'Y')
+	OR(A.PS_ACCOUNT <> 'NA'
+	AND A.PS_ACCOUNT LIKE '5%'))
+	-- -SS- /NEW
+	-- -SS- AND A.ACCOUNT LIKE '5%'
 		/*TAY:  GROUP BY ASX.NATION_CURR, A.ACCOUNT, PSA.DESCR*/
 	GROUP BY A.r12_entity,
 		A.R12_ACCOUNT, -- -SS- A.PS_ACCOUNT,
@@ -308,15 +318,25 @@ LEFT OUTER JOIN
 			A.FORECAST_PERIOD
 			/*TAY:        FROM DBO.DM_030_REV_RELEASE@DW_INTFC_DR.LAX.TRANE.COM a, OTR_TRANE_ACCOUNTS_PS psa*/
 		FROM DW_DM_030_REV_RELEASE a
+			-- -SS- NEW
+		INNER JOIN R12_ACCOUNT_FILTER_UPD AFU
+		ON AFU.R12_ACCOUNT = A.GL_ACCOUNT -- -SS- GL_ACCOUNT will be R12
+			-- -SS- /NEW
 		LEFT OUTER JOIN R12_TRANE_ACCOUNTS_PS psa
-		ON a.gl_account = PSA.R12_ACCOUNT -- -SS- ????
+		ON a.gl_account = PSA.R12_ACCOUNT -- -SS- GL_ACCOUNT will be R12
 		WHERE
 			-- -SS- a.gl_account        = PSA.PS_ACCOUNT (+) AND
 			PSA.TRANE_ACCOUNT_IND  = 'X'
 		AND a.country_indicator = UPPER(:COUNTRY)
 		AND a.RUN_PERIOD       >= TO_DATE('1-'||:RunDate, 'dd-mon-yy')
 		AND a.RUN_PERIOD        < add_months(to_date('1-'||:RunDate, 'dd-mon-yy'), 1)
-		AND PSA.R12_account LIKE '5%' -- -SS- ???? A.ACCOUNT
+			-- -SS- NEW
+		AND((A.PS_ACCOUNT = 'NA'
+		AND AFU.LIKE_5 = 'Y')
+		OR(A.PS_ACCOUNT <> 'NA'
+		AND A.PS_ACCOUNT LIKE '5%'))
+		-- -SS- /NEW
+		-- -SS- AND A.ACCOUNT LIKE '5%'
 		AND A.FORECAST_PERIOD >=
 			CASE
 				WHEN to_date('1-' ||:RunDate, 'dd-mon-yy') = TRUNC(TO_DATE(TO_DATE('1-'||:RunDate, 'dd-mon-yy')), 'YEAR') THEN TRUNC(TRUNC(to_date('1-'||:RunDate, 'dd-mon-yy'), 'YEAR') - 1) - 30
@@ -350,15 +370,25 @@ LEFT OUTER JOIN
 			A.FORECAST_PERIOD
 			/*TAY:        FROM DBO.DM_030_REV_RELEASE@DW_INTFC_DR.LAX.TRANE.COM a, OTR_TRANE_ACCOUNTS_PS psa*/
 		FROM DW_DM_030_REV_RELEASE a
+			-- -SS- NEW
+		INNER JOIN R12_ACCOUNT_FILTER_UPD AFU
+		ON AFU.R12_ACCOUNT = A.GL_ACCOUNT -- -SS- GL_ACCOUNT will be R12
+			-- -SS- /NEW
 		LEFT OUTER JOIN R12_TRANE_ACCOUNTS_PS psa
-		ON a.gl_account = PSA.PS_ACCOUNT
+		ON a.gl_account = PSA.R12_ACCOUNT -- -SS- GL_ACCOUNT will be R12
 		WHERE
 			-- -SS- a.gl_account        = PSA.PS_ACCOUNT (+) AND
 			PSA.TRANE_ACCOUNT_IND  = 'X'
 		AND a.country_indicator = UPPER(:COUNTRY)
 		AND a.RUN_PERIOD       >= TO_DATE('1-'||:RunDate, 'dd-mon-yy')
 		AND a.RUN_PERIOD        < LAST_DAY(to_date('1-'||:RunDate, 'dd-mon-yy'))
-		AND a.gl_account LIKE '5%'
+			-- -SS- NEW
+		AND((A.PS_ACCOUNT = 'NA'
+		AND AFU.LIKE_5 = 'Y')
+		OR(A.PS_ACCOUNT <> 'NA'
+		AND A.PS_ACCOUNT LIKE '5%'))
+		-- -SS- /NEW
+		-- -SS- AND a.gl_account LIKE '5%'
 		AND A.FORECAST_PERIOD >= TO_DATE('1-'||UPPER(:RunDate), 'dd-mon-yy')
 		AND A.FORECAST_PERIOD  < LAST_DAY(to_date('1-'||:RunDate, 'dd-mon-yy'))
 		GROUP BY a.gl_account,
@@ -404,8 +434,18 @@ SELECT
 	0                               AS LONG_TERM_BALA
 	/*TAY:FROM dbo.otr_TRANE_ACCOUNTS_ps psa*/
 FROM dbo.R12_TRANE_ACCOUNTS_PS psa
+	-- -SS- NEW
+INNER JOIN R12_ACCOUNT_FILTER_UPD AFU
+ON AFU.R12_ACCOUNT = PSA.R12_ACCOUNT
+	-- -SS- /NEW
 WHERE PSA.TRANE_ACCOUNT_IND = 'X'
-AND PSA.R12_ACCOUNT LIKE '5%' -- -SS- ????
+	-- -SS- NEW
+AND((PSA.PS_ACCOUNT = 'NA'
+AND AFU.LIKE_5 = 'Y')
+OR(PSA.PS_ACCOUNT <> 'NA'
+AND PSA.PS_ACCOUNT LIKE '5%'))
+-- -SS- /NEW
+-- -SS- AND PSA.ACCOUNT LIKE '5%'
 AND NOT EXISTS
 	(SELECT 'x'
 	FROM SY_120_GL_LEDGERS_EW gl_ledgers

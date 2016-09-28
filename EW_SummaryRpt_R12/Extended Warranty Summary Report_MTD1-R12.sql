@@ -109,10 +109,10 @@ FROM
 		END                        = UPPER(:COUNTRY)
 	AND gl_ledgers.ledger_id   IN(2022, 2041)
 	AND GL_BALANCES.ACTUAL_FLAG = 'A'
-	-- -SS- NEW
-	AND GL_CODE_COMBINATIONS.SEGMENT2 IN('113602', '115615', '119001', '119007', '129001', '129003', '129004'))
-	-- -SS- /NEW
-	-- -SS- AND GL_CODE_COMBINATIONS.SEGMENT2 LIKE 'SL00%'
+		-- -SS- NEW
+	AND GL_CODE_COMBINATIONS.SEGMENT2 IN('113602', '115615', '119001', '119007', '129001', '129003', '129004')
+		-- -SS- /NEW
+		-- -SS- AND GL_CODE_COMBINATIONS.SEGMENT2 LIKE 'SL00%'
 	AND GL_CODE_COMBINATIONS.SEGMENT1 IN('5773', '5588') -- -SS- SEGMENT1 = R12 ENTITY
 		-- -SS- AND Cross_Ref.Oracle_Acc            = gl_code_combinations.segment4
 		-- -SS- Cross_ref_BU and DEPT joins exist in order to filter by BU in ('CAN','CSD') and DEPT like 'SL00%'
@@ -135,7 +135,7 @@ LEFT OUTER JOIN
 	/* Ending Balance DRTRNP */
 	SELECT
 		/*+ NO_CPU_COSTING */
-		PSA.R12_ACCOUNT AS ACCOUNT, -- -SS- Cross_Ref.PeopleSoft_ac AS ACCOUNT,
+		PSA.R12_ACCOUNT         AS ACCOUNT, -- -SS- Cross_Ref.PeopleSoft_ac AS ACCOUNT,
 		gl_ledgers.ledger_id    AS ledger,
 		gl_balances.period_name AS fiscal_year,
 		CASE
@@ -216,10 +216,10 @@ LEFT OUTER JOIN
 		END                        = UPPER(:COUNTRY)
 	AND gl_ledgers.ledger_id   IN(2022, 2041)
 	AND GL_BALANCES.ACTUAL_FLAG = 'A'
-	-- -SS- NEW
-	AND GL_CODE_COMBINATIONS.SEGMENT2 IN('113602', '115615', '119001', '119007', '129001', '129003', '129004'))
-	-- -SS- /NEW
-	-- -SS- AND GL_CODE_COMBINATIONS.SEGMENT2 LIKE 'SL00%'
+		-- -SS- NEW
+	AND GL_CODE_COMBINATIONS.SEGMENT2 IN('113602', '115615', '119001', '119007', '129001', '129003', '129004')
+		-- -SS- /NEW
+		-- -SS- AND GL_CODE_COMBINATIONS.SEGMENT2 LIKE 'SL00%'
 	AND GL_CODE_COMBINATIONS.SEGMENT1 IN('5773', '5588') -- -SS- SEGMENT1 = R12 ENTITY = CANADA
 		-- -SS- AND Cross_Ref.Oracle_Acc            = gl_code_combinations.segment4
 		-- -SS- Cross_ref_BU and DEPT joins exist in order to filter by BU in ('CAN','CSD') and DEPT like 'SL00%'
@@ -262,7 +262,7 @@ LEFT OUTER JOIN
 	ON B.BUSINESS_UNIT = C.PS_BUSINESS_UNIT
 	AND B.INVOICE      = C.INVOICE
 	INNER JOIN R12_TRANE_ACCOUNTS_PS psa
-	ON A.R12_ACCOUNT      = PSA.R12_ACCOUNT --, ACTUATE_SEC_XREF ASX
+	ON A.R12_ACCOUNT = PSA.R12_ACCOUNT --, ACTUATE_SEC_XREF ASX
 		-- -SS- NEW
 	INNER JOIN R12_ACCOUNT_FILTER_UPD AFU
 	ON AFU.R12_ACCOUNT = A.R12_ACCOUNT
@@ -290,11 +290,11 @@ LEFT OUTER JOIN
 	AND C.ENTRY_TYPE = 'IN'
 		-- -SS- NEW
 	AND((A.PS_ACCOUNT = 'NA'
-	AND AFU.LIKE_5 = 'Y')
-	OR(A.PS_ACCOUNT <> 'NA'
+	AND AFU.LIKE_5    = 'Y')
+	OR(A.PS_ACCOUNT  <> 'NA'
 	AND A.PS_ACCOUNT LIKE '5%'))
-	-- -SS- /NEW
-	-- -SS- AND A.ACCOUNT LIKE '5%'
+		-- -SS- /NEW
+		-- -SS- AND A.ACCOUNT LIKE '5%'
 		/*TAY:  GROUP BY ASX.NATION_CURR, A.ACCOUNT, PSA.DESCR*/
 	GROUP BY A.r12_entity,
 		A.R12_ACCOUNT, -- -SS- A.PS_ACCOUNT,
@@ -331,12 +331,9 @@ LEFT OUTER JOIN
 		AND a.RUN_PERIOD       >= TO_DATE('1-'||:RunDate, 'dd-mon-yy')
 		AND a.RUN_PERIOD        < add_months(to_date('1-'||:RunDate, 'dd-mon-yy'), 1)
 			-- -SS- NEW
-		AND((A.PS_ACCOUNT = 'NA'
-		AND AFU.LIKE_5 = 'Y')
-		OR(A.PS_ACCOUNT <> 'NA'
-		AND A.PS_ACCOUNT LIKE '5%'))
-		-- -SS- /NEW
-		-- -SS- AND A.ACCOUNT LIKE '5%'
+		AND AFU.LIKE_5 = 'Y' -- -SS- ???? issue 67
+			-- -SS- /NEW
+			-- -SS- AND A.ACCOUNT LIKE '5%'
 		AND A.FORECAST_PERIOD >=
 			CASE
 				WHEN to_date('1-' ||:RunDate, 'dd-mon-yy') = TRUNC(TO_DATE(TO_DATE('1-'||:RunDate, 'dd-mon-yy')), 'YEAR') THEN TRUNC(TRUNC(to_date('1-'||:RunDate, 'dd-mon-yy'), 'YEAR') - 1) - 30
@@ -383,12 +380,9 @@ LEFT OUTER JOIN
 		AND a.RUN_PERIOD       >= TO_DATE('1-'||:RunDate, 'dd-mon-yy')
 		AND a.RUN_PERIOD        < LAST_DAY(to_date('1-'||:RunDate, 'dd-mon-yy'))
 			-- -SS- NEW
-		AND((A.PS_ACCOUNT = 'NA'
-		AND AFU.LIKE_5 = 'Y')
-		OR(A.PS_ACCOUNT <> 'NA'
-		AND A.PS_ACCOUNT LIKE '5%'))
-		-- -SS- /NEW
-		-- -SS- AND a.gl_account LIKE '5%'
+		AND AFU.LIKE_5 = 'Y' -- -SS- issue 67
+			-- -SS- /NEW
+			-- -SS- AND a.gl_account LIKE '5%'
 		AND A.FORECAST_PERIOD >= TO_DATE('1-'||UPPER(:RunDate), 'dd-mon-yy')
 		AND A.FORECAST_PERIOD  < LAST_DAY(to_date('1-'||:RunDate, 'dd-mon-yy'))
 		GROUP BY a.gl_account,
@@ -441,11 +435,11 @@ ON AFU.R12_ACCOUNT = PSA.R12_ACCOUNT
 WHERE PSA.TRANE_ACCOUNT_IND = 'X'
 	-- -SS- NEW
 AND((PSA.PS_ACCOUNT = 'NA'
-AND AFU.LIKE_5 = 'Y')
-OR(PSA.PS_ACCOUNT <> 'NA'
+AND AFU.LIKE_5      = 'Y')
+OR(PSA.PS_ACCOUNT  <> 'NA'
 AND PSA.PS_ACCOUNT LIKE '5%'))
--- -SS- /NEW
--- -SS- AND PSA.ACCOUNT LIKE '5%'
+	-- -SS- /NEW
+	-- -SS- AND PSA.ACCOUNT LIKE '5%'
 AND NOT EXISTS
 	(SELECT 'x'
 	FROM SY_120_GL_LEDGERS_EW gl_ledgers
@@ -517,10 +511,10 @@ AND NOT EXISTS
 		END                        = UPPER(:COUNTRY)
 	AND gl_ledgers.ledger_id   IN(2022, 2041)
 	AND GL_BALANCES.ACTUAL_FLAG = 'A'
-	-- -SS- NEW
-	AND GL_CODE_COMBINATIONS.SEGMENT2 IN('113602', '115615', '119001', '119007', '129001', '129003', '129004'))
-	-- -SS- /NEW
-	-- -SS- AND GL_CODE_COMBINATIONS.SEGMENT2 LIKE 'SL00%'
+		-- -SS- NEW
+	AND GL_CODE_COMBINATIONS.SEGMENT2 IN('113602', '115615', '119001', '119007', '129001', '129003', '129004')
+		-- -SS- /NEW
+		-- -SS- AND GL_CODE_COMBINATIONS.SEGMENT2 LIKE 'SL00%'
 	AND GL_CODE_COMBINATIONS.SEGMENT1 IN('5773', '5588') -- -SS- SEGMENT1 = R12 ENTITY = CANADA
 		-- -SS- AND Cross_Ref.Oracle_Acc            = gl_code_combinations.segment4
 		-- -SS- Cross_ref_BU and DEPT joins exist in order to filter by BU in ('CAN','CSD') and DEPT like 'SL00%'
@@ -528,7 +522,7 @@ AND NOT EXISTS
 		-- -SS- AND Cross_ref_BU.PS_BU              = dept.PS_BU
 		-- -SS- AND dept.Oracle_DEPT                = gl_code_combinations.segment2
 		-- AND Cross_Ref.PeopleSoft_ac (+) = PSA.PS_ACCOUNT
-	AND PSA.TRANE_ACCOUNT_IND = 'X'
+	AND PSA.TRANE_ACCOUNT_IND         = 'X'
 	AND GL_CODE_COMBINATIONS.SEGMENT4 = PSA.R12_ACCOUNT
 	GROUP BY PSA.R12_ACCOUNT, -- -SS- Cross_Ref.PeopleSoft_ac,
 		psa.DESCR,

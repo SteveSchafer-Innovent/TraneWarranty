@@ -108,7 +108,6 @@ OTR_TRNCO_CM_DIST_PSB
 
 TODO
 --------------------------------------
-FIXME
 ????
 52 53 54 - done
 SL00 - done
@@ -133,4 +132,4 @@ ANSI JOINS - partial
 FORMAT - partial
 RUN QUERY - partial
 null -> NA - done for accounts, SL00, locations
-products
+products - done

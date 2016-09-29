@@ -32,7 +32,7 @@ FROM
 	INNER JOIN SY_120_GL_CODE_COMBO_EW gl_code_combinations
 	ON gl_code_combinations.code_combination_id = gl_balances.code_combination_id
 	RIGHT OUTER JOIN R12_TRANE_ACCOUNTS_PS PSA
-	ON gl_code_combinations.Segment4 = PSA.R12_Account
+	ON gl_code_combinations.Segment4 = PSA.R12_Account /* R12_2_R12 */
 		/*TAY           (SELECT a.BUSINESS_UNIT PS_BU, A.ORACLE_XREF_VALUE Oracle_BU
 		FROM dbo.ps_trane_R12_xref   a
 		WHERE Recname_xref IN ('ENTITY')
@@ -142,7 +142,7 @@ RIGHT OUTER JOIN
 	RIGHT OUTER JOIN
 		/*TAY:            OTR_TRANE_ACCOUNTS_PS psa,*/
 		R12_TRANE_ACCOUNTS_PS PSA
-	ON gl_code_combinations.Segment4 = PSA.R12_Account
+	ON gl_code_combinations.Segment4 = PSA.R12_Account /* R12_2_R12 */
 		/*TAY:            (SELECT a.BUSINESS_UNIT PS_BU, A.ORACLE_XREF_VALUE Oracle_BU
 		FROM dbo.ps_trane_R12_xref a
 		WHERE Recname_xref IN ('ENTITY')

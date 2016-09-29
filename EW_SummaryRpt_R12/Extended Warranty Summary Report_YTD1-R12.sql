@@ -46,7 +46,7 @@ FROM
 	INNER JOIN SY_120_GL_CODE_COMBO_EW gl_code_combinations
 	ON gl_code_combinations.code_combination_id = gl_balances.code_combination_id
 	RIGHT OUTER JOIN R12_TRANE_ACCOUNTS_PS psa
-	ON gl_code_combinations.segment4 = psa.r12_account
+	ON gl_code_combinations.segment4 = psa.r12_account /* R12_2_R12 */
 		/*TAY:           (SELECT a.BUSINESS_UNIT PS_BU, A.ORACLE_XREF_VALUE Oracle_BU
 		FROM dbo.ps_trane_R12_xref  a
 		WHERE Recname_xref IN ('ENTITY')
@@ -140,7 +140,7 @@ LEFT OUTER JOIN
 	INNER JOIN SY_120_GL_CODE_COMBO_EW gl_code_combinations
 	ON gl_balances.code_combination_id = gl_code_combinations.code_combination_id
 	RIGHT OUTER JOIN R12_TRANE_ACCOUNTS_PS psa
-	ON gl_code_combinations.segment4 = psa.r12_account
+	ON gl_code_combinations.segment4 = psa.r12_account /* R12_2_R12 */
 		/*TAY:           (SELECT a.BUSINESS_UNIT PS_BU, A.ORACLE_XREF_VALUE Oracle_BU
 		FROM dbo.ps_trane_R12_xref   a
 		WHERE Recname_xref IN ('ENTITY')
@@ -239,10 +239,10 @@ LEFT OUTER JOIN
 	AND B.INVOICE      = C.INVOICE
 		-- -SS- NEW
 	INNER JOIN R12_ACCOUNT_FILTER_UPD AFU
-	ON AFU.R12_ACCOUNT = A.R12_ACCOUNT
+	ON AFU.R12_ACCOUNT = A.R12_ACCOUNT /* R12_2_R12 */
 		-- -SS- /NEW
 	INNER JOIN R12_TRANE_ACCOUNTS_PS psa
-	ON A.R12_ACCOUNT      = PSA.R12_ACCOUNT
+	ON A.R12_ACCOUNT      = PSA.R12_ACCOUNT /* R12_2_R12 */
 	WHERE A.JOURNAL_DATE >= TRUNC(TO_DATE(TO_DATE('1-'||:RunDate, 'dd-mon-yy')), 'YEAR')
 	AND A.JOURNAL_DATE   <= LAST_DAY(to_date('1-'||:RunDate, 'dd-mon-yy'))
 		/*TAY:        AND A.BUSINESS_UNIT_GL IN ('CAN' ,'CSD') WIP*/
@@ -306,10 +306,10 @@ LEFT OUTER JOIN
 		FROM DW_DM_030_REV_RELEASE a
 			-- -SS- NEW
 		INNER JOIN R12_ACCOUNT_FILTER_UPD AFU
-		ON AFU.R12_ACCOUNT = A.GL_ACCOUNT -- -SS- GL_ACCOUNT is R12
+		ON AFU.R12_ACCOUNT = A.GL_ACCOUNT -- -SS- GL_ACCOUNT is R12 /* R12_2_R12 */
 			-- -SS- /NEW
 		LEFT OUTER JOIN R12_TRANE_ACCOUNTS_PS psa
-		ON a.gl_account = PSA.R12_ACCOUNT
+		ON a.gl_account = PSA.R12_ACCOUNT /* R12_2_R12 */
 			/*TAY:            WHERE a.gl_account       = PSA.ACCOUNT (+) WIP*/
 			/*TAY:              AND PSA.TRANE_ACCOUNT_IND = 'X'*/
 		WHERE PSA.TRANE_ACCOUNT_IND = 'X'
@@ -362,7 +362,7 @@ SELECT
 FROM dbo.R12_TRANE_ACCOUNTS_PS psa
 	-- -SS- NEW
 INNER JOIN R12_ACCOUNT_FILTER_UPD AFU
-ON AFU.R12_ACCOUNT = PSA.R12_ACCOUNT
+ON AFU.R12_ACCOUNT = PSA.R12_ACCOUNT /* R12_2_R12 */
 	-- -SS- /NEW
 WHERE PSA.TRANE_ACCOUNT_IND = 'X'
 	/*TAY:  AND PSA.ACCOUNT LIKE '5%'*/
@@ -443,7 +443,7 @@ AND NOT EXISTS
 	AND PSA.TRANE_ACCOUNT_IND = 'X'
 	AND GL_CODE_COMBINATIONS.SEGMENT2 LIKE 'SL00%'
 	AND GL_CODE_COMBINATIONS.SEGMENT1 IN('5773', '5588')
-	AND GL_CODE_COMBINATIONS.SEGMENT4  = PSA.R12_ACCOUNT -- join with outer query
+	AND GL_CODE_COMBINATIONS.SEGMENT4  = PSA.R12_ACCOUNT -- join with outer query /* R12_2_R12 */
 		/*TAY:                  GROUP BY Cross_Ref.PeopleSoft_ac, psa.DESCR, gl_balances.period_name, gl_ledgers.ledger_id ,*/
 	GROUP BY PSA.R12_ACCOUNT,
 		psa.DESCR,

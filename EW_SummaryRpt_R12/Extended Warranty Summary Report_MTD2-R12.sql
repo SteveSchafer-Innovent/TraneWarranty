@@ -33,7 +33,7 @@ FROM
 	RIGHT OUTER JOIN
 		/*TAY:           OTR_TRANE_ACCOUNTS_PS psa,*/
 		R12_TRANE_ACCOUNTS_PS PSA
-	ON gl_code_combinations.Segment4 = PSA.R12_Account
+	ON gl_code_combinations.Segment4 = PSA.R12_Account /* R12_2_R12 */
 		/*,
 		(SELECT a.BUSINESS_UNIT PS_BU ,
 		A.ORACLE_XREF_VALUE Oracle_BU
@@ -148,7 +148,7 @@ RIGHT OUTER JOIN
 	RIGHT OUTER JOIN
 		/*TAY:           OTR_TRANE_ACCOUNTS_PS psa,*/
 		R12_TRANE_ACCOUNTS_PS PSA
-	ON gl_code_combinations.Segment4 = PSA.R12_Account
+	ON gl_code_combinations.Segment4 = PSA.R12_Account /* R12_2_R12 */
 		/*TAY:        (SELECT a.BUSINESS_UNIT PS_BU ,
 		A.ORACLE_XREF_VALUE Oracle_BU
 		FROM dbo.ps_trane_R12_xref   a

@@ -57,9 +57,9 @@ SELECT
 		COALESCE(AOL_R12.NATION_CURR, COALESCE(AOL_PS.NATION_CURR, PS.CURRENCY_CODE)) AS COUNTRY_INDICATOR
 		-- -SS- NVL(AOL.NATION_CURR, PS.CURRENCY_CODE) AS COUNTRY_INDICATOR
 	FROM
-		R12_ORACLE_PS_REV_RCPO PS                                                                                                                                                                               -- -SS- OTR
-	LEFT OUTER JOIN OTR_PROD_CODE_XREF_RCPO PX      ON PS.PLNT_GL_BU = PX.GL_LEDGER AND PS.PLNT_GL_PROD = PX.MANF_PROD_CODE                                                                                  -- SS- ???? missing PLNT_GL_PROD on R12_ORACLE_PS_REV_RCPO, issue 55
-	LEFT OUTER JOIN ACTUATE_OFFICE_LOCATION AOL_PS  ON  PS.PS_GL_DPT_ID = AOL_PS.DEPT_IDAND PS.PS_GL_BU_ID = AOL_PS.BU_UNIT                           -- -SS- ???? issue 73
+		R12_ORACLE_PS_REV_RCPO PS                                                                                              -- -SS- OTR
+	LEFT OUTER JOIN OTR_PROD_CODE_XREF_RCPO PX      ON PS.PLNT_GL_BU = PX.GL_LEDGER AND PS.PLNT_GL_PROD = PX.MANF_PROD_CODE  -- -SS- ???? missing PLNT_GL_PROD on R12_ORACLE_PS_REV_RCPO, issue 55
+	LEFT OUTER JOIN ACTUATE_OFFICE_LOCATION AOL_PS  ON PS.PS_GL_DPT_ID = AOL_PS.DEPT_ID AND PS.PS_GL_BU_ID = AOL_PS.BU_UNIT  -- -SS- ???? issue 73
 	LEFT OUTER JOIN ACTUATE_OFFICE_LOCATION AOL_R12 ON PS.R12_LOCATION = AOL_R12.ORA_LOCATION AND PS.R12_ENTITY = AOL_R12.ORA_ENTITY -- -SS- ???? issue 73
 		-- R12_2_R12 
 		-- -SS- ACTUATE_OFFICE_LOCATION AOL

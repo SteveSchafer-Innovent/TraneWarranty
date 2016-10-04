@@ -31,7 +31,7 @@ FROM
     END AS COUNTRY_INDICATOR,
     --TO_CHAR(dist.journal_date,'YYYYMM')AS JRNL_YEAR_MONTH,
     /*TAY:       DIST.ACCOUNT AS GL_ACCOUNT, WIP*/
-    DIST.PS_ACCOUNT AS GL_ACCOUNT,
+    DIST.R12_ACCOUNT AS GL_ACCOUNT,
     --DIST.JOURNAL_DATE AS JOURNAL_DATE ,
     SUM(
     CASE
@@ -46,7 +46,6 @@ FROM
     -- -SS- NEW
   INNER JOIN R12_ACCOUNT_FILTER_UPD AFU
   ON AFU.R12_ACCOUNT = DIST.R12_ACCOUNT
-    /* R12_2_R12_ok */
     -- -SS- /NEW
   INNER JOIN dbo.R12_TRANE_ACCOUNTS_PS psa
   ON DIST.R12_ACCOUNT = PSA.R12_ACCOUNT
@@ -120,7 +119,6 @@ FROM
     -- -SS- NEW
   INNER JOIN R12_ACCOUNT_FILTER_UPD AFU
   ON AFU.R12_ACCOUNT = DIST.R12_ACCOUNT
-    /* R12_2_R12_ok */
     -- -SS- /NEW
   INNER JOIN dbo.R12_TRANE_ACCOUNTS_PS psa
   ON DIST.R12_ACCOUNT = PSA.R12_ACCOUNT
@@ -172,7 +170,13 @@ FROM
   /* Amort_Comm_and_prepaid_comm (Month to date data)*/
   SELECT
     /*+ NO_CPU_COSTING */
-    TO_DATE('1-'||:RunDate, 'dd-mon-yy') AS gl_BeginDate, LAST_DAY(to_date('1-'||:RunDate, 'dd-mon-yy')) gl_End_Date, B.country_indicator, B.gl_account AS account, 0 AS DOLLAR_AMOUNT, B.GL_ACCOUNT_DESCR AS GL_ACC_DESCR, SUM(B.Amort_Comm_and_prepaid_comm) AS Amort_Comm_and_prepaid_comm
+    TO_DATE('1-'||:RunDate, 'dd-mon-yy') AS gl_BeginDate, 
+    LAST_DAY(to_date('1-'||:RunDate, 'dd-mon-yy')) gl_End_Date, 
+    B.country_indicator, 
+    B.gl_account AS account, 
+    0 AS DOLLAR_AMOUNT, 
+    B.GL_ACCOUNT_DESCR AS GL_ACC_DESCR, 
+    SUM(B.Amort_Comm_and_prepaid_comm) AS Amort_Comm_and_prepaid_comm
   FROM
     (SELECT a.country_indicator, a.gl_account, A.GL_ACCOUNT_DESCR, to_date('1-'||:RunDate, 'dd-mon-yy'), (MAX(a.Comm_amort_mnthly) +
       CASE
@@ -184,7 +188,7 @@ FROM
     FROM DW_DM_030_COMM_AMORTIZATION a
       -- -SS- NEW
     INNER JOIN R12_ACCOUNT_FILTER_UPD AFU
-    ON AFU.R12_ACCOUNT = A.GL_ACCOUNT -- -SS- GL_ACCOUNT is R12 /* R12_2_R12_ok */
+    ON AFU.R12_ACCOUNT = A.GL_ACCOUNT -- -SS- GL_ACCOUNT is R12
       -- -SS- /NEW
     LEFT OUTER JOIN R12_TRANE_ACCOUNTS_PS psa
     ON a.gl_account = PSA.R12_ACCOUNT
@@ -219,7 +223,7 @@ FROM
     FROM DW_DM_030_COMM_AMORTIZATION a
       -- -SS- NEW
     INNER JOIN R12_ACCOUNT_FILTER_UPD AFU
-    ON AFU.R12_ACCOUNT = A.GL_ACCOUNT -- -SS- GL_ACCOUNT is R12 /* R12_2_R12_ok */
+    ON AFU.R12_ACCOUNT = A.GL_ACCOUNT -- -SS- GL_ACCOUNT is R12
       -- -SS- /NEW
     LEFT OUTER JOIN R12_TRANE_ACCOUNTS_PS psa
     ON a.gl_account = PSA.R12_ACCOUNT
@@ -268,7 +272,6 @@ FROM dbo.R12_TRANE_ACCOUNTS_PS psa
   -- -SS- NEW
 INNER JOIN R12_ACCOUNT_FILTER_UPD AFU
 ON AFU.R12_ACCOUNT = PSA.R12_ACCOUNT
-  /* R12_2_R12_ok */
   -- -SS- /NEW
 WHERE PSA.TRANE_ACCOUNT_IND = 'X'
   /*TAY:  AND PSA.ACCOUNT LIKE '5%' WIP*/
@@ -287,7 +290,6 @@ AND NOT EXISTS
     -- -SS- NEW
   INNER JOIN R12_ACCOUNT_FILTER_UPD AFU
   ON AFU.R12_ACCOUNT = DIST.R12_ACCOUNT
-    /* R12_2_R12_ok */
     -- -SS- /NEW
   WHERE DIST.R12_ACCOUNT = PSA.R12_ACCOUNT
     /* R12_2_R12 */
@@ -317,7 +319,7 @@ AND NOT EXISTS
   FROM DW_DM_030_COMM_AMORTIZATION a
     -- -SS- NEW
   INNER JOIN R12_ACCOUNT_FILTER_UPD AFU
-  ON AFU.R12_ACCOUNT = A.GL_ACCOUNT -- -SS- GL_ACCOUNT is R12 /* R12_2_R12_ok */
+  ON AFU.R12_ACCOUNT = A.GL_ACCOUNT -- -SS- GL_ACCOUNT is R12
     -- -SS- /NEW
   WHERE a.RUN_PERIOD >= TO_DATE('1-'||UPPER(:RunDate), 'dd-mon-yy')
   AND a.RUN_PERIOD < add_months(to_date('1-'||:RunDate, 'dd-mon-yy'), 1)

@@ -197,7 +197,7 @@ FROM
     ON AFU.R12_ACCOUNT = A.GL_ACCOUNT -- -SS- GL_ACCOUNT is R12 /* R12_2_R12 */
       -- -SS- /NEW
     LEFT OUTER JOIN R12_TRANE_ACCOUNTS_PS psa
-    ON a.gl_account = PSA.PS_ACCOUNT
+    ON a.gl_account = PSA.R12_ACCOUNT
       /* R12_2_R12 */
     AND PSA.TRANE_ACCOUNT_IND = 'X'
       /*TAY:            WHERE a.gl_account = PSA.ACCOUNT (+) WIP*/
@@ -231,7 +231,7 @@ SELECT
   /*+ NO_CPU_COSTING */
   ADD_MONTHS(((LAST_DAY(to_date('1-'||:RunDate, 'dd-mon-yy')))), - 1) AS gl_BeginDate, LAST_DAY(to_date('1-'||:RunDate, 'dd-mon-yy')) gl_End_Date, ''AS COUNTRY_INDICATOR,
   /*TAY: PSA.ACCOUNT AS GL_ACCOUNT,*/
-  PSA.PS_ACCOUNT AS GL_ACCOUNT,
+  PSA.R12_ACCOUNT AS GL_ACCOUNT,
   --DIST.JOURNAL_DATE AS JOURNAL_DATE ,
   0 AS DOLLAR_AMOUNT, PSA.DESCR AS GL_ACC_DESCR, 0 AS Amort_Comm_and_prepaid_comm, 0 AS SHORT_TERM_COMM, 0 AS LONG_TERM_COMM
   /*TAY:FROM dbo.otr_TRANE_ACCOUNTS_ps psa*/
@@ -293,7 +293,7 @@ AND NOT EXISTS
   WHERE a.RUN_PERIOD >= TO_DATE('1-'||UPPER(:RunDate), 'dd-mon-yy')
   AND a.RUN_PERIOD < add_months(to_date('1-'||:RunDate, 'dd-mon-yy'), 1)
     /*TAY:             AND  a.gl_account= PSA.ACCOUNT WIP*/
-  AND a.gl_account = PSA.PS_ACCOUNT
+  AND a.gl_account = PSA.R12_ACCOUNT
     /* R12_2_R12 */
     /*TAY: "a.gl_account" is used to join to "R12_ACCOUNT" column a few lines up...*/
   AND A.SHIP_PERIOD >=

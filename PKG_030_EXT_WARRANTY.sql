@@ -1595,7 +1595,7 @@ IS
 							DBO.UD_030_ACCOUNT_RULES ATR
 							INNER JOIN
 							DBO.SY_030_COST_FLOW_STG CFS
-							ON ATR.GL_ACCOUNT = CFS.R12_ACCOUNT -- -SS- ???? issue 84, R12_2_R12
+							ON ATR.R12_ACCOUNT = CFS.R12_ACCOUNT -- -SS- GL_ACCOUNT, issue 84, R12_2_R12
 						WHERE
 							AND CFS.SHIP_YEAR BETWEEN ATR.START_SHIP_YEAR AND ATR.END_SHIP_YEAR
 						GROUP BY
@@ -4559,7 +4559,8 @@ IS
 											ELSE 0
 										END) AMORT_RATE
 									FROM
-										DBO.SY_030_CALC_SUM_STG CS,
+										DBO.SY_030_CALC_SUM_STG CS
+										INNER JOIN
 										(
 											SELECT
 													R12_ACCOUNT, -- -SS- GL_ACCOUNT
@@ -4570,13 +4571,12 @@ IS
 													DBO.SY_030_CALC_SUM_STG
 												WHERE
 													COUNTRY_INDICATOR = 'USA'
-										)
-										USR,
-										DBO.UD_030_ACCOUNT_RULES AR
-									WHERE
-										CS.R12_ACCOUNT = AR.GL_ACCOUNT -- -SS- ???? issue 84, R12_2_R12
-										AND CS.R12_ACCOUNT = USR.R12_ACCOUNT -- -SS- R12_2_R12
+										) USR
+										ON CS.R12_ACCOUNT = USR.R12_ACCOUNT -- -SS- R12_2_R12
 										AND CS.LAG_PERIOD = USR.LAG_PERIOD
+										INNER JOIN
+										DBO.UD_030_ACCOUNT_RULES AR
+										ON CS.R12_ACCOUNT = AR.R12_ACCOUNT -- -SS- GL_ACCOUNT, issue 84, R12_2_R12
 									ORDER BY
 										REPORT_TYPE,
 										R12_ACCOUNT, -- -SS- GL_ACCOUNT
@@ -4685,7 +4685,8 @@ IS
 											ELSE 0
 										END) AMORT_RATE
 									FROM
-										DBO.SY_030_CALC_SUM_STG CS,
+										DBO.SY_030_CALC_SUM_STG CS
+										INNER JOIN
 										(
 											SELECT
 													R12_ACCOUNT, -- -SS- GL_ACCOUNT
@@ -4696,13 +4697,12 @@ IS
 													DBO.SY_030_CALC_SUM_STG
 												WHERE
 													COUNTRY_INDICATOR = 'USA'
-										)
-										USR,
-										DBO.UD_030_ACCOUNT_RULES AR
-									WHERE
-										CS.R12_ACCOUNT = AR.GL_ACCOUNT -- -SS- ???? issue 84, R12_2_R12
-										AND CS.R12_ACCOUNT = USR.R12_ACCOUNT -- -SS- R12_2_R12
+										) USR
+										ON CS.R12_ACCOUNT = USR.R12_ACCOUNT -- -SS- R12_2_R12
 										AND CS.LAG_PERIOD = USR.LAG_PERIOD
+										INNER JOIN
+										DBO.UD_030_ACCOUNT_RULES AR
+										ON CS.R12_ACCOUNT = AR.R12_ACCOUNT -- -SS- GL_ACCOUNT, issue 84, R12_2_R12
 									ORDER BY
 										REPORT_TYPE,
 										R12_ACCOUNT,
@@ -5281,7 +5281,7 @@ IS
 										USR,
 										DBO.UD_030_ACCOUNT_RULES AR
 									WHERE
-										CS.R12_ACCOUNT = AR.GL_ACCOUNT -- -SS- ???? issue 84, R12_2_R12
+										CS.R12_ACCOUNT = AR.R12_ACCOUNT -- -SS- GL_ACCONT, issue 84, R12_2_R12
 										AND CS.R12_ACCOUNT = USR.R12_ACCOUNT -- -SS- R12_2_R12
 										AND CS.LAG_PERIOD = USR.LAG_PERIOD
 									ORDER BY
@@ -5407,7 +5407,7 @@ IS
 										USR,
 										DBO.UD_030_ACCOUNT_RULES AR
 									WHERE
-										CS.R12_ACCOUNT = AR.GL_ACCOUNT -- -SS- ???? issue 84, R12_2_R12
+										CS.R12_ACCOUNT = AR.R12_ACCOUNT -- -SS- GL_ACCOUNT, issue 84, R12_2_R12
 										AND CS.R12_ACCOUNT = USR.R12_ACCOUNT -- -SS- R12_2_R12
 										AND CS.LAG_PERIOD = USR.LAG_PERIOD
 									ORDER BY

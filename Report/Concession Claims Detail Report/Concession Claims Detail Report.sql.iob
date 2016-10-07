@@ -1,0 +1,39 @@
+WITH (gprmCountry Varchar, gprmTrxDateBegin Timestamp, gprmTrxDateEnd Timestamp) 
+
+SELECT ConcessionDataDetailReport.CLAIM_NUMBER AS CLAIM_NUMBER, 
+ConcessionDataDetailReport.STEP_NUMBER AS STEP_NUMBER, ConcessionDataDetailReport.BUSINESS_UNIT AS 
+BUSINESS_UNIT, ConcessionDataDetailReport.CLAIM_TYPE AS CLAIM_TYPE, 
+ConcessionDataDetailReport.CONCESSION_DAYS AS CONCESSION_DAYS, 
+ConcessionDataDetailReport.EXPENSE_AMOUNT_DEC AS EXPENSE_AMOUNT_DEC, 
+ConcessionDataDetailReport.MATERIAL_LABOR AS MATERIAL_LABOR, ConcessionDataDetailReport.GL_ACCOUNT 
+AS GL_ACCOUNT, ConcessionDataDetailReport.EXPENSE_TYPE_DESCR AS EXPENSE_TYPE_DESCR, 
+ConcessionDataDetailReport.OFFICE_NAME AS OFFICE_NAME, ConcessionDataDetailReport.GL_PROD_CODE AS 
+GL_PROD_CODE, ConcessionDataDetailReport.MANF_PROD_CODE AS MANF_PROD_CODE, 
+ConcessionDataDetailReport.COMPANY_OWNED AS COMPANY_OWNED, 
+ConcessionDataDetailReport.CUSTOMER_NUMBER AS CUSTOMER_NUMBER, 
+ConcessionDataDetailReport.CUSTOMER_NAME AS CUSTOMER_NAME, 
+ConcessionDataDetailReport.INTERNAL_EXTERNAL AS INTERNAL_EXTERNAL, 
+ConcessionDataDetailReport.TRX_DATE AS TRX_DATE, ConcessionDataDetailReport.TRX_YEAR AS TRX_YEAR, 
+ConcessionDataDetailReport.TRX_MONTH AS TRX_MONTH, ConcessionDataDetailReport.INTMONTHS_TRX_TO_BASE 
+AS INTMONTHS_TRX_TO_BASE, ConcessionDataDetailReport.INTMONTHS_SHIP_TO_BASE AS 
+INTMONTHS_SHIP_TO_BASE, ConcessionDataDetailReport.SHIP_DATE AS SHIP_DATE, 
+ConcessionDataDetailReport.SHIP_YEAR_MONTH AS SHIP_YEAR_MONTH, 
+ConcessionDataDetailReport.INTMONTHS_SHIP_TO_TRX AS INTMONTHS_SHIP_TO_TRX, 
+ConcessionDataDetailReport.START_DATE AS START_DATE, 
+ConcessionDataDetailReport.INTMONTHS_START_TO_TRX AS INTMONTHS_START_TO_TRX, 
+ConcessionDataDetailReport.FAIL_DATE AS FAIL_DATE, ConcessionDataDetailReport.INTMONTHS_FAIL_TO_TRX 
+AS INTMONTHS_FAIL_TO_TRX, ConcessionDataDetailReport.CURRENCY AS CURRENCY, 
+ConcessionDataDetailReport.COUNTRY_INDICATOR AS COUNTRY_INDICATOR, 
+ConcessionDataDetailReport.RETROFIT_ID AS RETROFIT_ID, ConcessionDataDetailReport.GL_DEPT AS 
+GL_DEPT, ConcessionDataDetailReport.IN_RESERVE_PERCENT AS IN_RESERVE_PERCENT, 
+ConcessionDataDetailReport.TRX_LAG AS TRX_LAG, ConcessionDataDetailReport.TRXYEARMONTH AS 
+TRXYEARMONTH, ( cast(ConcessionDataDetailReport.EXPENSE_AMT_IN_RES  as decimal(15,2)) ) AS 
+EXPENSE_AMT_IN_RES, ( cast(ConcessionDataDetailReport.EXPENSE_AMT_NOT_IN_RES as decimal(15,2)) ) AS 
+EXPENSE_AMT_NOT_IN_RES, ( cast (ConcessionDataDetailReport.EXPENSE_AMOUNT as decimal(15,2)) ) AS 
+EXPENSE_AMOUNT
+
+FROM 
+"Information Objects/WarrantyConcessionIO/Information Objects/ConcessionDataDetailReport.iob"[:gprmCountry, 
+:gprmTrxDateBegin, :gprmTrxDateEnd] AS ConcessionDataDetailReport
+
+ORDER BY COUNTRY_INDICATOR Desc, CONCESSION_DAYS Asc, GL_ACCOUNT Asc, TRXYEARMONTH Asc

@@ -1,13 +1,5 @@
-describe PROD_CODE_XREF_RCPO_DR;
-describe BH.R12_GL_CODE_COMBINATIONS;
-
 select * from BH.R12_GL_CODE_COMBINATIONS where r12_account = '9999';
 select distinct ps_segment2 from BH.R12_GL_CODE_COMBINATIONS where r12_account = '9999';
-
-select count(distinct R12_ACCOUNT) from R12_BI_ACCT_ENTRY_PSB;
-select count(distinct R12_ACCOUNT) from BH.R12_BI_ACCT_ENTRY_PSB;
-select count(distinct PS_ACCOUNT) from R12_BI_ACCT_ENTRY_PSB;
-select count(distinct PS_ACCOUNT) from BH.R12_BI_ACCT_ENTRY_PSB;
 
 select distinct R12_ACCOUNT 
 from BH.R12_GL_CODE_COMBINATIONS 
@@ -235,59 +227,6 @@ select distinct PS_ACCOUNT from R12_GL_ACCOUNT_SCD where R12_ACCOUNT = '511707';
 select distinct R12_ACCOUNT from R12_GL_ACCOUNT_SCD where PS_ACCOUNT = '428000' order by R12_ACCOUNT; -- 144201
 select distinct PS_ACCOUNT from R12_GL_ACCOUNT_SCD where R12_ACCOUNT = '144201'; -- 424000, 428000, 429000
 
-select
-R12_ACCOUNT,
-sum(BAE) as R12_BI_ACCT_ENTRY_PSB,
-sum(GCC) as R12_GL_CODE_COMBINATIONS,
-sum(JLP) as R12_JRNL_LN_PS,
-sum(TCDP) as R12_TRNCO_CM_DIST_PSB,
-sum(LP) as R12_LEDGER2_PS,
-sum(PRP) as R12_PROJ_RESOURCE_PS,
-sum(AFU) as R12_ACCOUNT_FILTER_UPD
-from
-(
-	select distinct 1 as BAE, 0 as GCC, 0 as JLP, 0 as TCDP, 0 as LP, 0 as PRP, 0 as AFU, R12_ACCOUNT 
-	from R12_BI_ACCT_ENTRY_PSB 
-
-	union all	
-
-	select distinct 0 as BAE, 1 as GCC, 0 as JLP, 0 as TCDP, 0 as LP, 0 as PRP, 0 as AFU, R12_ACCOUNT 
-	from BH.R12_GL_CODE_COMBINATIONS
-	
-	union all
-	
-	select distinct 0 as BAE, 0 as GCC, 1 as JLP, 0 as TCDP, 0 as LP, 0 as PRP, 0 as AFU, R12_ACCOUNT
-	from R12_JRNL_LN_PS
-	
-	union all
-
-	/*	
-	select distinct 'GAS' as SOURCE, R12_ACCOUNT
-	from R12_GL_ACCOUNT_SCD
-
-	union all
-
-	*/	
-	select distinct 0 as BAE, 0 as GCC, 0 as JLP, 1 as TCDP, 0 as LP, 0 as PRP, 0 as AFU, R12_ACCOUNT
-	from R12_TRNCO_CM_DIST_PSB 
-	
-	union all
-	
-	select distinct 0 as BAE, 0 as GCC, 0 as JLP, 0 as TCDP, 1 as LP, 0 as PRP, 0 as AFU, R12_ACCOUNT
-	from R12_LEDGER2_PS
-	
-	union all
-	
-	select distinct  0 as BAE, 0 as GCC, 0 as JLP, 0 as TCDP, 0 as LP, 1 as PRP, 0 as AFU, R12_ACCOUNT
-	from R12_PROJ_RESOURCE_PS
-	
-	union all
-	
-	select distinct  0 as BAE, 0 as GCC, 0 as JLP, 0 as TCDP, 0 as LP, 0 as PRP, 1 as AFU, R12_ACCOUNT
-	from R12_ACCOUNT_FILTER_UPD
-) a
-group by R12_ACCOUNT
-order by R12_ACCOUNT;
 
 select distinct R12_ACCOUNT from R12_BI_ACCT_ENTRY_PSB order by R12_ACCOUNT; 
 
@@ -305,23 +244,53 @@ select distinct R12_ACCOUNT from R12_PROJ_RESOURCE_PS order by R12_ACCOUNT;
 select distinct R12_ACCOUNT from R12_GL_ACCOUNT_SCD order by R12_ACCOUNT;
 
 -- LIKE_52_53_54
-select distinct R12_ACCOUNT
+select distinct a.R12_ACCOUNT, A.PS_ACCOUNT
 from(
-select distinct R12_ACCOUNT, PS_ACCOUNT from R12_BI_ACCT_ENTRY_PSB 
+select distinct R12_ACCOUNT,PS_ACCOUNT
+from R12_BI_ACCT_ENTRY_PSB aa
+inner join otr_trane_accounts_ps b on b.account = aa.ps_account
+where b.TRANE_ACCOUNT_IND = 'X'
 union 
-select distinct R12_ACCOUNT, PS_SEGMENT2 AS PS_ACCOUNT from BH.R12_GL_CODE_COMBINATIONS 
+select distinct R12_ACCOUNT, PS_SEGMENT2 AS PS_ACCOUNT 
+from BH.R12_GL_CODE_COMBINATIONS aa
+inner join otr_trane_accounts_ps b on b.account = PS_SEGMENT2
+where b.TRANE_ACCOUNT_IND = 'X'
 union
-select distinct R12_ACCOUNT, PS_ACCOUNT from R12_JRNL_LN_PS
+select distinct R12_ACCOUNT, PS_ACCOUNT 
+from R12_JRNL_LN_PS a
+inner join otr_trane_accounts_ps b on b.account = a.ps_account
+where b.TRANE_ACCOUNT_IND = 'X'
 union
-select distinct R12_ACCOUNT, PS_ACCOUNT from R12_TRNCO_CM_DIST_PSB 
+select distinct R12_ACCOUNT, PS_ACCOUNT 
+from R12_TRNCO_CM_DIST_PSB a
+inner join otr_trane_accounts_ps b on b.account = a.ps_account
+where b.TRANE_ACCOUNT_IND = 'X'
 union
-select distinct R12_ACCOUNT, PS_ACCOUNT from R12_LEDGER2_PS
+select distinct R12_ACCOUNT, PS_ACCOUNT 
+from R12_LEDGER2_PS a
+inner join otr_trane_accounts_ps b on b.account = a.ps_account
+where b.TRANE_ACCOUNT_IND = 'X'
 union
-select distinct R12_ACCOUNT, PS_ACCOUNT from R12_PROJ_RESOURCE_PS
+select distinct R12_ACCOUNT, PS_ACCOUNT
+from R12_PROJ_RESOURCE_PS a
+inner join otr_trane_accounts_ps b on b.account = a.ps_account
+where b.TRANE_ACCOUNT_IND = 'X'
 ) a
-where PS_ACCOUNT like '52%' or PS_ACCOUNT like '53%' or PS_ACCOUNT like '54%'
-order by R12_ACCOUNT; -- 
+order by R12_ACCOUNT; 
 
+select * from r12_trane_accounts_ps where r12_account like '%195462%';
+
+select r12_account, listagg(ps_account || '-' || DESCR || '(' || TRANE_ACCOUNT_IND || ')', ',' ) WITHIN GROUP (ORDER BY ps_account) as "ps_accts"
+from r12_trane_accounts_ps 
+where r12_account in ('281951','281952','281955','281956','281959','282101','282102','295413','295711','296311','296511','296519','296521','296551','296559')
+group by r12_account
+;
+
+select r12_account,PS_ACCOUNT
+FROM R12_TRANE_ACCOUNTS_PS
+WHERE R12_ACCOUNT IN
+('282153','282154','281913','281917','281920','281921','281957','281960','282153','282154','282155','282156','296512','296513','296515','296516','296517','296520','296556','296557','296560')
+;
 -- EQUAL_490650
 select distinct R12_ACCOUNT
 from(
@@ -413,7 +382,7 @@ where PS_ACCOUNT like '523500%'
 order by R12_ACCOUNT; -- 
 
 -- LIKE 5268%
-select distinct R12_ACCOUNT
+select distinct R12_ACCOUNT, PS_ACCOUNT, b.descr
 from(
 select distinct R12_ACCOUNT, PS_ACCOUNT from R12_BI_ACCT_ENTRY_PSB 
 union 
@@ -427,8 +396,15 @@ select distinct R12_ACCOUNT, PS_ACCOUNT from R12_LEDGER2_PS
 union
 select distinct R12_ACCOUNT, PS_ACCOUNT from R12_PROJ_RESOURCE_PS
 ) a
+inner join otr_trane_accounts_ps b on b.account = a.ps_account
 where PS_ACCOUNT like '5268%'
+and b.TRANE_ACCOUNT_IND = 'X'
 order by R12_ACCOUNT; -- 
+
+select PS_ACCOUNT, R12_ACCOUNT, DESCR
+from r12_trane_accounts_ps 
+where ps_account iN('523500', '526892', '526893', '528100', '528200', '528300', '532100');
+
 
 -- LIKE_SL00
 select distinct R12_LOCATION
@@ -452,8 +428,56 @@ where PS_DEPTID in ('TCA0', 'SL00')
 order by R12_LOCATION;
 -- 113602, 115615, 119001, 119007, 129001, 129003, 129004, 9999
 
-alter table R12_ACCOUNT_FILTER_UPD add LIKE_52 varchar2(1);
-alter table R12_ACCOUNT_FILTER_UPD add LIKE_53 varchar2(1);
-alter table R12_ACCOUNT_FILTER_UPD add LIKE_54 varchar2(1);
-alter table R12_ACCOUNT_FILTER_UPD add EQUAL_490650 varchar2(1);
-delete from R12_ACCOUNT_FILTER_UPD;
+select 
+a.table_name, a.column_name, a.index_name, b.uniqueness
+from all_ind_columns a, all_indexes b
+where a.index_name=b.index_name 
+and a.table_name in ('OTR_BI_ACCT_ENTRY_PSB',
+'OTR_BI_HDR_PSB',
+'OTR_BI_LINE_PSB',
+'OTR_COM_SALES_RS_LEDGER',
+'OTR_JRNL_HEADER_PS',
+'OTR_JRNL_LN_PS',
+'OTR_LEDGER2_PS',
+'OTR_ORACLE_PS_REV_RCPO',
+'OTR_PROD_CODE_XREF_RCPO',
+'otr_TRANE_ACCOUNTS_ps',
+'OTR_TRANE_DEPTS_PS',
+'OTR_TRANE_PRODUCTS_PS',
+'OTR_TRNBI_BI_HDR_PSB',
+'otr_trnco_cm_dist_psb',
+'PS_TRANE_ACCOUNTS')
+order by a.table_name, a.index_name, a.column_position;
+
+--ps_accounts used in prod 
+select u.*, otr.*
+from otr_trane_accounts_ps otr
+left outer join (
+select 'used' isUsed, ps_account from r12_trane_accounts_ps otr
+where ps_account in ('526100', '528100', '528300', '528600', '544500', '523000', '526883', '526884', '526890', '528200', '528800', '532200', '532600', '523500', '526200', '526881', '528900', 
+'529900', '526000', '526300', '526886', '526887', '529213', '532100', '532500', '546950', '526889', '526892', '546900', '526891', '526893', '528700', '532400', '526882', 
+'529600', '532300', '523050', '523100', '526010', '526020', '526700', '526885', '526888', '526895', '527900', '529410', '529800', '546400', '526880')
+) u on otr.account = u.ps_account
+where otr.trane_account_ind = 'X';
+
+select u.*, otr.*
+from otr_trane_accounts_ps otr
+left outer join (
+select 'used' isUsed, ps_account from r12_trane_accounts_ps otr
+where ps_account in ('526100', '528100', '528300', '528600', '544500', '523000', '526883', '526884', '526890', '528200', '528800', '532200', '532600', '523500', '526200', '526881', '528900', 
+'529900', '526000', '526300', '526886', '526887', '529213', '532100', '532500', '546950', '526889', '526892', '546900', '526891', '526893', '528700', '532400', '526882', 
+'529600', '532300', '523050', '523100', '526010', '526020', '526700', '526885', '526888', '526895', '527900', '529410', '529800', '546400', '526880')
+) u on otr.account = u.ps_account
+where otr.trane_account_ind = 'X';
+
+select distinct OTR_BI_ACCT_ENTRY_PSB.ledger
+from OTR_BI_ACCT_ENTRY_PSB;
+
+select * from DBO.R12_TRANE_PRODUCTS_PS where rownum < 100 and r12_product <> 9999;
+
+select * from DBO.R12_TRANE_PRODUCTS_PS where ps_product = '804900';
+select distinct plnt_gl_prod, part_type, parts_prod_code_ind from R12_ORACLE_PS_REV_RCPO;
+
+select * from r12_trane_accounts_ps 
+where PS_ACCOUNT LIKE '0620%'
+OR PS_ACCOUNT LIKE '8062%';

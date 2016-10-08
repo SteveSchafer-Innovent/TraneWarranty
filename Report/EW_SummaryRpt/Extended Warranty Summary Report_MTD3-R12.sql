@@ -64,10 +64,7 @@ FROM
   AND LAST_DAY(to_date('1-'||:RunDate, 'dd-mon-yy'))
     /*TAY:        AND DIST.ACCOUNT LIKE '5%' WIP*/
     -- -SS- NEW
-  AND((DIST.PS_ACCOUNT = 'NA'
-  AND AFU.LIKE_5 = 'Y')
-  OR(DIST.PS_ACCOUNT <> 'NA'
-  AND DIST.PS_ACCOUNT LIKE '5%'))
+  AND AFU.LIKE_5 = 'Y'
     -- -SS- /NEW
     -- -SS- AND DIST.ACCOUNT LIKE '5%'
     /*TAY:        and CASE WHEN ASX.NATION_CURR ='USD' THEN 'USA' ELSE 'CAN' END = UPPER(:COUNTRY)*/
@@ -141,10 +138,7 @@ FROM
   AND LAST_DAY(to_date('1-'||:RunDate, 'dd-mon-yy'))
     /*TAY:        AND DIST.ACCOUNT LIKE '5%' WIP*/
     -- -SS- NEW
-  AND((DIST.PS_ACCOUNT = 'NA'
-  AND AFU.LIKE_5 = 'Y')
-  OR(DIST.PS_ACCOUNT <> 'NA'
-  AND DIST.PS_ACCOUNT LIKE '5%'))
+  AND AFU.LIKE_5 = 'Y'
     -- -SS- /NEW
     -- -SS- AND DIST.ACCOUNT LIKE '5%'
     /*TAY:        and  CASE WHEN ASX.NATION_CURR ='USD' THEN 'USA' ELSE 'CAN' END = UPPER(:COUNTRY)*/
@@ -312,10 +306,7 @@ AND NOT EXISTS
   AND LAST_DAY(to_date('1-'||:RunDate, 'dd-mon-yy'))
     /*TAY:                    AND DIST.ACCOUNT LIKE '5%' WIP*/
     -- -SS- NEW
-  AND((DIST.PS_ACCOUNT = 'NA'
-  AND AFU.LIKE_5 = 'Y')
-  OR(DIST.PS_ACCOUNT <> 'NA'
-  AND DIST.PS_ACCOUNT LIKE '5%'))
+  AND AFU.LIKE_5 = 'Y'
     -- -SS- /NEW
     -- -SS- AND DIST.ACCOUNT LIKE '5%'
     /*TAY                    and CASE WHEN ASX.NATION_CURR ='USD' THEN 'USA' ELSE 'CAN' END = UPPER(:COUNTRY))*/

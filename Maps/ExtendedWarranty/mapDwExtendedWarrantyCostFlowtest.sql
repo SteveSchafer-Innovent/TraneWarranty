@@ -175,10 +175,7 @@ SELECT
 		--AND MONTHS_BETWEEN(last_day(SYSDATE), last_day(TD3.full_date))>=1
 		--AND (GLA.ACCOUNT like '8062%' or GLA.ACCOUNT like '0620%')
 		-- -SS- NEW
-		AND((GLA.PS_ACCOUNT = 'NA'
-		AND AFU.LIKE_523500 = 'Y')
-		OR(GLA.PS_ACCOUNT <> 'NA'
-		AND GLA.PS_ACCOUNT LIKE '523500%'))
+		AND AFU.LIKE_523500 = 'Y'
 		-- -SS- /NEW
 		-- -SS- and GLA.ACCOUNT like '523500%'
 	GROUP BY

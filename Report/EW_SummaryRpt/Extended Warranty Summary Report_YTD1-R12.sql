@@ -299,10 +299,7 @@ LEFT OUTER JOIN
   AND C.ENTRY_TYPE = 'IN'
     /*TAY:        AND A.ACCOUNT LIKE '5%' WIP*/
     -- -SS- NEW
-  AND((A.PS_ACCOUNT = 'NA'
-  AND AFU.LIKE_5 = 'Y')
-  OR(A.PS_ACCOUNT <> 'NA'
-  AND A.PS_ACCOUNT LIKE '5%'))
+  AND AFU.LIKE_5 = 'Y'
     -- -SS- /NEW
     -- -SS- AND A.ACCOUNT LIKE '5%'
     /*TAY:      GROUP BY ASX.NATION_CURR, A.ACCOUNT, PSA.DESCR*/
@@ -349,10 +346,7 @@ LEFT OUTER JOIN
     AND a.RUN_PERIOD < add_months(to_date('1-'||:RunDate, 'dd-mon-yy'), 1)
       /*TAY:              AND a.gl_account LIKE '5%'*/
       -- -SS- NEW
-    AND((A.GL_ACCOUNT = 'NA'
-    AND AFU.LIKE_5 = 'Y')
-    OR(A.GL_ACCOUNT <> 'NA'
-    AND A.GL_ACCOUNT LIKE '5%'))
+    AND AFU.LIKE_5 = 'Y'
       -- -SS- /NEW
       -- -SS- AND PSA.ACCOUNT LIKE '5%'
     AND A.SHIP_PERIOD >=

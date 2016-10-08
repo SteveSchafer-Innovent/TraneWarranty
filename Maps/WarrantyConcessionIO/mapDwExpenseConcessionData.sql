@@ -398,7 +398,7 @@ SELECT
 											LR1.GL_ACCOUNT_SCD_KEY = GL_ACCOUNT_SCD_KEY
 											-- -SS- NEW
 											AND((PS_ACCOUNT = 'NA'
-											AND AFU.LIKE_52 = 'Y')
+											AND AFU.EQUAL_428000 = 'Y')
 											OR(PS_ACCOUNT <> 'NA'
 											AND PS_ACCOUNT = '428000'))
 											-- -SS- /NEW

@@ -39,13 +39,17 @@ FROM
       OR dist.credit_amount <> ''
       THEN dist.credit_amount * - 1
       ELSE dist.debit_amt
-    END) AS DOLLAR_AMOUNT, psa.DESCR AS GL_ACC_DESCR, 0 AS Amort_Comm_and_prepaid_comm, 0 AS SHORT_TERM_COMM, 0 AS LONG_TERM_COMM
+    END) AS DOLLAR_AMOUNT, 
+    -- -SS- issue 88: psa.DESCR AS GL_ACC_DESCR,
+    AFU.DESCR AS GL_ACC_DESCR, -- -SS- issue 88 
+    0 AS Amort_Comm_and_prepaid_comm, 0 AS SHORT_TERM_COMM, 0 AS LONG_TERM_COMM
     /*TAY:      FROM dbo.otr_trnco_cm_dist_psb dist, dbo.otr_TRANE_ACCOUNTS_ps psa, dbo.ACTUATE_SEC_XREF ASX*/
   FROM dbo.R12_TRNCO_CM_DIST_PSB Dist
+  /* -SS- issue 88
   INNER JOIN dbo.R12_TRANE_ACCOUNTS_PS psa
   ON DIST.R12_ACCOUNT = PSA.R12_ACCOUNT
-    /* R12_2_R12 */
   AND PSA.TRANE_ACCOUNT_IND = 'X'
+  */
     --, dbo.ACTUATE_SEC_XREF ASX
     -- -SS- NEW
   INNER JOIN R12_ACCOUNT_FILTER_UPD AFU
@@ -92,7 +96,9 @@ FROM
       WHEN DIST.r12_entity IN(5773, 5588)
       THEN 'CAN'
       ELSE 'USA'
-    END, DIST.PS_ACCOUNT, psa.DESCR
+    END, DIST.PS_ACCOUNT, 
+    -- -SS- issue 88: psa.DESCR
+    AFU.DESCR -- -SS- issue 88
   UNION ALL
   SELECT
     /*+ NO_CPU_COSTING */
@@ -112,17 +118,21 @@ FROM
       OR dist.credit_amount <> ''
       THEN dist.credit_amount * - 1
       ELSE dist.debit_amt
-    END) AS DOLLAR_AMOUNT, psa.DESCR AS GL_ACC_DESCR, 0 AS Amort_Comm_and_prepaid_comm, 0 AS SHORT_TERM_COMM, 0 AS LONG_TERM_COMM
+    END) AS DOLLAR_AMOUNT, 
+    -- -SS- issue 88: psa.DESCR AS GL_ACC_DESCR, 
+    AFU.DESCR AS GL_ACC_DESCR, -- -SS- issue 88
+    0 AS Amort_Comm_and_prepaid_comm, 0 AS SHORT_TERM_COMM, 0 AS LONG_TERM_COMM
     /*TAY:      FROM dbo.otr_trnco_cm_dist_psb dist, dbo.otr_TRANE_ACCOUNTS_ps psa, dbo.ACTUATE_SEC_XREF ASX*/
   FROM dbo.R12_TRNCO_CM_DIST_PSB dist
     -- -SS- NEW
   INNER JOIN R12_ACCOUNT_FILTER_UPD AFU
   ON AFU.R12_ACCOUNT = DIST.R12_ACCOUNT
     -- -SS- /NEW
+  /* -SS- issue 88
   INNER JOIN dbo.R12_TRANE_ACCOUNTS_PS psa
   ON DIST.R12_ACCOUNT = PSA.R12_ACCOUNT
-    /* R12_2_R12 */
   AND PSA.TRANE_ACCOUNT_IND = 'X'
+  */
     --, dbo.ACTUATE_SEC_XREF ASX
     /*TAY:      WHERE DIST.ACCOUNT = PSA.ACCOUNT*/
   WHERE -- -SS- DIST.R12_ACCOUNT = PSA.R12_ACCOUNT
@@ -165,7 +175,9 @@ FROM
       WHEN DIST.r12_entity IN(5773, 5588)
       THEN 'CAN'
       ELSE 'USA'
-    END, DIST.PS_ACCOUNT, psa.DESCR
+    END, DIST.PS_ACCOUNT, 
+    -- -SS- issue 88: psa.DESCR
+    AFU.DESCR -- -SS- issue 88
   ) a, (
   /* Amort_Comm_and_prepaid_comm_and_long_and_short_term*/
   SELECT
@@ -194,10 +206,11 @@ FROM
     INNER JOIN R12_ACCOUNT_FILTER_UPD AFU
     ON AFU.R12_ACCOUNT = A.GL_ACCOUNT -- -SS- GL_ACCOUNT is R12
       -- -SS- /NEW
+    /* -SS- issue 88
     LEFT OUTER JOIN R12_TRANE_ACCOUNTS_PS psa
     ON a.gl_account = PSA.R12_ACCOUNT
-      /* R12_2_R12 */
     AND PSA.TRANE_ACCOUNT_IND = 'X'
+    */
       /*TAY:            WHERE a.gl_account = PSA.ACCOUNT (+) WIP*/
     WHERE -- -SS- a.gl_account = PSA.PS_ACCOUNT (+)
       -- -SS- AND PSA.TRANE_ACCOUNT_IND='X'
@@ -229,46 +242,39 @@ SELECT
   /*+ NO_CPU_COSTING */
   ADD_MONTHS(((LAST_DAY(to_date('1-'||:RunDate, 'dd-mon-yy')))), - 1) AS gl_BeginDate, LAST_DAY(to_date('1-'||:RunDate, 'dd-mon-yy')) gl_End_Date, ''AS COUNTRY_INDICATOR,
   /*TAY: PSA.ACCOUNT AS GL_ACCOUNT,*/
-  PSA.R12_ACCOUNT AS GL_ACCOUNT,
+  -- -SS- issue 88: PSA.R12_ACCOUNT AS GL_ACCOUNT,
+  AFU.R12_ACCOUNT AS GL_ACCOUNT, -- -SS- issue 88
   --DIST.JOURNAL_DATE AS JOURNAL_DATE ,
-  0 AS DOLLAR_AMOUNT, PSA.DESCR AS GL_ACC_DESCR, 0 AS Amort_Comm_and_prepaid_comm, 0 AS SHORT_TERM_COMM, 0 AS LONG_TERM_COMM
+  0 AS DOLLAR_AMOUNT, 
+  -- -SS- issue 88: PSA.DESCR AS GL_ACC_DESCR, 
+  AFU.DESCR AS GL_ACC_DESCR, -- -SS- issue 88
+  0 AS Amort_Comm_and_prepaid_comm, 0 AS SHORT_TERM_COMM, 0 AS LONG_TERM_COMM
   /*TAY:FROM dbo.otr_TRANE_ACCOUNTS_ps psa*/
-FROM dbo.R12_TRANE_ACCOUNTS_PS psa
+FROM 
+-- -SS- issue 88: dbo.R12_TRANE_ACCOUNTS_PS psa
   -- -SS- NEW
-INNER JOIN R12_ACCOUNT_FILTER_UPD AFU
-ON AFU.R12_ACCOUNT = PSA.R12_ACCOUNT
+R12_ACCOUNT_FILTER_UPD AFU
   -- -SS- /NEW
-WHERE PSA.TRANE_ACCOUNT_IND = 'X'
+WHERE 1=1
+-- -SS- issue 88: PSA.TRANE_ACCOUNT_IND = 'X'
   /*TAY:  AND PSA.ACCOUNT LIKE '5%' WIP*/
   -- -SS- NEW
-AND((PSA.PS_ACCOUNT = 'NA'
-AND AFU.LIKE_5 = 'Y')
-OR(PSA.PS_ACCOUNT <> 'NA'
-AND PSA.PS_ACCOUNT LIKE '5%'))
+AND AFU.LIKE_5 = 'Y'
   -- -SS- /NEW
   -- -SS- AND PSA.ACCOUNT LIKE '5%'
 AND NOT EXISTS
   (SELECT 'X'
     /*TAY:                  FROM dbo.otr_trnco_cm_dist_psb dist, dbo.ACTUATE_SEC_XREF ASX*/
   FROM dbo.R12_TRNCO_CM_DIST_PSB dist --, dbo.ACTUATE_SEC_XREF ASX
-    -- -SS- NEW
-  INNER JOIN R12_ACCOUNT_FILTER_UPD AFU
-  ON AFU.R12_ACCOUNT = DIST.R12_ACCOUNT
-    -- -SS- /NEW
     /*TAY:                  WHERE DIST.ACCOUNT = PSA.ACCOUNT WIP*/
-  WHERE DIST.R12_ACCOUNT = PSA.R12_ACCOUNT
-    /* R12_2_R12 */
+  WHERE 1=1
+  -- -SS- issue 88: DIST.R12_ACCOUNT = PSA.R12_ACCOUNT
+  AND DIST.R12_ACCOUNT = AFU.R12_ACCOUNT -- -SS- issue 88, R12_2_R12
     /*TAY:                    AND DIST.BUSINESS_UNIT_GL= ASX.PSGL*/
     --AND DIST.BUSINESS_UNIT_GL= ASX.PSGL
   AND DIST.JOURNAL_DATE BETWEEN TRUNC(TO_DATE(TO_DATE('1-'||:RunDate, 'dd-mon-yy')), 'YEAR')
   AND LAST_DAY(to_date('1-'||:RunDate, 'dd-mon-yy'))
     /*TAY:                    AND DIST.ACCOUNT LIKE '5%' WIP*/
-    -- -SS- NEW
-  AND((DIST.PS_ACCOUNT = 'NA'
-  AND AFU.LIKE_5 = 'Y')
-  OR(DIST.PS_ACCOUNT <> 'NA'
-  AND DIST.PS_ACCOUNT LIKE '5%'))
-    -- -SS- /NEW
     -- -SS- AND DIST.ACCOUNT LIKE '5%'
     /*TAY                    and CASE WHEN ASX.NATION_CURR ='USD' THEN 'USA' ELSE 'CAN' END = UPPER(:COUNTRY))*/
   AND
@@ -282,15 +288,11 @@ AND NOT EXISTS
   (SELECT 'x'
     /*TAY                 from DM_030_COMM_AMORTIZATION@DW_INTFC_DR.LAX.TRANE.COM a*/
   FROM DW_DM_030_COMM_AMORTIZATION a
-    -- -SS- NEW
-  INNER JOIN R12_ACCOUNT_FILTER_UPD AFU
-  ON AFU.R12_ACCOUNT = A.GL_ACCOUNT -- -SS- GL_ACCOUNT is R12
-    -- -SS- /NEW
   WHERE a.RUN_PERIOD >= TO_DATE('1-'||UPPER(:RunDate), 'dd-mon-yy')
   AND a.RUN_PERIOD < add_months(to_date('1-'||:RunDate, 'dd-mon-yy'), 1)
     /*TAY:             AND  a.gl_account= PSA.ACCOUNT WIP*/
-  AND a.gl_account = PSA.R12_ACCOUNT
-    /* R12_2_R12 */
+  -- -SS- issue 88: AND a.gl_account = PSA.R12_ACCOUNT
+  AND A.GL_ACCOUNT = AFU.R12_ACCOUNT -- -SS- issue 88, R12_2_R12
     /*TAY: "a.gl_account" is used to join to "R12_ACCOUNT" column a few lines up...*/
   AND A.SHIP_PERIOD >=
     CASE
@@ -301,8 +303,5 @@ AND NOT EXISTS
   AND A.SHIP_PERIOD <(to_date('1-'||:RunDate, 'dd-mon-yy'))
   AND a.country_indicator = UPPER(:COUNTRY)
     /*TAY:             AND  a.gl_account like '5%' WIP*/
-    -- -SS- NEW
-  AND AFU.LIKE_5 = 'Y' -- -SS- ???? issue 67
-    -- -SS- /NEW
     -- -SS- AND  a.gl_account like '5%'
   ) ;

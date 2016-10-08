@@ -10,13 +10,18 @@ FROM
   SELECT
     /*+ NO_CPU_COSTING */
     /*TAY:       Cross_Ref.PeopleSoft_ac AS ACCOUNT,*/
-    PSA.R12_Account AS ACCOUNT, gl_ledgers.ledger_id AS ledger, gl_balances.period_name AS fiscal_year,
+    -- -SS- issuer 88: PSA.R12_Account AS ACCOUNT, 
+    AFU.R12_ACCOUNT AS ACCOUNT, -- -SS- issuer 88
+    gl_ledgers.ledger_id AS ledger, gl_balances.period_name AS fiscal_year,
     CASE
       WHEN gl_ledgers.ledger_id = 2022
       THEN 'USA'
       WHEN gl_ledgers.ledger_id = 2041
       THEN 'CAN'
-    END AS COUNTRY_INDICATOR, SUM(DECODE(gl_balances.period_name, :RunDate, gl_balances.BEGIN_BALANCE_DR - gl_balances.BEGIN_BALANCE_CR, 0)) AS begbal_base, psa.DESCR || ' - (R12 A/C : ' ||gl_code_combinations.segment4 ||'-' ||gl_ledgers.name ||')' AS DESCR
+    END AS COUNTRY_INDICATOR, SUM(DECODE(gl_balances.period_name, :RunDate, gl_balances.BEGIN_BALANCE_DR - gl_balances.BEGIN_BALANCE_CR, 0)) AS begbal_base, 
+    -- -SS- issuer 88: psa.DESCR
+    AFU.DESCR -- -SS- issuer 88
+     || ' - (R12 A/C : ' ||gl_code_combinations.segment4 ||'-' ||gl_ledgers.name ||')' AS DESCR
     /*TAY:      FROM SY_120_GL_LEDGERS_EW gl_ledgers, SY_120_GL_BALANCES_EW gl_balances, SY_120_GL_CODE_COMBO_EW gl_code_combinations,*/
     /*TAY:           OTR_TRANE_ACCOUNTS_PS psa,*/
   FROM SY_120_GL_LEDGERS_EW gl_ledgers
@@ -24,9 +29,14 @@ FROM
   ON gl_balances.ledger_id = gl_ledgers.ledger_id
   INNER JOIN SY_120_GL_CODE_COMBO_EW gl_code_combinations
   ON gl_code_combinations.code_combination_id = gl_balances.code_combination_id
+  /* -SS- issuer 88
   RIGHT OUTER JOIN R12_TRANE_ACCOUNTS_PS PSA
   ON gl_code_combinations.Segment4 = PSA.R12_Account
-    /* R12_2_R12 */
+  */
+    -- -SS- NEW
+  RIGHT OUTER JOIN R12_ACCOUNT_FILTER_UPD AFU
+  ON AFU.R12_ACCOUNT = GL_CODE_COMBINATIONS.SEGMENT4
+    -- -SS- /NEW
     /*TAY:           (SELECT a.BUSINESS_UNIT PS_BU, A.ORACLE_XREF_VALUE Oracle_BU
     FROM dbo.ps_trane_R12_xref a
     WHERE Recname_xref IN ('ENTITY')
@@ -99,13 +109,19 @@ FROM
   AND GL_CODE_COMBINATIONS.Segment2 LIKE 'GL00%'
   AND gl_code_combinations.Segment4 IN('281951', '296551')
     /*      GROUP BY Cross_Ref.PeopleSoft_ac, gl_ledgers.ledger_id, gl_balances.period_name,*/
-  GROUP BY PSA.R12_Account, gl_ledgers.ledger_id, gl_balances.period_name,
+  GROUP BY 
+    -- -SS- issue 88: PSA.R12_Account, 
+    AFU.R12_ACCOUNT, -- -SS- issue 88
+    gl_ledgers.ledger_id, gl_balances.period_name,
     CASE
       WHEN gl_ledgers.ledger_id = 2022
       THEN 'USA'
       WHEN gl_ledgers.ledger_id = 2041
       THEN 'CAN'
-    END, psa.DESCR || ' - (R12 A/C : ' ||gl_code_combinations.segment4 ||'-' ||gl_ledgers.name ||')'
+    END, 
+    -- -SS- issue 88: psa.DESCR
+    AFU.DESCR -- -SS- issue 88
+     || ' - (R12 A/C : ' ||gl_code_combinations.segment4 ||'-' ||gl_ledgers.name ||')'
   ) begbalances --,
 RIGHT OUTER JOIN
   (
@@ -113,13 +129,18 @@ RIGHT OUTER JOIN
   SELECT
     /*+ NO_CPU_COSTING */
     /*TAY:       Cross_Ref.PeopleSoft_ac AS ACCOUNT,*/
-    PSA.R12_Account AS ACCOUNT, gl_ledgers.ledger_id AS ledger, gl_balances.period_name AS fiscal_year,
+    -- -SS- issue 88: PSA.R12_Account AS ACCOUNT, 
+    AFU.R12_ACCOUNT AS ACCOUNT, -- -SS- issue 88
+    gl_ledgers.ledger_id AS ledger, gl_balances.period_name AS fiscal_year,
     CASE
       WHEN gl_ledgers.ledger_id = 2022
       THEN 'USA'
       WHEN gl_ledgers.ledger_id = 2041
       THEN 'CAN'
-    END AS COUNTRY_INDICATOR, NVL(SUM(gl_balances.begin_balance_dr + gl_balances.period_net_dr - gl_balances.begin_balance_cr - gl_balances.period_net_cr), 0) AS EndBal_base, psa.DESCR || ' - (R12 A/C : ' ||gl_code_combinations.segment4 ||'-' ||gl_ledgers.name ||')' AS DESCR
+    END AS COUNTRY_INDICATOR, NVL(SUM(gl_balances.begin_balance_dr + gl_balances.period_net_dr - gl_balances.begin_balance_cr - gl_balances.period_net_cr), 0) AS EndBal_base, 
+    -- -SS- issue 88: psa.DESCR
+    AFU.DESCR -- -SS- issue 88
+     || ' - (R12 A/C : ' ||gl_code_combinations.segment4 ||'-' ||gl_ledgers.name ||')' AS DESCR
     /*TAY:      FROM SY_120_GL_LEDGERS_EW gl_ledgers, SY_120_GL_BALANCES_EW gl_balances, SY_120_GL_CODE_COMBO_EW gl_code_combinations,*/
     /*TAY:           OTR_TRANE_ACCOUNTS_PS psa,*/
   FROM SY_120_GL_LEDGERS_EW gl_ledgers
@@ -127,10 +148,15 @@ RIGHT OUTER JOIN
   ON gl_balances.ledger_id = gl_ledgers.ledger_id
   INNER JOIN SY_120_GL_CODE_COMBO_EW gl_code_combinations
   ON gl_code_combinations.code_combination_id = gl_balances.code_combination_id
+  /* -SS- issue 88
   RIGHT OUTER JOIN R12_TRANE_ACCOUNTS_PS PSA
   ON gl_code_combinations.Segment4 = PSA.R12_Account
-    /* R12_2_R12 */
-    /*TAY:         (SELECT a.BUSINESS_UNIT PS_BU,
+  */
+    -- -SS- NEW
+  RIGHT OUTER JOIN R12_ACCOUNT_FILTER_UPD AFU
+  ON AFU.R12_ACCOUNT = GL_CODE_COMBINATIONS.SEGMENT4
+    -- -SS- /NEW
+      /*TAY:         (SELECT a.BUSINESS_UNIT PS_BU,
     A.ORACLE_XREF_VALUE Oracle_BU
     FROM dbo.ps_trane_R12_xref   a
     WHERE Recname_xref IN ('ENTITY')
@@ -208,13 +234,19 @@ RIGHT OUTER JOIN
   AND GL_CODE_COMBINATIONS.Segment2 LIKE 'GL00%'
   AND gl_code_combinations.Segment4 IN('281951', '296551')
     /*TAY:      GROUP BY Cross_Ref.PeopleSoft_ac, gl_ledgers.ledger_id, gl_balances.period_name,*/
-  GROUP BY PSA.R12_Account, gl_ledgers.ledger_id, gl_balances.period_name,
+  GROUP BY 
+    -- -SS- issue 88: PSA.R12_Account, 
+    AFU.R12_ACCOUNT, -- -SS- issue 88
+    gl_ledgers.ledger_id, gl_balances.period_name,
     CASE
       WHEN gl_ledgers.ledger_id = 2022
       THEN 'USA'
       WHEN gl_ledgers.ledger_id = 2041
       THEN 'CAN'
-    END, psa.DESCR || ' - (R12 A/C : ' ||gl_code_combinations.segment4 ||'-' ||gl_ledgers.name ||')'
+    END, 
+    -- -SS- issue 88: psa.DESCR
+    AFU.DESCR -- -SS- issue 88
+     || ' - (R12 A/C : ' ||gl_code_combinations.segment4 ||'-' ||gl_ledgers.name ||')'
   ) endingbalances ON begbalances.Account = endingbalances.Account
 AND begbalances.Fiscal_year = endingbalances.Fiscal_year
 AND begbalances.ledger = endingbalances.Ledger

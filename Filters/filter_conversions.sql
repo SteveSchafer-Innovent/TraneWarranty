@@ -29,6 +29,9 @@ select distinct R12_ACCOUNT from BH.R12_GL_CODE_COMBINATIONS where ps_segment2 l
 select distinct r12_location from BH.R12_GL_CODE_COMBINATIONS where ps_segment3 = 'SL00' order by r12_location;
 -- 113602, 115615, 119001, 119007, 129001, 129003, 129004, 9999
 
+select distinct r12_location from BH.R12_GL_CODE_COMBINATIONS where ps_segment3 = 'GL00' order by r12_location;
+-- 100005, 119001, 119007, 129004, 9999
+
 select distinct r12_location from BH.R12_GL_CODE_COMBINATIONS where ps_segment3 = 'TCA0' order by r12_location;
 -- 119001, 129001, 129004, 9999
 
@@ -65,6 +68,9 @@ select ps_segment3, count(*) from BH.R12_GL_CODE_COMBINATIONS where r12_location
 
 select distinct r12_location from R12_TRNCO_CM_DIST_PSB where ps_deptid = 'SL00' order by r12_location;
 -- 113602, 119001, 129001, 129003
+
+select distinct r12_location from R12_TRNCO_CM_DIST_PSB where ps_deptid = 'GL00' order by r12_location;
+-- 119001, 119007, 129001
 
 select distinct r12_location from R12_TRNCO_CM_DIST_PSB where ps_deptid = 'TCA0' order by r12_location;
 -- 129001, 129004
@@ -416,6 +422,21 @@ select distinct R12_LOCATION, PS_SEGMENT3 as PS_DEPTID from BH.R12_GL_CODE_COMBI
 where PS_DEPTID = 'SL00' 
 order by R12_LOCATION;
 -- 113602, 115615, 119001, 119007, 129001, 129003, 129004, 9999
+
+-- LIKE_GL00
+select distinct R12_LOCATION
+from(
+select distinct R12_LOCATION, PS_DEPTID from R12_TRNCO_CM_DIST_PSB
+union
+select distinct R12_LOCATION, PS_SEGMENT3 as PS_DEPTID from BH.R12_GL_CODE_COMBINATIONS
+union
+select distinct R12_LOCATION, PS_DEPTID from R12_BI_ACCT_ENTRY_PSB
+)
+where PS_DEPTID = 'GL00' 
+order by R12_LOCATION;
+-- 100005, 119001, 119007, 129001, 129004, 9999
+
+describe OTR_BI_ACCT_ENTRY_PSB;
 
 -- IN_SL00_TCA0
 select distinct R12_LOCATION

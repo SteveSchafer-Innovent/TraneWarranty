@@ -106,7 +106,8 @@ FROM
     -- -SS- /NEW
     -- -SS- AND GL_CODE_COMBINATIONS.Segment1 IN ('GS001','GS165')
     /*TAY: Need R12 filter WIP*/
-  AND GL_CODE_COMBINATIONS.Segment2 LIKE 'GL00%'
+  AND GL_CODE_COMBINATIONS.Segment2 IN (100005, 119001, 119007, 129001, 129004)
+  -- -SS- LIKE 'GL00%'
   AND gl_code_combinations.Segment4 IN('281951', '296551')
     /*      GROUP BY Cross_Ref.PeopleSoft_ac, gl_ledgers.ledger_id, gl_balances.period_name,*/
   GROUP BY 
@@ -231,7 +232,8 @@ RIGHT OUTER JOIN
     -- -SS- /NEW
     -- -SS- AND GL_CODE_COMBINATIONS.Segment1 IN ('GS001','GS165')
     /*TAY: Need R12 filter WIP*/
-  AND GL_CODE_COMBINATIONS.Segment2 LIKE 'GL00%'
+  AND GL_CODE_COMBINATIONS.Segment2 IN (100005, 119001, 119007, 129001, 129004)
+  -- -SS- LIKE 'GL00%'
   AND gl_code_combinations.Segment4 IN('281951', '296551')
     /*TAY:      GROUP BY Cross_Ref.PeopleSoft_ac, gl_ledgers.ledger_id, gl_balances.period_name,*/
   GROUP BY 

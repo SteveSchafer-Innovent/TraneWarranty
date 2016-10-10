@@ -196,7 +196,7 @@ SELECT
 								AND A.RUN_PERIOD >= TO_DATE('1-'||:RUNDATE, 'dd-mon-yy')
 								AND A.RUN_PERIOD < ADD_MONTHS(TO_DATE('1-'||:RUNDATE, 'dd-mon-yy'), 1)
 								-- -SS- NEW
-								AND AFU.BETWEEN_523000_546900 = 'Y' -- -SS- ???? issue 67
+								AND AFU.BETWEEN_523000_546900 = 'Y'
 								-- -SS- /NEW
 								-- -SS- AND A.GL_ACCOUNT BETWEEN '523000' AND '546900'
 								AND A.SHIP_PERIOD >= TRUNC(TO_DATE(TO_DATE('1-'||:RUNDATE, 'dd-mon-yy')), 'YEAR')

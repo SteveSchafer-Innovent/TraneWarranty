@@ -346,7 +346,7 @@ LEFT OUTER JOIN
     AND a.RUN_PERIOD >= TO_DATE('1-'||:RunDate, 'dd-mon-yy')
     AND a.RUN_PERIOD < add_months(to_date('1-'||:RunDate, 'dd-mon-yy'), 1)
       -- -SS- NEW
-    AND AFU.LIKE_5 = 'Y' -- -SS- ???? issue 67
+    AND AFU.LIKE_5 = 'Y'
       -- -SS- /NEW
       -- -SS- AND A.ACCOUNT LIKE '5%'
     AND A.FORECAST_PERIOD >=

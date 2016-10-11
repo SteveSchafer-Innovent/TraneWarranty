@@ -1,3 +1,4 @@
+CREATE OR REPLACE VIEW MAP_EXPENSEWARRANTYDATA_VW AS 
 /* 1st Year Warranty*/
 SELECT
 		/*+  no_cpu_costing */
@@ -782,3 +783,4 @@ UNION
 						--5806504,6330982
 						--)
 			)
+WITH READ ONLY;

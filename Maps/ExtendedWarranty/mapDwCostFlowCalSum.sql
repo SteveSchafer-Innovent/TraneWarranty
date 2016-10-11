@@ -1,3 +1,4 @@
+CREATE OR REPLACE VIEW MAP_COSTFLOWCALSUM_VW AS 
 SELECT
 		'Factor' AS HEADER,
 		S.REPORT_TYPE,
@@ -577,3 +578,5 @@ SELECT
 		--WHERE S.country_indicator IN ('USA')
 		--AND S.report_type = '2-16'
 		--AND S.gl_account IN  ('523500')--'526892','526893')--,'528100','528200','528300','532100') 
+ WITH READ ONLY
+;		

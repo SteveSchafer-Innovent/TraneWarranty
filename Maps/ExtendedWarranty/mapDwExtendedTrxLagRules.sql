@@ -1,3 +1,4 @@
+CREATE OR REPLACE VIEW MAP_EXTENDEDTRXLAGRULES_VW AS 
 /* SR: NOT USED ANY PLACE
 Query is probably not corrected as LAG table does is not bound to other queries.
 In addition LAG query is DWT, but OTR_TRANE_ACCOUNTS_PS is in DRT
@@ -45,4 +46,4 @@ SELECT DISTINCT
 		--case when REPORT_TYPE ='1-15' then 'USA'  end AS  COUNTRY_INDICATOR,
 		--case when REPORT_TYPE ='1-15' THEN '1st Year Labor Warr' END  DESCRIPTION
 		-- from sy_ext_lag_rules_upd
-		;
+WITH READ ONLY;		

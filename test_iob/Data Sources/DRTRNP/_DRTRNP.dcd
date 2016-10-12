@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<com.actuate.istudio.iod.model:IRelationalConnection xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:com.actuate.istudio.iod.model="http:///com/actuate/istudio/iod/model.ecore" displayName="__DRTRNP.dcd" description="" useDefaultEncryption="true" version="1.1" useEncryptedList="true" securityPolicy="TranslatedCredential" configKey="" databaseType="Oracle_10g">
+  <encryptedProperties>
+    <values>password</values>
+  </encryptedProperties>
+  <properties key="username" value="ccdcat"/>
+  <properties key="password" value="TeV90vp0tW0="/>
+  <properties key="server" value="DWTRNT"/>
+  <properties key="port" value="1521"/>
+  <properties key="sid" value="DWTRNT"/>
+  <properties key="tnsservername" value=""/>
+  <properties key="tnsnamesfile" value=""/>
+  <newServerProperties propertyKey="username" displayName="User name" defaultValue="" value="ccdcat"/>
+  <newServerProperties propertyKey="password" displayName="Password" mask="true" defaultValue="" value="TeV90vp0tW0="/>
+  <newServerProperties propertyKey="server" displayName="Server" defaultValue="" value="DWTRNT"/>
+  <newServerProperties propertyKey="port" displayName="Port" defaultValue="" value="1521"/>
+  <newServerProperties propertyKey="sid" displayName="SID" defaultValue="" value="DWTRNT"/>
+  <newServerProperties propertyKey="tnsservername" displayName="TNS Server Name" defaultValue="" value=""/>
+  <newServerProperties propertyKey="tnsnamesfile" displayName="TNS Names File" defaultValue="" value=""/>
+</com.actuate.istudio.iod.model:IRelationalConnection>

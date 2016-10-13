@@ -65,7 +65,7 @@ BH holds the old Oracle R9 Billing history data.
 DBO holds all of the current application tables including PeopleSoft.
 ODS_EBS will hold the new R12 tables.
 
-DWTRNT DBO Summer4
+DWTRNT DBO Summer#01
 DRTRNT DBO Summer@01
 
 Reserve Sales Detail Report
@@ -133,3 +133,7 @@ FORMAT - partial
 RUN QUERY - partial
 null -> NA - done for accounts, SL00, locations
 products - done
+
+DM_030_REV_RELEASE
+	SY_030_FORECAST_REV_STG
+	DM_030_SEASONALIZATION

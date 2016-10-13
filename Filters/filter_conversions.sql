@@ -29,9 +29,6 @@ select distinct R12_ACCOUNT from BH.R12_GL_CODE_COMBINATIONS where ps_segment2 l
 select distinct r12_location from BH.R12_GL_CODE_COMBINATIONS where ps_segment3 = 'SL00' order by r12_location;
 -- 113602, 115615, 119001, 119007, 129001, 129003, 129004, 9999
 
-select distinct r12_location from BH.R12_GL_CODE_COMBINATIONS where ps_segment3 = 'GL00' order by r12_location;
--- 100005, 119001, 119007, 129004, 9999
-
 select distinct r12_location from BH.R12_GL_CODE_COMBINATIONS where ps_segment3 = 'TCA0' order by r12_location;
 -- 119001, 129001, 129004, 9999
 
@@ -68,9 +65,6 @@ select ps_segment3, count(*) from BH.R12_GL_CODE_COMBINATIONS where r12_location
 
 select distinct r12_location from R12_TRNCO_CM_DIST_PSB where ps_deptid = 'SL00' order by r12_location;
 -- 113602, 119001, 129001, 129003
-
-select distinct r12_location from R12_TRNCO_CM_DIST_PSB where ps_deptid = 'GL00' order by r12_location;
--- 119001, 119007, 129001
 
 select distinct r12_location from R12_TRNCO_CM_DIST_PSB where ps_deptid = 'TCA0' order by r12_location;
 -- 129001, 129004
@@ -423,21 +417,6 @@ where PS_DEPTID = 'SL00'
 order by R12_LOCATION;
 -- 113602, 115615, 119001, 119007, 129001, 129003, 129004, 9999
 
--- LIKE_GL00
-select distinct R12_LOCATION
-from(
-select distinct R12_LOCATION, PS_DEPTID from R12_TRNCO_CM_DIST_PSB
-union
-select distinct R12_LOCATION, PS_SEGMENT3 as PS_DEPTID from BH.R12_GL_CODE_COMBINATIONS
-union
-select distinct R12_LOCATION, PS_DEPTID from R12_BI_ACCT_ENTRY_PSB
-)
-where PS_DEPTID = 'GL00' 
-order by R12_LOCATION;
--- 100005, 119001, 119007, 129001, 129004, 9999
-
-describe OTR_BI_ACCT_ENTRY_PSB;
-
 -- IN_SL00_TCA0
 select distinct R12_LOCATION
 from(
@@ -497,8 +476,94 @@ from OTR_BI_ACCT_ENTRY_PSB;
 select * from DBO.R12_TRANE_PRODUCTS_PS where rownum < 100 and r12_product <> 9999;
 
 select * from DBO.R12_TRANE_PRODUCTS_PS where ps_product = '804900';
-select distinct plnt_gl_prod, part_type, parts_prod_code_ind from R12_ORACLE_PS_REV_RCPO;
+select distinct ps_gl_prod, r12_product, plnt_gl_prod, part_type, parts_prod_code_ind from R12_ORACLE_PS_REV_RCPO;
+desc R12_ORACLE_PS_REV_RCPO;
 
 select * from r12_trane_accounts_ps 
 where PS_ACCOUNT LIKE '0620%'
 OR PS_ACCOUNT LIKE '8062%';
+
+-- standard warranty existing
+select a.r12_account, a.typ, listagg(ps_account || '-' || DESCR, ','||chr(10) ) WITHIN GROUP (ORDER BY ps_account) as "ps_accts"
+from (
+	-- select '281911' as r12_account, 'S' as typ from dual union all
+	-- select '281912', 'S' from dual	union all
+	-- select '281915', 'S' from dual	union all
+	-- select '281916', 'S' from dual	union all
+	-- select '296519' , 'S' from dual	union all
+	-- select '296511', 'S' from dual	union all
+	-- select '296519', 'S' from dual	union all
+	-- select '296521', 'S' from dual	union all
+	select '511701' as r12_account, 'SE' as typ from dual	union all
+	select '511702' , 'SE' from dual	union all
+	select '511703' , 'SE' from dual	union all
+	select '511704' , 'SE' from dual	union all
+	select '511705' , 'SE' from dual	union all
+	select '511706' , 'SE' from dual	union all
+	select '511707' , 'SE' from dual	union all
+	select '511709' , 'SE' from dual	union all
+	-- select '281913', 'S' from dual	union all
+	-- select '281917', 'S' from dual	union all
+	-- select '281920', 'S' from dual	union all
+	-- select '281921', 'S' from dual	union all
+	-- select '296512', 'S' r12_account from dual	union all
+	select '511707' , 'SE' from dual	union all
+	-- select '296513' , 'S' from dual	union all
+	-- select '296515' , 'S' from dual	union all
+	-- select '296516' , 'S' from dual	union all
+	-- select '296517' , 'S' from dual	union all
+	-- select '296520' , 'S' from dual	union all
+	-- select '281919' , 'S' from dual	union all
+	select '411101' , 'R' from dual union all
+	select '411301' , 'R' from dual union all
+	select '411501' , 'R' from dual
+) a
+left outer join r12_trane_accounts_ps t on t.r12_account = a.r12_account
+group by a.r12_account, a.typ
+order by 1 
+;
+select distinct a.r12_account, ps_account, a.typ
+from (
+	-- select '281911' as r12_account, 'S' as typ from dual union all
+	-- select '281912', 'S' from dual	union all
+	-- select '281915', 'S' from dual	union all
+	-- select '281916', 'S' from dual	union all
+	-- select '296519' , 'S' from dual	union all
+	-- select '296511', 'S' from dual	union all
+	-- select '296519', 'S' from dual	union all
+	-- select '296521', 'S' from dual	union all
+	select '511701' as r12_account, 'SE' as typ from dual	union all
+	select '511702' , 'SE' from dual	union all
+	select '511703' , 'SE' from dual	union all
+	select '511704' , 'SE' from dual	union all
+	select '511705' , 'SE' from dual	union all
+	select '511706' , 'SE' from dual	union all
+	select '511707' , 'SE' from dual	union all
+	select '511709' , 'SE' from dual	union all
+	-- select '281913', 'S' from dual	union all
+	-- select '281917', 'S' from dual	union all
+	-- select '281920', 'S' from dual	union all
+	-- select '281921', 'S' from dual	union all
+	-- select '296512', 'S' r12_account from dual	union all
+	select '511707' , 'SE' from dual	union all
+	-- select '296513' , 'S' from dual	union all
+	-- select '296515' , 'S' from dual	union all
+	-- select '296516' , 'S' from dual	union all
+	-- select '296517' , 'S' from dual	union all
+	-- select '296520' , 'S' from dual	union all
+	-- select '281919' , 'S' from dual	union all
+	select '411101' , 'R' from dual union all
+	select '411301' , 'R' from dual union all
+	select '411501' , 'R' from dual
+) a
+inner join r12_trane_accounts_ps t on t.r12_account = a.r12_account
+order by 1 
+;
+;
+
+select distinct length(plnt_gl_prod), length(gl_prod) from otr_oracle_ps_rev_rcpo;
+
+-- 1638
+SELECT COUNT(*) 
+FROM OTR_ORACLE_PS_REV_RCPO;
+WHERE GL_PROD IS NULL;

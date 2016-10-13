@@ -1,5 +1,6 @@
+--  fll.flex_value = gcc.segment2
 SELECT
-		FLL.DESCRIPTION
+		fll.flex_value location_code, FLL.DESCRIPTION
 	FROM
 		FND_FLEX_VALUES_VL FLL
 	WHERE

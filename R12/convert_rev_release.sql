@@ -12,3 +12,20 @@ alter table DM_030_REV_RELEASE rename column R12_GL_ACCOUNT to GL_ACCOUNT;
 
 commit;
 
+alter table DM_030_REV_RELEASE add R12_GL_ACCOUNT_DESCR varchar2(128);
+
+update DM_030_REV_RELEASE CA
+set R12_GL_ACCOUNT_DESCR = (select DESCR from R12_ACCOUNT_FILTER_UPD AFU where AFU.R12_ACCOUNT = CA.GL_ACCOUNT)
+where exists (select DESCR from R12_ACCOUNT_FILTER_UPD AFU where AFU.R12_ACCOUNT = CA.GL_ACCOUNT);
+
+select count(*) from DM_030_REV_RELEASE where R12_GL_ACCOUNT_DESCR is null;
+
+alter table DM_030_REV_RELEASE rename column GL_ACCOUNT_DESCR to PS_GL_ACCOUNT_DESCR;
+alter table DM_030_REV_RELEASE rename column R12_GL_ACCOUNT_DESCR to GL_ACCOUNT_DESCR;
+
+commit;
+
+select count(*) from DM_030_REV_RELEASE where PS_GL_ACCOUNT_DESCR <> GL_ACCOUNT_DESCR;
+
+select distinct GL_ACCOUNT, PS_GL_ACCOUNT_DESCR, GL_ACCOUNT_DESCR from DM_030_REV_RELEASE;
+

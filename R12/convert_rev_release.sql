@@ -1,0 +1,14 @@
+describe DM_030_REV_RELEASE;
+alter table DM_030_REV_RELEASE add R12_GL_ACCOUNT VARCHAR2(10);
+
+update DM_030_REV_RELEASE RR set
+R12_GL_ACCOUNT=(select R12_ACCOUNT from R12_TRANE_ACCOUNTS_PS PSA where PSA.PS_ACCOUNT = RR.GL_ACCOUNT)
+where exists (select R12_ACCOUNT from R12_TRANE_ACCOUNTS_PS PSA where PSA.PS_ACCOUNT = RR.GL_ACCOUNT);
+
+select * from DM_030_REV_RELEASE;
+
+alter table DM_030_REV_RELEASE rename column GL_ACCOUNT to PS_GL_ACCOUNT;
+alter table DM_030_REV_RELEASE rename column R12_GL_ACCOUNT to GL_ACCOUNT;
+
+commit;
+

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<com.actuate.istudio.iod.model:IRelationalConnection xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:com.actuate.istudio.iod.model="http:///com/actuate/istudio/iod/model.ecore" displayName="__DRTRNP.dcd" description="" useDefaultEncryption="true" version="1.1" useEncryptedList="true" securityPolicy="TranslatedCredential" configKey="" databaseType="Oracle_10g">
+<com.actuate.istudio.iod.model:IRelationalConnection xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:com.actuate.istudio.iod.model="http:///com/actuate/istudio/iod/model.ecore" displayName="_test_cache.dcd" description="" useDefaultEncryption="true" version="1.1" useEncryptedList="true" securityPolicy="TranslatedCredential" configKey="" isCacheConnection="true" databaseType="Oracle_11g">
   <encryptedProperties>
     <values>password</values>
   </encryptedProperties>
@@ -17,4 +17,6 @@
   <newServerProperties propertyKey="sid" displayName="SID" defaultValue="" value="DRTRNT"/>
   <newServerProperties propertyKey="tnsservername" displayName="TNS Server Name" defaultValue="" value=""/>
   <newServerProperties propertyKey="tnsnamesfile" displayName="TNS Names File" defaultValue="" value=""/>
+  <serverProperties key="Catalog" value=""/>
+  <serverProperties key="Schema" value="CCDCAU"/>
 </com.actuate.istudio.iod.model:IRelationalConnection>

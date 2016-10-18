@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<com.actuate.istudio.iod.model:ICachedSource xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:com.actuate.istudio.iod.model="http:///com/actuate/istudio/iod/model.ecore" version="1.1" tableName="srvr_info_map">
+  <columns>
+    <columns xsi:type="com.actuate.istudio.iod.model:IRelationalColumn" displayName="INSTANCE_NUMBER" dataType="Double" name="INSTANCE_NUMBER" displayFormat="" hasNull="true" sourceName="INSTANCE_NUMBER" sourceOptional="true" nativeDataType="FLOAT" nativeDataTypeCode="8">
+      <source source="//@source" key="c.INSTANCE_NUMBER">
+        <value href="../../Data%20Sources/DRTRNP/srvr_info_map.sma#//@columns/@columns.0"/>
+      </source>
+    </columns>
+    <columns xsi:type="com.actuate.istudio.iod.model:IRelationalColumn" displayName="INSTANCE_NAME" dataType="Varchar" name="INSTANCE_NAME" displayLength="16" displayFormat="" hasNull="true" sourceName="INSTANCE_NAME" sourceOptional="true" nativeDataType="nvarchar2" nativeDataTypeCode="12" nativeSize="16">
+      <source source="//@source" key="c.INSTANCE_NAME">
+        <value href="../../Data%20Sources/DRTRNP/srvr_info_map.sma#//@columns/@columns.1"/>
+      </source>
+    </columns>
+    <columns xsi:type="com.actuate.istudio.iod.model:IRelationalColumn" displayName="HOST_NAME" dataType="Varchar" name="HOST_NAME" displayLength="64" displayFormat="" hasNull="true" sourceName="HOST_NAME" sourceOptional="true" nativeDataType="nvarchar2" nativeDataTypeCode="12" nativeSize="64">
+      <source source="//@source" key="c.HOST_NAME">
+        <value href="../../Data%20Sources/DRTRNP/srvr_info_map.sma#//@columns/@columns.2"/>
+      </source>
+    </columns>
+    <columns xsi:type="com.actuate.istudio.iod.model:IRelationalColumn" displayName="VERSION" dataType="Varchar" name="VERSION" displayLength="17" displayFormat="" hasNull="true" sourceName="VERSION" sourceOptional="true" nativeDataType="nvarchar2" nativeDataTypeCode="12" nativeSize="17">
+      <source source="//@source" key="c.VERSION">
+        <value href="../../Data%20Sources/DRTRNP/srvr_info_map.sma#//@columns/@columns.3"/>
+      </source>
+    </columns>
+    <columns xsi:type="com.actuate.istudio.iod.model:IRelationalColumn" displayName="STARTUP_TIME" dataType="Timestamp" name="STARTUP_TIME" displayLength="19" displayFormat="" hasNull="true" sourceName="STARTUP_TIME" sourceOptional="true" nativeDataType="TIMESTAMP" nativeDataTypeCode="93" nativeSize="23" nativeDecimalDigits="3">
+      <source source="//@source" key="c.STARTUP_TIME">
+        <value href="../../Data%20Sources/DRTRNP/srvr_info_map.sma#//@columns/@columns.4"/>
+      </source>
+    </columns>
+    <columns xsi:type="com.actuate.istudio.iod.model:IRelationalColumn" displayName="STATUS" dataType="Varchar" name="STATUS" displayLength="12" displayFormat="" hasNull="true" sourceName="STATUS" sourceOptional="true" nativeDataType="nvarchar2" nativeDataTypeCode="12" nativeSize="12">
+      <source source="//@source" key="c.STATUS">
+        <value href="../../Data%20Sources/DRTRNP/srvr_info_map.sma#//@columns/@columns.5"/>
+      </source>
+    </columns>
+    <columns xsi:type="com.actuate.istudio.iod.model:IRelationalColumn" displayName="PARALLEL" dataType="Varchar" name="PARALLEL" displayLength="6" displayFormat="" hasNull="true" sourceName="PARALLEL" sourceOptional="true" nativeDataType="nvarchar2" nativeDataTypeCode="12" nativeSize="3">
+      <source source="//@source" key="c.PARALLEL">
+        <value href="../../Data%20Sources/DRTRNP/srvr_info_map.sma#//@columns/@columns.6"/>
+      </source>
+    </columns>
+    <columns xsi:type="com.actuate.istudio.iod.model:IRelationalColumn" displayName="THREAD#" dataType="Double" name="&quot;THREAD#&quot;" displayFormat="" hasNull="true" sourceName="&quot;THREAD#&quot;" sourceOptional="true" nativeDataType="FLOAT" nativeDataTypeCode="8">
+      <source source="//@source" key="c.&quot;THREAD#&quot;">
+        <value href="../../Data%20Sources/DRTRNP/srvr_info_map.sma#//@columns/@columns.7"/>
+      </source>
+    </columns>
+    <columns xsi:type="com.actuate.istudio.iod.model:IRelationalColumn" displayName="ARCHIVER" dataType="Varchar" name="ARCHIVER" displayLength="9" displayFormat="" hasNull="true" sourceName="ARCHIVER" sourceOptional="true" nativeDataType="nvarchar2" nativeDataTypeCode="12" nativeSize="7">
+      <source source="//@source" key="c.ARCHIVER">
+        <value href="../../Data%20Sources/DRTRNP/srvr_info_map.sma#//@columns/@columns.8"/>
+      </source>
+    </columns>
+    <columns xsi:type="com.actuate.istudio.iod.model:IRelationalColumn" displayName="LOG_SWITCH_WAIT" dataType="Varchar" name="LOG_SWITCH_WAIT" displayLength="15" displayFormat="" hasNull="true" sourceName="LOG_SWITCH_WAIT" sourceOptional="true" nativeDataType="nvarchar2" nativeDataTypeCode="12" nativeSize="15">
+      <source source="//@source" key="c.LOG_SWITCH_WAIT">
+        <value href="../../Data%20Sources/DRTRNP/srvr_info_map.sma#//@columns/@columns.9"/>
+      </source>
+    </columns>
+    <columns xsi:type="com.actuate.istudio.iod.model:IRelationalColumn" displayName="LOGINS" dataType="Varchar" name="LOGINS" displayLength="10" displayFormat="" hasNull="true" sourceName="LOGINS" sourceOptional="true" nativeDataType="nvarchar2" nativeDataTypeCode="12" nativeSize="10">
+      <source source="//@source" key="c.LOGINS">
+        <value href="../../Data%20Sources/DRTRNP/srvr_info_map.sma#//@columns/@columns.10"/>
+      </source>
+    </columns>
+    <columns xsi:type="com.actuate.istudio.iod.model:IRelationalColumn" displayName="SHUTDOWN_PENDING" dataType="Varchar" name="SHUTDOWN_PENDING" displayLength="6" displayFormat="" hasNull="true" sourceName="SHUTDOWN_PENDING" sourceOptional="true" nativeDataType="nvarchar2" nativeDataTypeCode="12" nativeSize="3">
+      <source source="//@source" key="c.SHUTDOWN_PENDING">
+        <value href="../../Data%20Sources/DRTRNP/srvr_info_map.sma#//@columns/@columns.11"/>
+      </source>
+    </columns>
+    <columns xsi:type="com.actuate.istudio.iod.model:IRelationalColumn" displayName="DATABASE_STATUS" dataType="Varchar" name="DATABASE_STATUS" displayLength="17" displayFormat="" hasNull="true" sourceName="DATABASE_STATUS" sourceOptional="true" nativeDataType="nvarchar2" nativeDataTypeCode="12" nativeSize="17">
+      <source source="//@source" key="c.DATABASE_STATUS">
+        <value href="../../Data%20Sources/DRTRNP/srvr_info_map.sma#//@columns/@columns.12"/>
+      </source>
+    </columns>
+    <columns xsi:type="com.actuate.istudio.iod.model:IRelationalColumn" displayName="INSTANCE_ROLE" dataType="Varchar" name="INSTANCE_ROLE" displayLength="18" displayFormat="" hasNull="true" sourceName="INSTANCE_ROLE" sourceOptional="true" nativeDataType="nvarchar2" nativeDataTypeCode="12" nativeSize="18">
+      <source source="//@source" key="c.INSTANCE_ROLE">
+        <value href="../../Data%20Sources/DRTRNP/srvr_info_map.sma#//@columns/@columns.13"/>
+      </source>
+    </columns>
+    <columns xsi:type="com.actuate.istudio.iod.model:IRelationalColumn" displayName="ACTIVE_STATE" dataType="Varchar" name="ACTIVE_STATE" displayLength="10" displayFormat="" hasNull="true" sourceName="ACTIVE_STATE" sourceOptional="true" nativeDataType="nvarchar2" nativeDataTypeCode="12" nativeSize="9">
+      <source source="//@source" key="c.ACTIVE_STATE">
+        <value href="../../Data%20Sources/DRTRNP/srvr_info_map.sma#//@columns/@columns.14"/>
+      </source>
+    </columns>
+    <columns xsi:type="com.actuate.istudio.iod.model:IRelationalColumn" displayName="BLOCKED" dataType="Varchar" name="BLOCKED" displayLength="6" displayFormat="" hasNull="true" sourceName="BLOCKED" sourceOptional="true" nativeDataType="nvarchar2" nativeDataTypeCode="12" nativeSize="3">
+      <source source="//@source" key="c.BLOCKED">
+        <value href="../../Data%20Sources/DRTRNP/srvr_info_map.sma#//@columns/@columns.15"/>
+      </source>
+    </columns>
+  </columns>
+  <properties key="dbtype" value="Oracle_11g"/>
+  <connection href="_test_cache.dcd#/"/>
+  <source alias="srvr_info_map">
+    <source href="../../Data%20Sources/DRTRNP/srvr_info_map.sma#/"/>
+  </source>
+</com.actuate.istudio.iod.model:ICachedSource>

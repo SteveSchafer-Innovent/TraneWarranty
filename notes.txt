@@ -137,3 +137,36 @@ products - done
 DM_030_REV_RELEASE
 	SY_030_FORECAST_REV_STG
 	DM_030_SEASONALIZATION
+
+--------------------------------------------------------------------
+Actuate server:
+http://igrappndc808:8900/acadmin 
+You should use your ccdcaX name and TEST0816 pw.
+
+--------------------------------------------------------------------
+Monitor and kill Oracle processes:
+Login as DBO and run this:
+SELECT
+                              SESS.SID,
+                              SESS.SERIAL#,
+                              SESS.PROCESS,
+                              SESS.STATUS,
+                              SESS.USERNAME,
+                              SESS.SCHEMANAME,
+                              SQL.SQL_TEXT
+               FROM
+                              V$SESSION SESS
+               LEFT OUTER JOIN V$SQL SQL ON SQL.SQL_ID = SESS.SQL_ID
+               WHERE
+                              SESS.TYPE = 'USER'
+                             AND SESS.USERNAME IN('CCDCAS','CCDCAT', 'CCDCAU', 'ENT_RPT', 'ACTU_CACHE_ADMIN') ;
+
+If you see anything for those users, you can kill it with either of the following (DISCONNECT seems to work better).
+ALTER SYSTEM KILL SESSION 'SID , SERIAL#' IMMEDIATE;
+ALTER SYSTEM DISCONNECT SESSION 'SID , SERIAL#'' IMMEDIATE;
+
+e.g.
+ALTER SYSTEM KILL SESSION '100, 25578' IMMEDIATE;
+ALTER SYSTEM DISCONNECT SESSION '166, 24938' IMMEDIATE;
+
+

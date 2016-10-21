@@ -170,3 +170,14 @@ ALTER SYSTEM KILL SESSION '100, 25578' IMMEDIATE;
 ALTER SYSTEM DISCONNECT SESSION '166, 24938' IMMEDIATE;
 
 
+retrofit claims detail rox line 47
+under standard warranty
+37 cocession claims detail
+
+Cannot lock cache file
+C:\Program Files (x86)\Actuate11\eRDPro\cache/cachedir
+
+This design contains classes that could not be resulved:
+DBConnection
+WarrantyConcessionIOB
+Do you wish to continue?

@@ -1,4 +1,4 @@
-* Retrofit Detail Claims Qry */
+/* Retrofit Detail Claims Qry */
  select     /*+  no_cpu_costing */
 CLAIM_NUMBER, 
 STEP_NUMBER, 
@@ -346,4 +346,4 @@ where :?prmCountry
 /*system*/
  
 
-order by  COUNTRY_INDICATOR,TRXYEARMON
+order by  COUNTRY_INDICATOR,TRXYEARMONTH,GL_ACCOUNT

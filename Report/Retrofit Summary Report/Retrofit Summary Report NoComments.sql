@@ -1,6 +1,6 @@
-/* Retrofit Summary Qry */
+
 SELECT
-		/* NO_CPU_COSTING */
+		
 		AA.SPACE,
 		AA.COUNTRY_INDICATOR,
 		AA.GL_ACCOUNT,
@@ -11,10 +11,10 @@ SELECT
 		AA.LTD_MATERIAL_EXP,
 		AA.LTD_LABOR_EXP,
 		AA.LTD_TOTAL_EXP,
-		--,aa.RETROFIT_ID
+		
 		BB.RETROFIT_ID,
 		BB.RETROFIT_ID AS RETROFIT_ID1,
-		--,case when count (distinct aa.GL_DEPT ) > 1 AND aa.RETROFIT_ID =bb.RETROFIT_ID then  aa.RETROFIT_ID || ' (Multiple Departments)' else aa.RETROFIT_ID end
+		
 		AA.GL_DEPT,
 		AA.RETRO_NOTES,
 		AA."RS PERCENT",
@@ -84,7 +84,7 @@ SELECT
 	FROM
 		(
 			SELECT
-					/* NO_CPU_COSTING */
+					
 					'' AS SPACE,
 					A.COUNTRY_INDICATOR,
 					A.GL_ACCOUNT,
@@ -172,8 +172,8 @@ SELECT
 					RP.RETRO_START_DATE,
 					RP.RETRO_END_DATE,
 					RP.SCR_IND,
-					--nvl(rp.original_estimated_material,0) "Original Estimated Material",
-					--nvl(rp.original_estimated_labor,0) "Original Estimated Labor",
+					
+					
 					NVL(RP.ORIGINAL_ESTIMATED_LABOR, 0) + NVL(ORIGINAL_ESTIMATED_MATERIAL, 0) "TOTAL ESTIMATE",
 					SUM(A.EXPENSE_AMOUNT) AS "TOTAL_EXPENSE",
 					(NVL(RP.ORIGINAL_ESTIMATED_LABOR, 0) + NVL(ORIGINAL_ESTIMATED_MATERIAL, 0)) - SUM(A.EXPENSE_AMOUNT) AS "EXPENSE_VARIANCE",
@@ -191,9 +191,9 @@ SELECT
 						THEN 1
 						ELSE(RP.RETRO_NBR_TO_DO)
 					END) -(SUM(A.EXPENSE_AMOUNT) / B.UNITS_DONE) AS "TOTAL $ PER UNIT VARIENCE",
-					--(nvl(rp.original_estimated_material,0)/rp.retro_nbr_to_do ) as "Orig_Mat/units",
-					--(nvl(rp.original_estimated_labor,0)/rp.retro_nbr_to_do ) as "Orig_Lab/units",
-					--(nvl(rp.original_estimated_labor + original_estimated_material,0)/rp.retro_nbr_to_do ) as "Orig_Tot/units",
+					
+					
+					
 					A.NEW_RESOLVED_IND,
 					A.TRX_YEAR,
 					A.TRX_MONTH,
@@ -229,34 +229,29 @@ SELECT
 					FLN_RETROFIT_PROGRAM RP
 					INNER JOIN
 					(
-						/* Retrofit Material */
+						
 						SELECT
-								/* NO_CPU_COSTING */
+								
 								MLR.CLAIM_NBR AS CLAIM_NUMBER,
 								MLR.STEP_NBR AS STEP_NUMBER,
 								GLA.R12_ENTITY AS BUSINESS_UNIT,
-								-- -SS- GLA.COMPANY AS BUSINESS_UNIT,
+								
 								PRODGRP.PRODUCT_CATEGORY AS RESERVE_GROUP,
 								CTYPES.CLAIM_TYPE_DESCR AS CLAIM_TYPE,
 								SUM(MLR.EXP_TYPE_AMOUNT * - 1) AS EXPENSE_AMOUNT,
 								SUM(100 *(MLR.EXP_TYPE_AMOUNT * - 1 - TRUNC(MLR.EXP_TYPE_AMOUNT * - 1))) AS EXPENSE_AMOUNT_DEC,
 								RES_PCT.EXPENSE_TYPE_CATG AS MATERIAL_LABOR,
 								GLA.R12_ACCOUNT AS GL_ACCOUNT,
-								-- -SS- GLA.ACCOUNT AS GL_ACCOUNT,
+								
 								ETS.EXPENSE_TYPE_DESCR AS EXPENSE_TYPE_DESCR,
 								SOS.SUBMIT_OFFICE_NAME AS OFFICE_NAME,
-								-- -SS- NEW
+								
 								CASE
-									WHEN GLA.R12_PRODUCT IS NULL OR GLA.R12_PRODUCT = '' THEN PCS.PROD_CODE -- -SS- ????
+									WHEN GLA.R12_PRODUCT IS NULL OR GLA.R12_PRODUCT = '' THEN PCS.PROD_CODE 
 									ELSE GLA.R12_PRODUCT
 								END
-								-- -SS- /NEW
-								/* -SS-
-								CASE WHEN GLA.PROD_CODE IS NULL OR GLA.PROD_CODE = ''
-									THEN PCS.PROD_CODE
-									ELSE GLA.PROD_CODE
-								END
-								*/
+								
+								
 								 AS GL_PROD_CODE,
 								PCS.PROD_CODE AS MANF_PROD_CODE,
 								SOS.COMPANY_OWNED_IND AS COMPANY_OWNED,
@@ -292,25 +287,19 @@ SELECT
 								END
 								AS WARRANTY_DURATION,
 								MLR.TRX_CURRENCY AS CURRENCY,
-								-- -SS- NEW
+								
 								CASE WHEN GLA.R12_ENTITY IN('5773', '5588')
 									THEN 'CAN'
 									ELSE 'USA'
 								END
-								-- -SS- /NEW
-								/* -SS-
-								CASE
-									WHEN ASX.NATION_CURR = 'USD' THEN 'USA'
-									WHEN ASX.NATION_CURR = 'CAD' THEN 'CAN'
-									ELSE 'CURRENCY: ' || ASX.NATION_CURR
-								END
-								*/
+								
+								
 								AS COUNTRY_INDICATOR,
 								MLR.RETRO_ID AS RETROFIT_ID,
 								GLA.R12_COST_CENTER AS GL_DEPT,
-								-- -SS- GLA.COST_CENTER AS GL_DEPT
-								--, 10000*(CASE WHEN PCS.PROD_CODE='0061'  or FCW.WA_RANGE<>'1' THEN 0 ELSE RES_PCT.RESERVE_PCT  END) AS IN_RESERVE_PERCENT
-								-- 10000* (CASE WHEN     rd.new_resolved_ind = 'R'AND rd.specific_reserve_ind = 'Y'OR rd.pct_100_recovery_ind = 'Y'THEN 0 ELSE res_pct.reserve_pct END) AS in_reserve_percent,
+								
+								
+								
 								CASE WHEN A.CLAIM_NUMBER IS NULL
 									THEN 10000 *(
 										CASE WHEN((PCS.PROD_CODE IN('0054', '0197')) OR(MLR.SIOP_PRODUCT_CODE IS NOT NULL)) OR(RD.NEW_RESOLVED_IND = 'R' AND RD.SPECIFIC_RESERVE_IND = 'Y' OR RD.PCT_100_RECOVERY_IND = 'Y')
@@ -334,9 +323,9 @@ SELECT
 								LEFT OUTER JOIN
 								DM_FAL_CLAIMS_WARRANTY_XRF FCW
 								ON 1=1
-								AND MLR.CLAIM_NBR = FCW.CLAIM_NBR -- -SS- (+)
-								AND MLR.DETAIL_NBR = FCW.DETAIL_NBR -- -SS- (+)
-								AND MLR.STEP_NBR = FCW.STEP_NBR -- -SS- (+)
+								AND MLR.CLAIM_NBR = FCW.CLAIM_NBR 
+								AND MLR.DETAIL_NBR = FCW.DETAIL_NBR 
+								AND MLR.STEP_NBR = FCW.STEP_NBR 
 								INNER JOIN
 								TIME_DAY TD3
 								ON 1=1
@@ -363,7 +352,7 @@ SELECT
 								AND MLR.CLAIM_TYPE_SCD_KEY = CTYPES.CLAIM_TYPE_SCD_KEY
 								INNER JOIN
 								R12_GL_ACCOUNT_SCD GLA
-								-- -SS- GL_ACCOUNT_SCD GLA
+								
 								ON 1=1
 								AND MLR.GL_ACCOUNT_SCD_KEY = GLA.GL_ACCOUNT_SCD_KEY
 								INNER JOIN
@@ -385,16 +374,10 @@ SELECT
 								INNER JOIN
 								PROD_CODE_XREF_RCPO_DR PRODGRP
 								ON 1=1
-								AND 'CSD' = PRODGRP.GL_LEDGER -- -SS- issue 22
-								-- -SS- AND GLA.COMPANY = PRODGRP.GL_LEDGER
+								AND 'CSD' = PRODGRP.GL_LEDGER 
+								
 								AND PCS.PROD_CODE = PRODGRP.MANF_PROD_CODE
-								/* -SS-
-								LEFT OUTER JOIN
-								--,OTR_PROD_CODE_XREF_RCPO@DR_INTFC_DW.LAX.TRANE.COM PRODGRP
-								ACTUATE_SEC_XREF ASX
-								ON 1=1
-								AND GLA.COMPANY = ASX.PSGL -- -SS- (+)
-								*/
+								
 								INNER JOIN
 								UD_031_RETROFIT_RULES RES_PCT
 								ON 1=1
@@ -402,21 +385,21 @@ SELECT
 								AND ETS.EXPENSE_TYPE_DESCR = RES_PCT.EXPENSE_TYPE_DESCR
 								AND SOS.COMPANY_OWNED_IND = RES_PCT.COMPANY_OWNED_IND
 								INNER JOIN
-								--, DM_WAR_CSN_RSV_PCT_REF RES_PCT
+								
 								UD_031_RETROFIT_ID RD
 								ON 1=1
-								/* NEW_RETROFIT_ID */
+								
 								AND MLR.RETRO_ID = RD.RETROFIT_ID
-								/* NEW_RETROFIT_ID */
+								
 								LEFT OUTER JOIN
 								UD_031_STDWTY_RSV_CLM_ADJ A
 								ON 1=1
-								AND MLR.CLAIM_NBR = A.CLAIM_NUMBER -- -SS- (+)      --TTP#12554
+								AND MLR.CLAIM_NBR = A.CLAIM_NUMBER 
 								LEFT OUTER JOIN
 								DM_WAR_CSN_RSV_PCT_REF RS_RES_PCT
-								--TTP#12554
+								
 								ON 1=1
-								AND A.CLAIM_TYPE = RS_RES_PCT.CLAIM_TYPE -- -SS- (+) --TTP#12554
+								AND A.CLAIM_TYPE = RS_RES_PCT.CLAIM_TYPE 
 							WHERE
 								1 = 1
 								AND MLR.CLAIM_TYPE_SCD_KEY = 3
@@ -429,21 +412,21 @@ SELECT
 								AND PRODGRP.PRODUCT_CATEGORY IS NOT NULL
 								AND TD3.FULL_DATE >= TO_DATE('1/1/1890', 'MM/DD/YYYY')
 								AND TD3.FULL_DATE <= TO_DATE('12/31/2050', 'MM/DD/YYYY')
-								--AND (gla.ACCOUNT LIKE '8062%' OR gla.ACCOUNT LIKE '0620%')
+								
 							GROUP BY
 								MLR.CLAIM_NBR,
 								MLR.STEP_NBR,
 								GLA.R12_ENTITY,
-								-- -SS- GLA.COMPANY,
+								
 								PRODGRP.PRODUCT_CATEGORY,
 								CTYPES.CLAIM_TYPE_DESCR,
 								RES_PCT.EXPENSE_TYPE_CATG,
 								GLA.R12_ACCOUNT,
-								-- -SS- GLA.ACCOUNT,
+								
 								ETS.EXPENSE_TYPE_DESCR,
 								SOS.SUBMIT_OFFICE_NAME,
 								GLA.R12_PRODUCT,
-								-- -SS- GLA.PROD_CODE,
+								
 								PCS.PROD_CODE,
 								SOS.COMPANY_OWNED_IND,
 								CACCT.ACCOUNT_NUMBER,
@@ -475,31 +458,25 @@ SELECT
 									ELSE 'Out of Standard Warranty'
 								END,
 								MLR.TRX_CURRENCY,
-								-- -SS- NEW
+								
 								CASE WHEN GLA.R12_ENTITY IN('5773', '5588')
 									THEN 'CAN'
 									ELSE 'USA'
 								END,
-								-- -SS- /NEW
-								/* -SS-
-								CASE
-									WHEN ASX.NATION_CURR = 'USD' THEN 'USA'
-									WHEN ASX.NATION_CURR = 'CAD' THEN 'CAN'
-									ELSE 'CURRENCY: ' || ASX.NATION_CURR
-								END
-								*/
+								
+								
 								MLR.RETRO_ID,
 								GLA.R12_COST_CENTER,
-								-- -SS- GLA.COST_CENTER,
-								--10000
-								--* (CASE
-								--WHEN     rd.new_resolved_ind = 'R'
-								--AND rd.specific_reserve_ind = 'Y'
-								--OR rd.pct_100_recovery_ind = 'Y'
-								--THEN 0
-								--ELSE res_pct.reserve_pct
-								--END
-								--),
+								
+								
+								
+								
+								
+								
+								
+								
+								
+								
 								CASE WHEN A.CLAIM_NUMBER IS NULL
 									THEN 10000 *(
 										CASE WHEN((PCS.PROD_CODE IN('0054', '0197')) OR(MLR.SIOP_PRODUCT_CODE IS NOT NULL)) OR(RD.NEW_RESOLVED_IND = 'R' AND RD.SPECIFIC_RESERVE_IND = 'Y' OR RD.PCT_100_RECOVERY_IND = 'Y')
@@ -513,35 +490,30 @@ SELECT
 								100 * TD3.YEAR + TD3.MONTH
 						UNION ALL
 
-						/* Retrofit Labor */
+						
 						SELECT
-								/* NO_CPU_COSTING */
+								
 								CCN_DATA.CLAIM_NBR AS CLAIM_NUMBER,
 								CCN_DATA.STEP_NBR AS STEP_NUMBER,
 								GLA.R12_ENTITY AS BUSINESS_UNIT,
-								-- -SS- GLA.COMPANY AS BUSINESS_UNIT,
+								
 								PRODGRP.PRODUCT_CATEGORY AS RESERVE_GROUP,
 								CCN_DATA.CLAIM_TYPE AS CLAIM_TYPE,
 								CCN_DATA.DOLLAR_AMOUNT AS EXPENSE_AMOUNT,
 								100 *(CCN_DATA.DOLLAR_AMOUNT - TRUNC(CCN_DATA.DOLLAR_AMOUNT)) AS EXPENSE_AMOUNT_DEC,
 								(CCN_DATA.EXPENSE_TYPE_CATG) AS MATERIAL_LABOR,
 								GLA.R12_ACCOUNT AS GL_ACCOUNT,
-								-- -SS- GLA.ACCOUNT AS GL_ACCOUNT,
+								
 								CCN_DATA.EXPENSE_TYPE_DESCR AS EXPENSE_TYPE_DESCR,
 								SOS.SUBMIT_OFFICE_NAME AS OFFICE_NAME,
-								-- -SS- NEW
+								
 								CASE
 									WHEN GLA.R12_PRODUCT IS NULL OR GLA.R12_PRODUCT = '' THEN PCS.PROD_CODE
 									ELSE GLA.R12_PRODUCT
 									END
 									AS GL_PROD_CODE,
-								-- -SS- /NEW
-								/* -SS- 
-								CASE
-									WHEN GLA.PROD_CODE IS NULL OR GLA.PROD_CODE = '' THEN PCS.PROD_CODE
-									ELSE GLA.PROD_CODE
-									END AS GL_PROD_CODE,
-								*/
+								
+								
 								PCS.PROD_CODE AS MANF_PROD_CODE,
 								SOS.COMPANY_OWNED_IND AS COMPANY_OWNED,
 								CACCT.ACCOUNT_NUMBER AS CUSTOMER_NUMBER,
@@ -580,32 +552,26 @@ SELECT
 									END
 									AS WARRANTY_DURATION,
 								CCN_DATA.TRX_CURRENCY AS CURRENCY,
-								-- -SS- NEW
+								
 								CASE WHEN GLA.R12_ENTITY IN('5773', '5588')
 									THEN 'CAN'
 									ELSE 'USA'
 									END
-								-- -SS- /NEW
-								/* -SS-
-								CASE
-									WHEN ASX.NATION_CURR = 'USD' THEN 'USA'
-									WHEN ASX.NATION_CURR = 'CAD' THEN 'CAN'
-									ELSE 'CURRENCY: ' || ASX.NATION_CURR
-								END
-								*/
+								
+								
 								AS COUNTRY_INDICATOR,
 								CCN_DATA.RETRO_ID AS RETROFIT_ID,
 								GLA.R12_COST_CENTER AS GL_DEPT,
-								-- -SS- GLA.COST_CENTER AS GL_DEPT,
-								--10000
-								--* (CASE
-								--WHEN     rd.new_resolved_ind = 'R'
-								--AND rd.specific_reserve_ind = 'Y'
-								--OR rd.pct_100_recovery_ind = 'Y'
-								--THEN 0
-								--ELSE res_pct.reserve_pct
-								--END
-								--) AS in_reserve_percent,
+								
+								
+								
+								
+								
+								
+								
+								
+								
+								
 								CASE WHEN A.CLAIM_NUMBER IS NULL
 									THEN 10000 *(
 										CASE WHEN((PCS.PROD_CODE IN('0054', '0197')) OR(CCN_DATA.SIOP_PRODUCT_CODE IS NOT NULL)) OR(RD.NEW_RESOLVED_IND = 'R' AND RD.SPECIFIC_RESERVE_IND = 'Y' OR RD.PCT_100_RECOVERY_IND = 'Y')
@@ -613,7 +579,7 @@ SELECT
 											ELSE RES_PCT.RESERVE_PCT
 										END)
 									ELSE RES_PCT.RESERVE_PCT
-								END, -- -SS- no alias ????
+								END, 
 								RD.NEW_RESOLVED_IND,
 								ROUND((TD3.FULL_DATE - TD2.FULL_DATE) / 30.42) AS TRX_LAG,
 								100 * TD3.YEAR + TD3.MONTH AS TRXYEARMONTH,
@@ -621,7 +587,7 @@ SELECT
 								0 AS EXPENSE_AMT_NOT_IN_RES
 							FROM
 								(
-									/* THIS IS THE CORE PORTION FOR  CLAIM TYPE TO RETRIEVE EXPENSE RELATED INFORMATION */
+									
 									SELECT
 											'SPD/Retrofit Labor/Extended Purchased Labor' AS TYPE,
 											LR.CLAIM_NBR,
@@ -663,26 +629,26 @@ SELECT
 											AND LR.CLAIM_TYPE_SCD_KEY = CT.CLAIM_TYPE_SCD_KEY
 											INNER JOIN
 											R12_GL_ACCOUNT_SCD GLA
-											-- -SS- GL_ACCOUNT_SCD GLA
+											
 											ON 1=1
 											AND GLA.GL_ACCOUNT_SCD_KEY = LR.GL_ACCOUNT_SCD_KEY
 										WHERE
 											1 = 1
-											/* for 'RETROFIT LABOR' */
+											
 											AND LR.CLAIM_TYPE_SCD_KEY = 2
-											--AND TD.FULL_DATE>=TO_DATE('6/1/2006','MM/DD/YYYY') AND TD.FULL_DATE<TO_DATE('7/1/2007','MM/DD/YYYY')
-											--AND MONTHS_BETWEEN(last_day(SYSDATE), last_day(TD.full_date))<=12
-											--AND MONTHS_BETWEEN(last_day(SYSDATE), last_day(TD.full_date))>=1
+											
+											
+											
 											AND TD.FULL_DATE >= TO_DATE('1/1/1890', 'MM/DD/YYYY')
 											AND TD.FULL_DATE <= TO_DATE('12/31/2050', 'MM/DD/YYYY')
-											--AND (gla.ACCOUNT LIKE '8062%' OR gla.ACCOUNT LIKE '0620%')
+											
 											AND(LR.CCN_TRX_NBR IS NOT NULL)
 								)
 								CCN_DATA
 								LEFT OUTER JOIN
 								(
 									SELECT
-											/* NO_CPU_COSTING */
+											
 											DISTINCT CLAIM_NBR,
 											STEP_NBR,
 											WA_POLICY_TYPE,
@@ -691,8 +657,8 @@ SELECT
 											DM_FAL_CLAIMS_WARRANTY_XRF
 								) FCW
 								ON 1=1
-								AND CCN_DATA.CLAIM_NBR = FCW.CLAIM_NBR -- -SS- (+)
-								AND CCN_DATA.STEP_NBR = FCW.STEP_NBR -- -SS- (+)
+								AND CCN_DATA.CLAIM_NBR = FCW.CLAIM_NBR 
+								AND CCN_DATA.STEP_NBR = FCW.STEP_NBR 
 								INNER JOIN
 								TIME_DAY TD3
 								ON 1=1
@@ -711,7 +677,7 @@ SELECT
 								AND CCN_DATA.START_DATE_KEY = TD.TIME_KEY
 								INNER JOIN
 								R12_GL_ACCOUNT_SCD GLA
-								-- -SS- GL_ACCOUNT_SCD GLA
+								
 								ON 1=1
 								AND CCN_DATA.GL_ACCOUNT_SCD_KEY = GLA.GL_ACCOUNT_SCD_KEY
 								INNER JOIN
@@ -729,37 +695,32 @@ SELECT
 								INNER JOIN
 								PROD_CODE_XREF_RCPO_DR PRODGRP
 								ON 1=1
-								AND 'CSD' = PRODGRP.GL_LEDGER -- -SS- issue 22
-								-- -SS- AND GLA.COMPANY = PRODGRP.GL_LEDGER
+								AND 'CSD' = PRODGRP.GL_LEDGER 
+								
 								AND PCS.PROD_CODE = PRODGRP.MANF_PROD_CODE
-								--,OTR_PROD_CODE_XREF_RCPO@DR_INTFC_DW.LAX.TRANE.COM PRODGRP
-								/* -SS- 
-								LEFT OUTER JOIN
-								ACTUATE_SEC_XREF ASX
-								ON 1=1
-								AND GLA.COMPANY = ASX.PSGL -- -SS- (+)
-								*/
+								
+								
 								INNER JOIN
 								UD_031_RETROFIT_RULES RES_PCT
 								ON 1=1
 								AND CCN_DATA.EXPENSE_TYPE_DESCR = RES_PCT.EXPENSE_TYPE_DESCR
 								AND CCN_DATA.EXPENSE_TYPE_CATG = UPPER(RES_PCT.EXPENSE_TYPE_CATG)
 								AND SOS.COMPANY_OWNED_IND = RES_PCT.COMPANY_OWNED_IND
-								--, DM_WAR_CSN_RSV_PCT_REF RES_PCT
+								
 								INNER JOIN
 								UD_031_RETROFIT_ID RD
 								ON 1=1
-								/* NEW_RETROFIT_ID */
+								
 								AND CCN_DATA.RETRO_ID = RD.RETROFIT_ID
-								/* NEW_RETROFIT_ID */
+								
 								LEFT OUTER JOIN
 								UD_031_STDWTY_RSV_CLM_ADJ A
 								ON 1=1
-								AND CCN_DATA.CLAIM_NBR = A.CLAIM_NUMBER -- -SS- (+) --TTP#12554
+								AND CCN_DATA.CLAIM_NBR = A.CLAIM_NUMBER 
 								LEFT OUTER JOIN
-								DM_WAR_CSN_RSV_PCT_REF RS_RES_PCT --TTP#12554
+								DM_WAR_CSN_RSV_PCT_REF RS_RES_PCT 
 								ON 1=1
-								AND A.CLAIM_TYPE = RS_RES_PCT.CLAIM_TYPE -- -SS- (+) --TTP#12554
+								AND A.CLAIM_TYPE = RS_RES_PCT.CLAIM_TYPE 
 							WHERE
 								1 = 1
 								AND CASE
@@ -776,9 +737,9 @@ SELECT
 					ON 1=1
 					AND A.RETROFIT_ID = RP.RETRO_ID
 					LEFT OUTER JOIN
-					--**********************
+					
 					(
-						/* Retrofit And SCR - Distinct Serial number qry */
+						
 						SELECT
 								/*+ NO_CPU_COSTING */
 								RP.RETRO_ID AS RETRO_ID,
@@ -800,7 +761,7 @@ SELECT
 								LEFT OUTER JOIN
 								TIME_DAY TD
 								ON 1=1
-								AND MLR.CCN_TRX_DATE_KEY = TD.TIME_KEY -- -SS- (+)
+								AND MLR.CCN_TRX_DATE_KEY = TD.TIME_KEY 
 							WHERE
 								TRUNC(TD.FULL_DATE) <
 									CASE
@@ -811,7 +772,7 @@ SELECT
 								AND 1 = 1
 								AND MLR.RETRO_ID IS NOT NULL
 								AND ET.EXPENSE_TYPE_DESCR NOT LIKE 'OFFSET%'
-								--and rp.retro_id in    ('RTSVC010AEN','BCSVC02AEN')
+								
 							GROUP BY
 								RP.RETRO_ID
 						UNION ALL
@@ -840,7 +801,7 @@ SELECT
 								LEFT OUTER JOIN
 								TIME_DAY TD
 								ON 1=1
-								AND MLR.CCN_TRX_DATE_KEY = TD.TIME_KEY -- -SS- (+)
+								AND MLR.CCN_TRX_DATE_KEY = TD.TIME_KEY 
 							WHERE
 								TRUNC(TD.FULL_DATE) <
 								CASE WHEN :SDO = 'Run for Retrofit End Date 6 Months Prior'
@@ -850,17 +811,17 @@ SELECT
 								AND 1 = 1
 								AND MLR.RETRO_ID IS NOT NULL
 								AND ET.EXPENSE_TYPE_DESCR NOT LIKE 'OFFSET%'
-								--and rp.retro_id in   ('RTSVC010AEN','BCSVC02AEN')
+								
 							GROUP BY
 								RP.RETRO_ID
 					) B
 					ON 1=1
-					AND B.RETRO_ID -- -SS- (+)
+					AND B.RETRO_ID 
 					= RP.RETRO_ID
-					--***
+					
 				WHERE
 					COUNTRY_INDICATOR IN('USA', 'CAN')
-					--AND retrofit_id in   ('RTSVC010AEN','BCSVC02AEN')
+					
 					AND TRUNC(RP.RETRO_END_DATE) >=
 						CASE
 							WHEN :SDO = 'Run for Retrofit End Date 6 Months Prior'
@@ -895,7 +856,7 @@ SELECT
 					RP.SCR_IND,
 					NVL(RP.ORIGINAL_ESTIMATED_MATERIAL, 0),
 					NVL(RP.ORIGINAL_ESTIMATED_LABOR, 0),
-					--nvl(rp.original_estimated_labor + original_estimated_material,0) ,
+					
 					RP.RETRO_NBR_TO_DO,
 					B.UNITS_DONE,
 					A.CLAIM_NUMBER,
@@ -931,11 +892,12 @@ SELECT
 					A.TRX_LAG,
 					A.TRXYEARMONTH,
 					A.TRX_DATE
-					--ORDER BY  gl_account, country_indicator, trx_year, trx_month
-		) AA,
+					
+		) AA
+		INNER JOIN
 		(
 			SELECT
-					/* Retrofit Summary Qry for sum of Expense (Summary Level Sum)*/
+					
 					SUM(A.EXPENSE_AMOUNT) AS TOTAL_SUM,
 					A.RETROFIT_ID AS RETRO_ID,
 					CASE
@@ -945,34 +907,29 @@ SELECT
 						END AS RETROFIT_ID
 				FROM
 					(
-						/* Retrofit Material */
+						
 						SELECT
-								/* NO_CPU_COSTING */
+								
 								MLR.CLAIM_NBR AS CLAIM_NUMBER,
 								MLR.STEP_NBR AS STEP_NUMBER,
 								GLA.R12_ENTITY AS BUSINESS_UNIT,
-								-- -SS- GLA.COMPANY AS BUSINESS_UNIT,
+								
 								PRODGRP.PRODUCT_CATEGORY AS RESERVE_GROUP,
 								CTYPES.CLAIM_TYPE_DESCR AS CLAIM_TYPE,
 								SUM(MLR.EXP_TYPE_AMOUNT * - 1) AS EXPENSE_AMOUNT,
 								SUM(100 *(MLR.EXP_TYPE_AMOUNT * - 1 - TRUNC(MLR.EXP_TYPE_AMOUNT * - 1))) AS EXPENSE_AMOUNT_DEC,
 								RES_PCT.EXPENSE_TYPE_CATG AS MATERIAL_LABOR,
 								GLA.R12_ACCOUNT AS GL_ACCOUNT,
-								-- -SS- GLA.ACCOUNT AS GL_ACCOUNT,
+								
 								ETS.EXPENSE_TYPE_DESCR AS EXPENSE_TYPE_DESCR,
 								SOS.SUBMIT_OFFICE_NAME AS OFFICE_NAME,
-								-- -SS- NEW
+								
 								CASE
 									WHEN GLA.R12_PRODUCT IS NULL OR GLA.R12_PRODUCT = '' THEN PCS.PROD_CODE
 									ELSE GLA.R12_PRODUCT
 									END AS GL_PROD_CODE,
-								-- -SS- /NEW
-								/* -SS-
-								CASE
-									WHEN GLA.PROD_CODE IS NULL OR GLA.PROD_CODE = '' THEN PCS.PROD_CODE
-									ELSE GLA.PROD_CODE
-									END AS GL_PROD_CODE,
-								*/
+								
+								
 								PCS.PROD_CODE AS MANF_PROD_CODE,
 								SOS.COMPANY_OWNED_IND AS COMPANY_OWNED,
 								CACCT.ACCOUNT_NUMBER AS CUSTOMER_NUMBER,
@@ -1007,25 +964,19 @@ SELECT
 									ELSE 'Out of Standard Warranty'
 								END) AS WARRANTY_DURATION,
 								MLR.TRX_CURRENCY AS CURRENCY,
-								-- -SS- NEW
+								
 								CASE WHEN GLA.R12_ENTITY IN('5773', '5588')
 									THEN 'CAN'
 									ELSE 'USA'
 								END
-								-- -SS- /NEW
-								/* -SS-
-								CASE
-									WHEN ASX.NATION_CURR = 'USD' THEN 'USA'
-									WHEN ASX.NATION_CURR = 'CAD' THEN 'CAN'
-									ELSE 'CURRENCY: ' || ASX.NATION_CURR
-								END
-								*/
+								
+								
 								AS COUNTRY_INDICATOR,
 								MLR.RETRO_ID AS RETROFIT_ID,
 								GLA.R12_COST_CENTER AS GL_DEPT,
-								-- -SS- GLA.COST_CENTER AS GL_DEPT
-								--, 10000*(CASE WHEN PCS.PROD_CODE='0061'  or FCW.WA_RANGE<>'1' THEN 0 ELSE RES_PCT.RESERVE_PCT  END) AS IN_RESERVE_PERCENT
-								--10000* (CASE WHEN     rd.new_resolved_ind = 'R'AND rd.specific_reserve_ind = 'Y'OR rd.pct_100_recovery_ind = 'Y'THEN 0ELSE res_pct.reserve_pct END) AS in_reserve_percent,
+								
+								
+								
 								(
 								CASE WHEN A.CLAIM_NUMBER IS NULL
 									THEN 10000 *(
@@ -1049,9 +1000,9 @@ SELECT
 								LEFT OUTER JOIN
 								DM_FAL_CLAIMS_WARRANTY_XRF FCW
 								ON 1=1
-								AND MLR.CLAIM_NBR = FCW.CLAIM_NBR -- -SS- (+)
-								AND MLR.DETAIL_NBR = FCW.DETAIL_NBR -- -SS- (+)
-								AND MLR.STEP_NBR = FCW.STEP_NBR -- -SS- (+)
+								AND MLR.CLAIM_NBR = FCW.CLAIM_NBR 
+								AND MLR.DETAIL_NBR = FCW.DETAIL_NBR 
+								AND MLR.STEP_NBR = FCW.STEP_NBR 
 								INNER JOIN
 								TIME_DAY TD3
 								ON 1=1
@@ -1078,7 +1029,7 @@ SELECT
 								AND MLR.CLAIM_TYPE_SCD_KEY = CTYPES.CLAIM_TYPE_SCD_KEY
 								INNER JOIN
 								R12_GL_ACCOUNT_SCD GLA
-								-- -SS- GL_ACCOUNT_SCD GLA
+								
 								ON 1=1
 								AND MLR.GL_ACCOUNT_SCD_KEY = GLA.GL_ACCOUNT_SCD_KEY
 								INNER JOIN
@@ -1100,16 +1051,10 @@ SELECT
 								INNER JOIN
 								PROD_CODE_XREF_RCPO_DR PRODGRP
 								ON 1=1
-								AND 'CSD' = PRODGRP.GL_LEDGER -- -SS- issue 22
-								-- -SS- AND GLA.COMPANY = PRODGRP.GL_LEDGER
+								AND 'CSD' = PRODGRP.GL_LEDGER 
+								
 								AND PCS.PROD_CODE = PRODGRP.MANF_PROD_CODE
-								/* -SS-
-								LEFT OUTER JOIN
-								--,OTR_PROD_CODE_XREF_RCPO@DR_INTFC_DW.LAX.TRANE.COM PRODGRP
-								ACTUATE_SEC_XREF ASX
-								ON 1=1
-								AND GLA.COMPANY = ASX.PSGL -- -SS- (+)
-								*/
+								
 								INNER JOIN
 								UD_031_RETROFIT_RULES RES_PCT
 								ON 1=1
@@ -1117,20 +1062,20 @@ SELECT
 								AND ETS.EXPENSE_TYPE_DESCR = RES_PCT.EXPENSE_TYPE_DESCR
 								AND SOS.COMPANY_OWNED_IND = RES_PCT.COMPANY_OWNED_IND
 								INNER JOIN
-								--, DM_WAR_CSN_RSV_PCT_REF RES_PCT
+								
 								UD_031_RETROFIT_ID RD
 								ON 1=1
-								/* NEW_RETROFIT_ID */
+								
 								AND MLR.RETRO_ID = RD.RETROFIT_ID
-								/* NEW_RETROFIT_ID */
+								
 								LEFT OUTER JOIN
 								UD_031_STDWTY_RSV_CLM_ADJ A
 								ON 1=1
-								AND MLR.CLAIM_NBR = A.CLAIM_NUMBER -- -SS- (+)      --TTP#12554
+								AND MLR.CLAIM_NBR = A.CLAIM_NUMBER 
 								LEFT OUTER JOIN
-								DM_WAR_CSN_RSV_PCT_REF RS_RES_PCT --TTP#12554
+								DM_WAR_CSN_RSV_PCT_REF RS_RES_PCT 
 								ON 1=1
-								AND A.CLAIM_TYPE = RS_RES_PCT.CLAIM_TYPE -- -SS- (+) --TTP#12554
+								AND A.CLAIM_TYPE = RS_RES_PCT.CLAIM_TYPE 
 							WHERE
 								1 = 1
 								AND MLR.CLAIM_TYPE_SCD_KEY = 3
@@ -1143,21 +1088,21 @@ SELECT
 								AND PRODGRP.PRODUCT_CATEGORY IS NOT NULL
 								AND TD3.FULL_DATE >= TO_DATE('1/1/1890', 'MM/DD/YYYY')
 								AND TD3.FULL_DATE <= TO_DATE('12/31/2050', 'MM/DD/YYYY')
-								--AND (gla.ACCOUNT LIKE '8062%' OR gla.ACCOUNT LIKE '0620%')
+								
 							GROUP BY
 								MLR.CLAIM_NBR,
 								MLR.STEP_NBR,
 								GLA.R12_ENTITY,
-								-- -SS- GLA.COMPANY,
+								
 								PRODGRP.PRODUCT_CATEGORY,
 								CTYPES.CLAIM_TYPE_DESCR,
 								RES_PCT.EXPENSE_TYPE_CATG,
 								GLA.R12_ACCOUNT,
-								-- -SS- GLA.ACCOUNT,
+								
 								ETS.EXPENSE_TYPE_DESCR,
 								SOS.SUBMIT_OFFICE_NAME,
 								GLA.R12_PRODUCT,
-								-- -SS- GLA.PROD_CODE,
+								
 								PCS.PROD_CODE,
 								SOS.COMPANY_OWNED_IND,
 								CACCT.ACCOUNT_NUMBER,
@@ -1192,31 +1137,25 @@ SELECT
 									ELSE 'Out of Standard Warranty'
 								END),
 								MLR.TRX_CURRENCY,
-								-- -SS- NEW
+								
 								CASE WHEN GLA.R12_ENTITY IN('5773', '5588')
 									THEN 'CAN'
 									ELSE 'USA'
 								END,
-								-- -SS- /NEW
-								/* -SS-
-								CASE
-									WHEN ASX.NATION_CURR = 'USD' THEN 'USA'
-									WHEN ASX.NATION_CURR = 'CAD' THEN 'CAN'
-									ELSE 'CURRENCY: ' || ASX.NATION_CURR
-								END
-								*/
+								
+								
 								MLR.RETRO_ID,
 								GLA.R12_COST_CENTER,
-								-- -SS- GLA.COST_CENTER,
-								--10000
-								--* (CASE
-								--WHEN     rd.new_resolved_ind = 'R'
-								--AND rd.specific_reserve_ind = 'Y'
-								--OR rd.pct_100_recovery_ind = 'Y'
-								--THEN 0
-								--ELSE res_pct.reserve_pct
-								--END
-								--),
+								
+								
+								
+								
+								
+								
+								
+								
+								
+								
 								(
 								CASE WHEN A.CLAIM_NUMBER IS NULL
 									THEN 10000 *(
@@ -1231,34 +1170,29 @@ SELECT
 								100 * TD3.YEAR + TD3.MONTH
 						UNION ALL
 
-						/* Retrofit Labor */
+						
 						SELECT
-								/* NO_CPU_COSTING */
+								
 								CCN_DATA.CLAIM_NBR AS CLAIM_NUMBER,
 								CCN_DATA.STEP_NBR AS STEP_NUMBER,
 								GLA.R12_ENTITY AS BUSINESS_UNIT,
-								-- -SS- GLA.COMPANY AS BUSINESS_UNIT,
+								
 								PRODGRP.PRODUCT_CATEGORY AS RESERVE_GROUP,
 								CCN_DATA.CLAIM_TYPE AS CLAIM_TYPE,
 								CCN_DATA.DOLLAR_AMOUNT AS EXPENSE_AMOUNT,
 								100 *(CCN_DATA.DOLLAR_AMOUNT - TRUNC(CCN_DATA.DOLLAR_AMOUNT)) AS EXPENSE_AMOUNT_DEC,
 								(CCN_DATA.EXPENSE_TYPE_CATG) AS MATERIAL_LABOR,
 								GLA.R12_ACCOUNT AS GL_ACCOUNT,
-								-- -SS- GLA.ACCOUNT AS GL_ACCOUNT,
+								
 								CCN_DATA.EXPENSE_TYPE_DESCR AS EXPENSE_TYPE_DESCR,
 								SOS.SUBMIT_OFFICE_NAME AS OFFICE_NAME,
-								-- -SS- NEW
+								
 								CASE
 									WHEN GLA.R12_PRODUCT IS NULL OR GLA.R12_PRODUCT = '' THEN PCS.PROD_CODE
 									ELSE GLA.R12_PRODUCT
 									END AS GL_PROD_CODE,
-								-- -SS- /NEW
-								/* -SS-
-								CASE
-									WHEN GLA.PROD_CODE IS NULL OR GLA.PROD_CODE = '' THEN PCS.PROD_CODE
-									ELSE GLA.PROD_CODE
-									END AS GL_PROD_CODE,
-								*/
+								
+								
 								PCS.PROD_CODE AS MANF_PROD_CODE,
 								SOS.COMPANY_OWNED_IND AS COMPANY_OWNED,
 								CACCT.ACCOUNT_NUMBER AS CUSTOMER_NUMBER,
@@ -1297,32 +1231,26 @@ SELECT
 										END)
 								END) AS WARRANTY_DURATION,
 								CCN_DATA.TRX_CURRENCY AS CURRENCY,
-								-- -SS- NEW
+								
 								CASE WHEN GLA.R12_ENTITY IN('5773', '5588')
 									THEN 'CAN'
 									ELSE 'USA'
 								END
-								-- -SS- /NEW
-								/* -SS-
-								CASE
-									WHEN ASX.NATION_CURR = 'USD' THEN 'USA'
-									WHEN ASX.NATION_CURR = 'CAD' THEN 'CAN'
-									ELSE 'CURRENCY: ' || ASX.NATION_CURR
-								END
-								*/
+								
+								
 								AS COUNTRY_INDICATOR,
 								CCN_DATA.RETRO_ID AS RETROFIT_ID,
 								GLA.R12_COST_CENTER AS GL_DEPT,
-								-- -SS- GLA.COST_CENTER AS GL_DEPT,
-								--10000
-								--* (CASE
-								--WHEN     rd.new_resolved_ind = 'R'
-								--AND rd.specific_reserve_ind = 'Y'
-								--OR rd.pct_100_recovery_ind = 'Y'
-								--THEN 0
-								--ELSE res_pct.reserve_pct
-								--END
-								--) AS in_reserve_percent,
+								
+								
+								
+								
+								
+								
+								
+								
+								
+								
 								(
 								CASE WHEN A.CLAIM_NUMBER IS NULL
 									THEN 10000 *(
@@ -1339,7 +1267,7 @@ SELECT
 								0 AS EXPENSE_AMT_NOT_IN_RES
 							FROM
 								(
-									/* THIS IS THE CORE PORTION FOR  CLAIM TYPE TO RETRIEVE EXPENSE RELATED INFORMATION */
+									
 									SELECT
 											'SPD/Retrofit Labor/Extended Purchased Labor' AS TYPE,
 											LR.CLAIM_NBR,
@@ -1381,26 +1309,26 @@ SELECT
 											AND LR.CLAIM_TYPE_SCD_KEY = CT.CLAIM_TYPE_SCD_KEY
 											INNER JOIN
 											R12_GL_ACCOUNT_SCD GLA
-											-- -SS- GL_ACCOUNT_SCD GLA
+											
 											ON 1=1
 											AND GLA.GL_ACCOUNT_SCD_KEY = LR.GL_ACCOUNT_SCD_KEY
 										WHERE
 											1 = 1
-											/* for 'RETROFIT LABOR' */
+											
 											AND LR.CLAIM_TYPE_SCD_KEY = 2
-											--AND TD.FULL_DATE>=TO_DATE('6/1/2006','MM/DD/YYYY') AND TD.FULL_DATE<TO_DATE('7/1/2007','MM/DD/YYYY')
-											--AND MONTHS_BETWEEN(last_day(SYSDATE), last_day(TD.full_date))<=12
-											--AND MONTHS_BETWEEN(last_day(SYSDATE), last_day(TD.full_date))>=1
+											
+											
+											
 											AND TD.FULL_DATE >= TO_DATE('1/1/1890', 'MM/DD/YYYY')
 											AND TD.FULL_DATE <= TO_DATE('12/31/2050', 'MM/DD/YYYY')
-											--AND (gla.ACCOUNT LIKE '8062%' OR gla.ACCOUNT LIKE '0620%')
+											
 											AND(LR.CCN_TRX_NBR IS NOT NULL)
 								)
 								CCN_DATA
 								LEFT OUTER JOIN
 								(
 									SELECT
-											/* NO_CPU_COSTING */
+											
 											DISTINCT CLAIM_NBR,
 											STEP_NBR,
 											WA_POLICY_TYPE,
@@ -1409,8 +1337,8 @@ SELECT
 											DM_FAL_CLAIMS_WARRANTY_XRF
 								) FCW
 								ON 1=1
-								AND CCN_DATA.CLAIM_NBR = FCW.CLAIM_NBR -- -SS- (+)
-								AND CCN_DATA.STEP_NBR = FCW.STEP_NBR -- -SS- (+)
+								AND CCN_DATA.CLAIM_NBR = FCW.CLAIM_NBR 
+								AND CCN_DATA.STEP_NBR = FCW.STEP_NBR 
 								INNER JOIN
 								TIME_DAY TD3
 								ON 1=1
@@ -1429,7 +1357,7 @@ SELECT
 								AND CCN_DATA.START_DATE_KEY = TD.TIME_KEY
 								INNER JOIN
 								R12_GL_ACCOUNT_SCD GLA
-								-- -SS- GL_ACCOUNT_SCD GLA
+								
 								ON 1=1
 								AND CCN_DATA.GL_ACCOUNT_SCD_KEY = GLA.GL_ACCOUNT_SCD_KEY
 								INNER JOIN
@@ -1446,20 +1374,15 @@ SELECT
 								AND CCN_DATA.SUBMIT_OFFICE_SCD_KEY = SOS.SUBMIT_OFFICE_SCD_KEY
 								INNER JOIN
 								PROD_CODE_XREF_RCPO_DR PRODGRP
-								--,OTR_PROD_CODE_XREF_RCPO@DR_INTFC_DW.LAX.TRANE.COM PRODGRP
+								
 								ON 1=1
-								AND 'CSD' = PRODGRP.GL_LEDGER -- -SS- issue 22
-								-- -SS- AND GLA.COMPANY = PRODGRP.GL_LEDGER
+								AND 'CSD' = PRODGRP.GL_LEDGER 
+								
 								AND PCS.PROD_CODE = PRODGRP.MANF_PROD_CODE
-								/* -SS-
-								LEFT OUTER JOIN
-								ACTUATE_SEC_XREF ASX
-								ON 1=1
-								AND GLA.COMPANY = ASX.PSGL -- -SS- (+)
-								*/
+								
 								INNER JOIN
 								UD_031_RETROFIT_RULES RES_PCT
-								--, DM_WAR_CSN_RSV_PCT_REF RES_PCT
+								
 								ON 1=1
 								AND CCN_DATA.EXPENSE_TYPE_DESCR = RES_PCT.EXPENSE_TYPE_DESCR
 								AND CCN_DATA.EXPENSE_TYPE_CATG = UPPER(RES_PCT.EXPENSE_TYPE_CATG)
@@ -1467,17 +1390,17 @@ SELECT
 								INNER JOIN
 								UD_031_RETROFIT_ID RD
 								ON 1=1
-								/* NEW_RETROFIT_ID */
+								
 								AND CCN_DATA.RETRO_ID = RD.RETROFIT_ID
-								/* NEW_RETROFIT_ID */
+								
 								LEFT OUTER JOIN
 								UD_031_STDWTY_RSV_CLM_ADJ A
 								ON 1=1
-								AND CCN_DATA.CLAIM_NBR = A.CLAIM_NUMBER -- -SS- (+) --TTP#12554
+								AND CCN_DATA.CLAIM_NBR = A.CLAIM_NUMBER 
 								LEFT OUTER JOIN
-								DM_WAR_CSN_RSV_PCT_REF RS_RES_PCT --TTP#12554
+								DM_WAR_CSN_RSV_PCT_REF RS_RES_PCT 
 								ON 1=1
-								AND A.CLAIM_TYPE = RS_RES_PCT.CLAIM_TYPE -- -SS- (+) --TTP#12554
+								AND A.CLAIM_TYPE = RS_RES_PCT.CLAIM_TYPE 
 							WHERE
 								1 = 1
 								AND(
@@ -1498,7 +1421,7 @@ SELECT
 					AND A.RETROFIT_ID = RP.RETRO_ID
 				WHERE
 					COUNTRY_INDICATOR IN('USA', 'CAN')
-					--AND retrofit_id  in ('RTSVC010AEN','BCSVC02AEN')
+					
 					AND TRUNC(RP.RETRO_END_DATE) >=
 					CASE WHEN :SDO = 'Run for Retrofit End Date 6 Months Prior'
 						THEN(LAST_DAY(ADD_MONTHS(TRUNC(SYSDATE), - 7)))
@@ -1518,13 +1441,12 @@ SELECT
 				GROUP BY
 					A.RETROFIT_ID
 		) BB
-		WHERE
-		AA.RETROFIT_ID = BB.RETRO_ID
-		--and  aa.RETROFIT_ID = cc.retro_id
+		ON AA.RETROFIT_ID = BB.RETRO_ID
+		
 	ORDER BY
 		BB.RETROFIT_ID;
--- trx_year: 2015
--- trx_month: AUG
--- prmBRetrofitEndDate: 11/1/2010
--- system: TCS
--- sdo: "Use Entered Dates"
+
+
+
+
+

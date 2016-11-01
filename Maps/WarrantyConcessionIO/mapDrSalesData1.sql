@@ -149,10 +149,7 @@ AS
 			AND GA.FISCAL_YEAR IN('2003', '2004')
 			AND L.LEDGER = 'ACTUALS'
 			-- -SS- NEW
-			AND((L.PS_ACCOUNT = 'NA'
-			AND AFU.EQUAL_700000 = 'Y')
-			OR(L.PS_ACCOUNT <> 'NA'
-			AND L.PS_ACCOUNT = '700000'))
+			AND L.PS_ACCOUNT = '700000'
 			-- -SS- /NEW
 			-- -SS- L.ACCOUNT = '700000'
 			AND GA.BUSINESS_UNIT IN('CAN', 'CSD')
@@ -215,18 +212,12 @@ AS
 			-- -SS- /NEW
 		LEFT OUTER JOIN R12_TRANE_PRODUCTS_PS PR   ON PS.R12_PRODUCT = PR.R12_PRODUCT   -- R12_2_R12_ok  -- -SS- PRODUCT, PRODUCT, (+), OTR
 		LEFT OUTER JOIN R12_TRANE_LOCATIONS DP     ON PS.R12_LOCATION = DP.R12_LOCATION -- R12_2_R12_ok -- -SS- DEPTID, (+)
-		LEFT OUTER JOIN OTR_PROD_CODE_XREF_RCPO PX ON PS.PS_PRODUCT = PX.MANF_PROD_CODE -- (+)
-			AND PS.BUSINESS_UNIT = PX.GL_LEDGER                                            -- (+)
+		LEFT OUTER JOIN OTR_PROD_CODE_XREF_RCPO PX ON PS.PS_PRODUCT = PX.MANF_PROD_CODE AND PS.BUSINESS_UNIT = PX.GL_LEDGER                                            -- (+)
 			-- -SS- LEFT OUTER JOIN ACTUATE_SEC_XREF ASX ON PS.BUSINESS_UNIT = ASX.PSGL -- (+) -- -SS- issue 87
 		WHERE
 			PS.FISCAL_YEAR IN('2001', '2002')
 			AND PS.ACCOUNTING_PERIOD <= '12'
-			-- -SS- NEW
-			AND((PS.PS_ACCOUNT = 'NA'
-			AND AFU.EQUAL_700000 = 'Y')
-			OR(PS.PS_ACCOUNT <> 'NA'
-			AND PS.PS_ACCOUNT = '700000'))
-			-- -SS- /NEW
+			AND PS.PS_ACCOUNT = '700000'
 			-- -SS- PS.ACCOUNT = '700000'
 			--ADD BY ALEX
 			AND PS.LEDGER = 'ACTUALS'
@@ -328,23 +319,11 @@ AS
 					WHERE
 						D.JOURNAL_DATE BETWEEN TO_DATE('03/01/2006', 'MM/DD/YYYY') AND LAST_DAY(ADD_MONTHS(SYSDATE, - 1))
 						-- -SS- NEW
-						AND((D.PS_ACCOUNT = 'NA'
-						AND AFU.EQUAL_700000 = 'Y')
-						OR(D.PS_ACCOUNT <> 'NA'
-						AND D.PS_ACCOUNT = '700000'))
-						-- -SS- /NEW
-						-- -SS- D.ACCOUNT = '700000'
 						AND 'ACTUALS' = D.LEDGER
-						AND(D.PS_PRODUCT <> 'NA'
-						AND D.PS_PRODUCT <> '804180') -- -SS- do not exclude 41206 per Kelly Banse
-						AND((D.PS_PRODUCT <> 'NA'
-						AND D.PS_PRODUCT <> '804120')
-						OR(D.PS_PRODUCT = 'NA'
-						AND '41201' <> D.R12_PRODUCT)) -- -SS-
-						AND((D.PS_PRODUCT <> 'NA'
-						AND D.PS_PRODUCT <> '804190')
-						OR(D.PS_PRODUCT = 'NA'
-						AND '41299' <> D.R12_PRODUCT)) -- -SS-
+						AND D.PS_ACCOUNT = '700000'
+						AND D.PS_PRODUCT <> '804180' -- -SS- do not exclude 41206 per Kelly Banse
+						AND D.PS_PRODUCT <> '804120' 
+						AND D.PS_PRODUCT <> '804190'
 						/* -SS-
 						AND '804180' <> D.PRODUCT
 						AND '804120' <> D.PRODUCT
@@ -464,8 +443,8 @@ AS
 						-- -SS- D.DEPTID = AOL.DEPT_ID (+), issues 63, 73
 						-- -SS- AND D.BUSINESS_UNIT_GL = AOL.BU_UNIT  (+)
 					WHERE
+						-- Gets PeopleSoft Data only. Will not pull R12 data.
 						D.JOURNAL_DATE BETWEEN TO_DATE('03/01/2006', 'MM/DD/YYYY') AND LAST_DAY(ADD_MONTHS(SYSDATE, - 1))
-						AND D.PS_ACCOUNT <> 'NA'
 						AND D.PS_ACCOUNT = '700000'
 						AND 'ACTUALS' = D.LEDGER
 						AND D.PS_PRODUCT <> '804180'
@@ -497,10 +476,10 @@ AS
 									AND D.BUSINESS_UNIT = C.BUSINESS_UNIT
 									AND D.CUSTOMER_TRX_ID = C.CUSTOMER_TRX_ID
 						)
+					/*
 					UNION ALL
 					-- R12 DATA
 					SELECT
-							/*+ NO_CPU_COSTING */
 							D.R12_ENTITY AS BUSINESS_UNIT, -- -SS- BUSINESS_UNIT_GL
 							D.INVOICE AS INVOICE,
 							D.LINE_SEQ_NUM AS SEQ_NUM,
@@ -544,6 +523,7 @@ AS
 							(
 								SELECT
 										/* index(b XPKOTR_BI_HDR_PSB) */
+								/*		
 										'X'
 									FROM
 										R12_BI_HDR_PSB B
@@ -557,6 +537,7 @@ AS
 							(
 								SELECT
 										/* index(c XPKOTR_TRNBI_BI_HDR_PSB) */
+								/*
 										'X'
 									FROM
 										R12_TRNBI_BI_HDR_PSB C
@@ -566,6 +547,7 @@ AS
 										AND D.BUSINESS_UNIT = C.BUSINESS_UNIT
 										AND D.CUSTOMER_TRX_ID = C.CUSTOMER_TRX_ID
 							)
+					*/
 			)
 		GROUP BY
 			BUSINESS_UNIT,
@@ -631,13 +613,7 @@ AS
 			AND */
 			PR.BUSINESS_UNIT IN('PCGUS', 'PCGCN')
 			AND PR.ANALYSIS_TYPE = 'REV'
-			-- -SS- NEW
-			AND((PR.PS_ACCOUNT = 'NA'
-			AND(AFU.EQUAL_700000 = 'Y'
-			OR AFU.EQUAL_700020 = 'Y'))
-			OR(PR.PS_ACCOUNT <> 'NA'
-			AND PR.PS_ACCOUNT IN('700000', '700020')))
-			-- -SS- /NEW
+			AND PR.PS_ACCOUNT IN('700000', '700020')
 			-- -SS- (PR.ACCOUNT = '700000' OR PR.ACCOUNT = '700020')
 			AND PR.GL_DISTRIB_STATUS = 'G'
 			AND JBCD.JOB_CLASS_ID = 38

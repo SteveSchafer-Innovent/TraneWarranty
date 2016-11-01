@@ -409,16 +409,13 @@ SELECT
 				WHERE
 					D.JOURNAL_DATE BETWEEN TO_DATE('03/01/2006', 'MM/DD/YYYY') AND LAST_DAY(ADD_MONTHS(SYSDATE, - 1))
 					-- -SS- NEW
-					AND((D.PS_ACCOUNT = 'NA'
-					AND AFU.EQUAL_700000 = 'Y')
-					OR(D.PS_ACCOUNT <> 'NA'
-					AND D.PS_ACCOUNT = '700000'))
+					AND D.PS_ACCOUNT = '700000'
 					-- -SS- /NEW
 					-- -SS- D.ACCOUNT = '700000'
 					AND 'ACTUALS' = D.LEDGER
-					AND (D.PS_PRODUCT <> 'NA' AND D.PS_PRODUCT <> '804180') -- -SS- do not exclude 41206 per Kelly Banse
-					AND ((D.PS_PRODUCT <> 'NA' AND D.PS_PRODUCT <> '804120') OR (D.PS_PRODUCT = 'NA' AND '41201' <> D.R12_PRODUCT)) -- -SS-
-					AND ((D.PS_PRODUCT <> 'NA' AND D.PS_PRODUCT <> '804190') OR (D.PS_PRODUCT = 'NA' AND '41299' <> D.R12_PRODUCT)) -- -SS-
+					AND D.PS_PRODUCT <> '804180' -- -SS- do not exclude 41206 per Kelly Banse
+					AND D.PS_PRODUCT <> '804120' -- -SS-
+					AND D.PS_PRODUCT <> '804190' -- -SS-
 					/* -SS-
 					AND '804180' <> D.PRODUCT
 					AND '804120' <> D.PRODUCT

@@ -1,10 +1,3 @@
-describe AP_135_TRNPC_COMM_DATA;
-describe R12_PROJ_RESOURCE_PS;
-describe AP_135_TRNPC_PROJ_RES;
-describe MD_PRODUCT_CODE;
-describe OTR_PROD_CODE_XREF_RCPO;
-describe R12_ORACLE_PS_REV_RCPO;
-
 CREATE TABLE MAP_SALES_DATA (
 	QUERY_SOURCE VARCHAR2(10),
 	BU VARCHAR2(5),
@@ -28,13 +21,6 @@ CREATE TABLE MAP_SALES_DATA (
 );
 
 commit;
-select max(jrnl_date) from map_sales_data;
-
-ALTER TABLE MAP_SALES_DATA ADD TWO_FIVE VARCHAR2(1);
-UPDATE MAP_SALES_DATA SET TWO_FIVE = 'N';
-COMMIT;
-describe MAP_SALES_DATA;
-alter table MAP_SALES_DATA modify DEPT_DESCR VARCHAR2(240);
 
 DELETE FROM MAP_SALES_DATA WHERE QUERY_SOURCE = 'RCPO';
 INSERT INTO MAP_SALES_DATA
@@ -110,9 +96,9 @@ SELECT
 			ELSE 'USD'
 			END;
 
--- 2,388,622 rows inserted.			
+-- 2,388,622 rows inserted.
 commit;
-select max(JRNL_DATE) from MAP_SALES_DATA where QUERY_SOURCE = 'RCPO';
+-- select max(JRNL_DATE) from MAP_SALES_DATA where QUERY_SOURCE = 'RCPO';
 -- 30-SEP-16
 
 DELETE FROM MAP_SALES_DATA WHERE QUERY_SOURCE = 'P/S GL';
@@ -178,7 +164,7 @@ SELECT
 
 -- 79,780 rows inserted.
 COMMIT;
-select max(JRNL_DATE) from MAP_SALES_DATA where QUERY_SOURCE = 'P/S GL';
+-- select max(JRNL_DATE) from MAP_SALES_DATA where QUERY_SOURCE = 'P/S GL';
 -- 31-DEC-04
 
 INSERT INTO MAP_SALES_DATA
@@ -242,12 +228,11 @@ SELECT
 
 -- 5,492 rows inserted.
 COMMIT;
-select max(JRNL_DATE) from MAP_SALES_DATA where QUERY_SOURCE = 'P/S LEDGER';
+-- select max(JRNL_DATE) from MAP_SALES_DATA where QUERY_SOURCE = 'P/S LEDGER';
 -- 15-DEC-02
 
-describe R12_TRANE_LOCATIONS;
-select count(*) from MAP_SALES_DATA where QUERY_SOURCE = 'PBS';
-
+-- select count(*) from MAP_SALES_DATA where QUERY_SOURCE = 'PBS';
+DELETE FROM MAP_SALES_DATA WHERE QUERY_SOURCE = 'PBS';
 INSERT INTO MAP_SALES_DATA
 SELECT
 		/*+ NO_CPU_COSTING */
@@ -341,10 +326,15 @@ SELECT
 		NATION_CURR;
 -- 1,172,679 rows inserted.
 -- 3083 seconds, 51 minutes
+-- 3247 seconds, 54 minutes
 
-select INVOICE, BUSINESS_UNIT, CUSTOMER_TRX_ID, count(*) from R12_TRNBI_BI_HDR_PSB group by INVOICE, BUSINESS_UNIT, CUSTOMER_TRX_ID order by 4 desc;
+commit;
+
+-- select INVOICE, BUSINESS_UNIT, CUSTOMER_TRX_ID, count(*) from R12_TRNBI_BI_HDR_PSB group by INVOICE, BUSINESS_UNIT, CUSTOMER_TRX_ID order by 4 desc;
 -- unique
 
+-- select count(*) from MAP_SALES_DATA where QUERY_SOURCE = 'P21';
+DELETE FROM MAP_SALES_DATA WHERE QUERY_SOURCE = 'P21';
 INSERT INTO MAP_SALES_DATA
 SELECT
 		/*+ NO_CPU_COSTING */
@@ -446,7 +436,12 @@ SELECT
 		NATION_CURR;
 -- 451,988 rows inserted.
 -- 1273 seconds, 21 minutes
+-- 1404 seconds, 23 minutes
 
+commit;
+
+-- select count(*) from MAP_SALES_DATA where QUERY_SOURCE = 'PUEBLO';
+DELETE FROM MAP_SALES_DATA WHERE QUERY_SOURCE = 'PUEBLO';
 INSERT INTO MAP_SALES_DATA
 SELECT
 		/*+   ORDERED NO_CPU_COSTING  INDEX(PR XAK1AP_135_PROJ_RESOURCE)*/
@@ -494,5 +489,7 @@ SELECT
 		AND TRUNC(PR.ACCOUNTING_DT) <= TO_DATE('12/31/2050', 'MM/DD/YYYY');
 -- 1,946,335 rows inserted.
 -- 1391 seconds, 23 minutes
+-- 1129 seconds, 19 minutes
 
-select QUERY_SOURCE, count(*) from MAP_SALES_DATA group by QUERY_SOURCE;
+commit;
+-- select QUERY_SOURCE, count(*), max(jrnl_date) from MAP_SALES_DATA group by QUERY_SOURCE;

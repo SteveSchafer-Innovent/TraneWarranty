@@ -295,14 +295,13 @@ LEFT OUTER JOIN
   WHERE A.JOURNAL_DATE >=(to_date('1-' ||:RunDate, 'dd-mon-yy'))
   AND A.JOURNAL_DATE <=(LAST_DAY(to_date('1-' ||:RunDate, 'dd-mon-yy')))
     /*TAY:    AND A.BUSINESS_UNIT_GL IN ('CAN', 'CSD')*/
-  AND A.R12_ENTITY IN ('5773', '5588')
+   AND A.R12_ENTITY IN ('5773', '5588', '5575', '5612', '5743', '9256', '9258', '9298', '9299', '9984')
     -- -SS- AND A.PS_BUSINESS_UNIT_GL IN('CAN', 'CSD')
     /*TAY:       AND CASE WHEN ASX.NATION_CURR ='USD' THEN 'USA' ELSE 'CAN' END = UPPER(:COUNTRY)*/
   AND
     CASE
-      WHEN A.r12_entity IN(5773, 5588)
-      THEN 'CAN'
-      ELSE 'USA'
+      WHEN a.R12_ENTITY IN ('5575', '5612', '5743', '9256', '9258', '9298', '9299', '9984') THEN 'USA'
+      WHEN a.R12_ENTITY IN ('5773', '5588') THEN 'CAN' ELSE '???'
     END = UPPER(:COUNTRY)
     /*TAY:    AND A.BUSINESS_UNIT_GL   = ASX.PSGL(+)*/
     --AND A.BUSINESS_UNIT_GL   = ASX.PSGL(+)

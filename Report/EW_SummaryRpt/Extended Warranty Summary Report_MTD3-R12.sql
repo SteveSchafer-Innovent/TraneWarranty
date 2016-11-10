@@ -76,7 +76,7 @@ FROM
     END = UPPER(:COUNTRY)
     /*TAY:        and ASX.NATION_CURR = 'USD' WIP*/
     -- Not sure this is correct way to implement
-  AND DIST.r12_entity NOT IN(5773, 5588)
+  AND DIST.R12_ENTITY IN ('5575', '5612', '5743', '9256', '9258', '9298', '9299', '9984')
     /*TAY:        and (dist.deptid IS NULL OR (dist.deptid = 'SL00')) WIP*/
     -- -SS- NEW
   AND((DIST.PS_DEPTID = 'NA'
@@ -150,7 +150,7 @@ FROM
     END = UPPER(:COUNTRY)
     /*TAY:        and ASX.NATION_CURR = 'CAD' WIP*/
     -- Not sure that this is the right way to get the same effect
-  AND DIST.r12_entity IN(5773, 5588)
+  AND DIST.R12_ENTITY IN ('5773', '5588', '5575', '5612', '5743', '9256', '9258', '9298', '9299', '9984')
     /*TAY:        and ( dist.deptid IS NULL OR (dist.deptid = 'TCA0') OR (dist.deptid = 'SL00') ) WIP*/
     -- -SS- NEW
   AND((DIST.PS_DEPTID = 'NA'

@@ -36,6 +36,10 @@ group by query_source, jrnl_year order by 2,1;
 
 select jrnl_year, sum(revenue_amount), sum(revenue_amount_dec) from iob_25_MSD68_2 group by jrnl_year order by 1;
 
+select query_source, count(*) from IOB_25_MSD68 group by query_source order by 1;
 
-select query_source, count(*) from IOB_25_MSD68 group by query_source order by 1;
-select query_source, count(*) from IOB_25_MSD68 group by query_source order by 1;
+select query_source, jrnl_year, round(sum(revenue_amount),6), round(sum(revenue_amount_dec),6)
+from IOB_WC_MAPSL
+group by query_source, jrnl_year order by 2,1;
+
+select query_source, count(*) from IOB_WC_MAPSL group by query_source order by 1;

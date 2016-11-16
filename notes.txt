@@ -159,7 +159,7 @@ V$SESSION SESS
 LEFT OUTER JOIN V$SQL SQL ON SQL.SQL_ID = SESS.SQL_ID
 WHERE
 SESS.TYPE = 'USER'
-AND SESS.USERNAME IN('CCDCAS','CCDCAT', 'CCDCAU', 'ENT_RPT', 'ACTU_CACHE_ADMIN') ;
+AND SESS.USERNAME IN('CCDCAS','CCDCAT', 'CCDCAU', 'ENT_RPT', 'ACTU_CACHE_ADMIN', 'DBO') ;
 
 If you see anything for those users, you can kill it with either of the following (DISCONNECT seems to work better).
 ALTER SYSTEM KILL SESSION 'SID , SERIAL#' IMMEDIATE;
@@ -169,3 +169,13 @@ e.g.
 ALTER SYSTEM KILL SESSION '100, 25578' IMMEDIATE;
 ALTER SYSTEM DISCONNECT SESSION '166, 24938' IMMEDIATE;
 
+---------------
+Retrofit Summary Report
+
+ESS not map
+last 6 months okay
+Reports/RetrofitSummary
+doesn't work in ESS, removed comments,
+get rid of SYSTEM
+git rid of TRX_MONTH
+/@StandardWarranty/RetrofitSummaryReport ESS

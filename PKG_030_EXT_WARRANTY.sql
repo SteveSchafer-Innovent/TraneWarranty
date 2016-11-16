@@ -181,6 +181,7 @@ IS
 				SELECT
 						GLA1.GL_ACCOUNT_SCD_KEY,
 						GLA1.R12_ENTITY, -- -SS- COMPANY
+						GLA1.PS_COMPANY, -- -SS- new
 						GLA1.R12_ACCOUNT -- -SS- ACCOUNT
 					FROM
 						R12_GL_ACCOUNT_SCD GLA1 -- -SS-
@@ -216,7 +217,7 @@ IS
 				GL_ACCOUNT_FILTER GLA
 				/* -SS- LEFT OUTER JOIN ACTUATE_SEC_XREF ASX
 				ON GLA.COMPANY = ASX.PSGL */
-			JOIN PROD_CODE_XREF_RCPO_DR PRODGRP ON 'CSD' = PRODGRP.GL_LEDGER -- -SS- issue 22, 78
+			JOIN PROD_CODE_XREF_RCPO_DR PRODGRP ON GLA.PS_COMPANY = PRODGRP.GL_LEDGER -- -SS- issue 22, 78 -- SR-r12???
 				AND PRODGRP.PRODUCT_CATEGORY IS NOT NULL
 			-- -SS- issue 88: INNER JOIN R12_TRANE_ACCOUNTS_PS PSA ON GLA.R12_ACCOUNT = PSA.R12_ACCOUNT -- -SS- OTR, R12_2_R12
 				-- -SS- GLA.ACCOUNT = PSA.ACCOUNT
@@ -4533,6 +4534,7 @@ IS
 				(
 				(
 					SELECT
+						2 as source,
 							RR.REPORT_TYPE,
 							RR.R12_ACCOUNT, -- -SS- GL_ACCOUNT
 							RR.COUNTRY_INDICATOR,
@@ -4594,14 +4596,13 @@ IS
 										(
 											SELECT
 													GL_ACCOUNT as R12_ACCOUNT, -- -SS- GL_ACCOUNT
-													(
-													CASE UPPER(TRIM(COUNTRY_INDICATOR)) WHEN 'CAD'
-														THEN 'CAN'                         WHEN 'USD'
-														THEN 'USA'                         WHEN 'CAN'
-														THEN 'CAN'                         WHEN 'USA'
-														THEN 'USA'
+													CASE UPPER(TRIM(COUNTRY_INDICATOR))
+														WHEN 'CAD' THEN 'CAN'
+														WHEN 'USD' THEN 'USA'
+														WHEN 'CAN' THEN 'CAN'
+														WHEN 'USA' THEN 'USA'
 														ELSE NULL
-													END) AS COUNTRY_INDICATOR,
+													END AS COUNTRY_INDICATOR,
 													TRUNC(
 													CASE WHEN G_RUN IS NULL
 														THEN TRUNC(SYSDATE, 'MM')
@@ -4613,14 +4614,13 @@ IS
 													DR_DM_030_EXT_SALES_MVW
 												GROUP BY
 													GL_ACCOUNT,
-													(
-													CASE UPPER(TRIM(COUNTRY_INDICATOR)) WHEN 'CAD'
-														THEN 'CAN'                         WHEN 'USD'
-														THEN 'USA'                         WHEN 'CAN'
-														THEN 'CAN'                         WHEN 'USA'
-														THEN 'USA'
+													CASE UPPER(TRIM(COUNTRY_INDICATOR))
+														WHEN 'CAD' THEN 'CAN'
+														WHEN 'USD' THEN 'USA'
+														WHEN 'CAN' THEN 'CAN'
+														WHEN 'USA' THEN 'USA'
 														ELSE NULL
-													END),
+													END,
 													TRUNC(JOURNAL_DATE, 'MM')
 											UNION ALL
 											SELECT DISTINCT
@@ -4657,6 +4657,7 @@ IS
 							END, 'YYYY')) + 2
 					UNION ALL
 					SELECT DISTINCT
+							1 as source,
 							RR.REPORT_TYPE,
 							RR.R12_ACCOUNT, -- -SS- GL_ACCOUNT
 							RR.COUNTRY_INDICATOR,
@@ -4675,12 +4676,11 @@ IS
 										CS.LAG_PERIOD AS LAG_PERIOD,
 										AR.AMORTIZATION_METHOD AS AMORTIZATION_METHOD,
 										WARRANTY_FIRST_YR_IND,
-										(
-										CASE UPPER(TRIM(AMORTIZATION_METHOD)) WHEN 'COST FLOW'
-											THEN USR.COST_FLOW_RATE              WHEN 'STRAIGHT LINE'
-											THEN USR.STRAIGHT_LINE_RATE
+										CASE UPPER(TRIM(AMORTIZATION_METHOD))
+											WHEN 'COST FLOW' THEN USR.COST_FLOW_RATE
+											WHEN 'STRAIGHT LINE' THEN USR.STRAIGHT_LINE_RATE
 											ELSE 0
-										END) AMORT_RATE
+											END AMORT_RATE
 									FROM
 										DBO.SY_030_CALC_SUM_STG CS
 										INNER JOIN
@@ -4718,33 +4718,31 @@ IS
 										(
 											SELECT
 													GL_ACCOUNT as R12_ACCOUNT, -- -SS- GL_ACCOUNT
-													(
-													CASE UPPER(TRIM(COUNTRY_INDICATOR)) WHEN 'CAD'
-														THEN 'CAN'                         WHEN 'USD'
-														THEN 'USA'                         WHEN 'CAN'
-														THEN 'CAN'                         WHEN 'USA'
-														THEN 'USA'
+													CASE UPPER(TRIM(COUNTRY_INDICATOR))
+														WHEN 'CAD' THEN 'CAN'
+														WHEN 'USD' THEN 'USA'
+														WHEN 'CAN' THEN 'CAN'
+														WHEN 'USA' THEN 'USA'
 														ELSE NULL
-													END) AS COUNTRY_INDICATOR,
+													END AS COUNTRY_INDICATOR,
 													TRUNC(
-													CASE WHEN G_RUN IS NULL
-														THEN TRUNC(SYSDATE, 'MM')
+													CASE
+														WHEN G_RUN IS NULL THEN TRUNC(SYSDATE, 'MM')
 														ELSE G_RUN
-													END, 'MM') AS RUN_MONTH,
+														END, 'MM') AS RUN_MONTH,
 													TRUNC(JOURNAL_DATE, 'MM') AS MONTH,
 													SUM(REVENUE_AMOUNT) AS REVENUE
 												FROM
 													DR_DM_030_EXT_SALES_MVW
 												GROUP BY
 													GL_ACCOUNT,
-													(
-													CASE UPPER(TRIM(COUNTRY_INDICATOR)) WHEN 'CAD'
-														THEN 'CAN'                         WHEN 'USD'
-														THEN 'USA'                         WHEN 'CAN'
-														THEN 'CAN'                         WHEN 'USA'
-														THEN 'USA'
+													CASE UPPER(TRIM(COUNTRY_INDICATOR))
+														WHEN 'CAD' THEN 'CAN'
+														WHEN 'USD' THEN 'USA'
+														WHEN 'CAN' THEN 'CAN'
+														WHEN 'USA' THEN 'USA'
 														ELSE NULL
-													END),
+														END,
 													TRUNC(JOURNAL_DATE, 'MM')
 											UNION ALL
 											SELECT DISTINCT

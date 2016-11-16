@@ -191,7 +191,7 @@ SELECT
 					-- -SS- NEW
 					AND(AFU.EQUAL_710000 = 'Y'
 					OR AFU.EQUAL_806300 = 'Y') -- SR one to one match
-					AND GLA.R12_ENTITY IN('5773', '5588', '5575', '5612', '5743', '9256', '9258', '9298', '9299', '9984')
+					AND GLA.R12_ENTITY IN('5773', '5588', '5575', '5743', '9256', '9258', '9298', '9299', '9984')
 					-- -SS- NEW
 					-- -SS- AND GLA.ACCOUNT IN('710000', '806300')
 					--                 AND MLR.CLAIM_NBR IN ('8705840',

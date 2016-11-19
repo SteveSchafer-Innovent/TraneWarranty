@@ -16,11 +16,24 @@ SELECT
 ;
 -- ALTER SYSTEM KILL SESSION 'SID , SERIAL#' IMMEDIATE;
 -- ALTER SYSTEM DISCONNECT SESSION 'SID , SERIAL#'' IMMEDIATE;
-
 ALTER SYSTEM KILL SESSION '100, 25578' IMMEDIATE;
-
 ALTER SYSTEM DISCONNECT SESSION '173, 48870' IMMEDIATE;
 
+-- BLOCKING
+select 
+   blocking_session, 
+   sid, 
+   serial#, 
+   wait_class,
+   seconds_in_wait
+from 
+   v$session
+where 
+   blocking_session is not NULL
+order by 
+   blocking_session;
+
+-- TEMP SPACE
 SET PAUSE ON
 SET PAUSE 'Press Return to Continue'
 SET PAGESIZE 60

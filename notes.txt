@@ -179,3 +179,21 @@ doesn't work in ESS, removed comments,
 get rid of SYSTEM
 git rid of TRX_MONTH
 /@StandardWarranty/RetrofitSummaryReport ESS
+
+Extended Warranty Summary Report-Oracle DW
+MTDDeferredRevenue - identical
+YTDDeferredRevenue - totaly different
+MTDPrepaidCommissions - identical
+YTDPrepaidCommissions - same except 10/31/2016 Expected Balance and Difference
+MTDCost - identical
+YTDCost - identical
+MiscData1:
+  General data columns for Parameter and Header - similar but not identical.  Test has fewer rows
+  Data for PREPAID COMMISSIONS - not the same.  both have 1 row.  prod has an account.  test has no account.  both have zeroes.
+  Data for  /* Comm detail Dollar Amt , Amort_Comm_& prepaid_comm_and_long_and_short_term*/  - identical
+  Data for General Ledger Short term &Long term Balance in "YTDDefered Reve"Tab - same grand total.  prod has 2 accounts. test has only (blank)
+MiscData2:
+  General data columns for Parameter and Header - similar but not identical.  Test has fewer rows
+  Data for PREPAID COMMISSIONS - appear identical
+  Data for  /* Comm detail Dollar Amt , Amort_Comm_& prepaid_comm_and_long_and_short_term*/  - identical
+  

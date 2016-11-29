@@ -6,11 +6,25 @@ SELECT
 		SUM(ROUND(EXPENSE_AMOUNT,2))
 	FROM
 		IOB_25_WEXD68
---	WHERE TRX_YEAR = 2016 
+		WHERE TRX_YEAR > 2008 
 	GROUP BY
 		TRX_YEAR,
 		TRX_MONTH,
 		CLAIM_TYPE
+	ORDER BY 1,2,3,4;
+
+select count(*) from Iob_Wc_Wexp;
+
+select a.claim_number, a.step_number, a.* from Iob_Wc_Wexp a where a.CLAIM_number in (6127696,6127696,6170454) and a.material_labor = 'MATERIAL';
+
+SELECT
+		*
+	FROM
+		IOB_25_WEXD68
+		WHERE TRX_YEAR = 2011
+		and TRX_MONTH = 8
+		and claim_type = 'CONCESSION'
+		and material_labor = 'LABOR'
 	ORDER BY 1,2,3,4;
 	
 	select *

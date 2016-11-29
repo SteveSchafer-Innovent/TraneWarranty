@@ -7,7 +7,6 @@ select COUNTRY_INDICATOR, query_source, jrnl_year, sum(round(revenue_amount,2)),
 from IOB_WC_MAPSL
 group by COUNTRY_INDICATOR, query_source, jrnl_year order by 2,1,3;
 
-
 -- actu queries
 select query_source, jrnl_year, jrnl_month, sum(round(revenue_amount,2)), sum(round(revenue_amount_dec,2))
 from IOB_WC_MAPSL
@@ -19,6 +18,9 @@ select query_source, jrnl_year, jrnl_month, sum(round(revenue_amount,2)), sum(ro
 from IOB_WC_MAPSL
 group by query_source, jrnl_year, jrnl_month order by 2,1,3;
 
+select query_source, jrnl_year, jrnl_month, sum(round(revenue_amount,2)), sum(round(revenue_amount_dec,2))
+from IOB_25_MSD68
+group by query_source, jrnl_year, jrnl_month order by 2,3, 1;
 
 -- DRT queries
 select query_source, jrnl_year, sum(round(revenue_amount,2)), sum(round(revenue_amount_dec,2))

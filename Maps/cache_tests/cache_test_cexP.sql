@@ -3,20 +3,35 @@ SELECT
 		TRX_YEAR,
 		TRX_MONTH,
 		CLAIM_TYPE,
-		EXPENSE_TYPE_DESCR,
-		MATERIAL_LABOR,
 		SUM(ROUND(EXPENSE_AMOUNT,2))
 	FROM
 		IOB_WC_CEXP
-	WHERE TRX_YEAR = 2016
-	and trx_month < 11
+	WHERE TRX_YEAR > 2008
+	GROUP BY
+		TRX_YEAR,
+		TRX_MONTH,
+		CLAIM_TYPE
+	ORDER BY 1,2,3;
+	
+-- MAP_EXPENSEWARRANTYDATA68_VW
+SELECT
+		TRX_YEAR,
+		TRX_MONTH,
+		CLAIM_TYPE,
+		EXPENSE_TYPE_DESCR,
+		MATERIAL_LABOR,
+	SUM(ROUND(EXPENSE_AMOUNT,2))
+	FROM
+		IOB_WC_CEXP
+	WHERE TRX_YEAR = 2009
+	and trx_month = 6
 	GROUP BY
 		TRX_YEAR,
 		TRX_MONTH,
 		CLAIM_TYPE,
 		EXPENSE_TYPE_DESCR,
 		MATERIAL_LABOR
-	ORDER BY 1,2,3;
+	ORDER BY 1,2,3, 4, 5;	
 	
 select * 
 From IOB_WC_CEXP 
@@ -25,13 +40,6 @@ and trx_month = 10
 and CLAIM_TYPE= 'CONCESSION'
 and EXPENSE_TYPE_DESCR = 'TRANE COMPANY'
 and MATERIAL_LABOR = 'MATERIAL';
-
-		
-
-
-from iob_25_wrrc68 
-where jrnl_year_month > 201500
-order by jrnl_year_month desc, 1;
 
 select country_indicator, jrnl_year_month, months_from_base, sum(round(revenue_amount,2)) rev
 from IOB_25_WSMT68

@@ -2,7 +2,9 @@ SELECT
 		TRX_YEAR,
 		TRX_MONTH,
 		CLAIM_TYPE,
-		SUM(ROUND(EXPENSE_AMOUNT,2))
+		warranty_duration,
+		SUM(ROUND(EXPENSE_AMOUNT,2)),
+		sum(in_reserve_percent) 
 	FROM
 		IOB_WC_WEXP
 	WHERE
@@ -10,13 +12,18 @@ SELECT
 	GROUP BY
 		TRX_YEAR,
 		TRX_MONTH,
-		CLAIM_TYPE
+		CLAIM_TYPE,
+		warranty_duration
 	ORDER BY 1,2,3;
 	
-	select *
-from iob_25_wrrc68 
-where jrnl_year_month > 201500
-order by jrnl_year_month desc, 1;
+select 200903 from dual
+union all
+select distinct trxyearmonth
+from iob_wc_wexp 
+order by 1;
+
+select * from iob_wc_wexp;
+
 
 select country_indicator, jrnl_year_month, months_from_base, sum(round(revenue_amount,2)) rev
 from IOB_25_WSMT68

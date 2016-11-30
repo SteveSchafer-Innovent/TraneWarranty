@@ -22,8 +22,8 @@ SELECT
 	SUM(ROUND(EXPENSE_AMOUNT,2))
 	FROM
 		IOB_WC_CEXP
-	WHERE TRX_YEAR = 2009
-	and trx_month = 6
+	WHERE TRX_YEAR = 2016
+	and trx_month = 9
 	GROUP BY
 		TRX_YEAR,
 		TRX_MONTH,
@@ -35,10 +35,12 @@ SELECT
 select * 
 From IOB_WC_CEXP 
 where TRX_YEAR = 2016 
-and trx_month = 10
-and CLAIM_TYPE= 'CONCESSION'
-and EXPENSE_TYPE_DESCR = 'TRANE COMPANY'
-and MATERIAL_LABOR = 'MATERIAL';
+and trx_month = 9
+and CLAIM_TYPE= 'MATERIAL'
+and EXPENSE_TYPE_DESCR = 'MATERIAL'
+and Upper(MATERIAL_LABOR) = 'MATERIAL'
+order by claim_number, step_number, expense_amount
+;
 
 select country_indicator, jrnl_year_month, months_from_base, sum(round(revenue_amount,2)) rev
 from IOB_25_WSMT68

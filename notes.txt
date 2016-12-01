@@ -197,3 +197,14 @@ MiscData2:
   Data for PREPAID COMMISSIONS - appear identical
   Data for  /* Comm detail Dollar Amt , Amort_Comm_& prepaid_comm_and_long_and_short_term*/  - identical
   
+An internal error has occurred.  See the log for more details.
+  Plug-in Provider: Actuate
+  Plug-in ID: com.actuate.istudio.iod.editor
+  Error Code: 
+  
+  An error has been encountered while communicating with the RDB physical store.
+
+/DATA SOURCES/DR_RPT/_DR_RPT.DCD:  SQLState = 08S01 Native Error = -4 Error Message = [ActuateDD][ODBC Oracle Wire Protocol driver][Oracle]Connection Dead.
+
+sum( [EXPENSE_AMOUNT]+(0 MOD 100)/100)
+SUM(([EXPENSE_AMOUNT]+(0 MOD 100)/100)*[IN_RESERVE_PERCENT])

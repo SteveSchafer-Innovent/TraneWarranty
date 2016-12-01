@@ -18,10 +18,17 @@
 		</ConnectOptions>
 
 		<ConnectOptions Type="ReportConnection1">
+			<Property PropName="Datasource">ReportConnection1</Property>
 			<Property PropName="ServerUri">http://actuatetest:8000</Property>
 			<Property PropName="Volume">lseusas1662</Property>
 			<Property PropName="Username">ccdcau</Property>
 			<Property PropName="Password">TEST0816</Property>
+		</ConnectOptions>
+
+		<ConnectOptions Type="Report_DR">
+			<Property PropName="HostString">DRTRNT</Property>
+			<Property PropName="Username">ccdcau</Property>
+			<Property PropName="Password">Oxwhl_02</Property>
 		</ConnectOptions>
 
 		<ConnectOptions Type="DW_RPT">

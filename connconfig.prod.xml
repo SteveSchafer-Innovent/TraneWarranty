@@ -1,0 +1,64 @@
+ <Config>
+	<Runtime>
+		<!-- Information Object Example -->
+		<ConnectOptions Type="EssDataSource.Connection1">
+			<Property PropName="Datasource">Connection1</Property>
+			<Property PropName="ServerUri">http://actuateprod:8000</Property>
+			<Property PropName="Volume">lseusas1662</Property>
+			<Property PropName="Username">ccdcau</Property>
+			<Property PropName="Password">TEST0816</Property>
+		</ConnectOptions>
+		<!-- JDBC Connection -->
+		<ConnectOptions Type="EssDataSource.Connection2">
+			<Property PropName="Datasource">Connection2</Property>
+			<Property PropName="Driver">oracle.jdbc.driver.OracleDriver</Property>
+			<Property PropName="Database">jdbc:oracle:thin:@DWTRNP:1533:DWTRNP</Property>
+			<Property PropName="User">ent_rpt</Property>
+			<Property PropName="Password">act47pwd</Property>
+		</ConnectOptions>
+
+		<ConnectOptions Type="Report_AIS">
+			<Property PropName="ServerUri">http://actuateprod:8000</Property>
+			<Property PropName="Volume">lseusas1662</Property>
+			<Property PropName="UserName">ccdcau</Property>
+			<Property PropName="Password">TEST0816</Property>
+		</ConnectOptions>
+
+		<ConnectOptions Type="Report_DW">
+			<Property PropName="HostString">DWTRNP</Property>
+			<Property PropName="UserName">ent_rpt</Property>
+			<Property PropName="Password">act47pwd</Property>
+		</ConnectOptions>
+
+		<ConnectOptions Type="Report_DR">
+			<Property PropName="HostString">DRTRNP</Property>
+			<Property PropName="UserName">ent_rpt</Property>
+			<Property PropName="Password">act47pwd</Property>
+		</ConnectOptions>
+
+		<ConnectOptions Type="DW_RPT">
+			<Property PropName="port">1521</Property>
+			<Property PropName="server">DWTRNP</Property>
+			<Property PropName="sid">DWTRNP</Property>
+			<Property PropName="username">ent_rpt</Property>
+			<Property PropName="password">act47pwd</Property>
+		</ConnectOptions>
+
+		<ConnectOptions Type="DR_RPT">
+			<Property PropName="port">1532</Property>
+			<Property PropName="server">DRTRNP</Property>
+			<Property PropName="sid">DRTRNP</Property>
+			<Property PropName="username">ent_rpt</Property>
+			<Property PropName="password">act47pwd</Property>
+		</ConnectOptions>
+
+		<ConnectOptions Type="DR_CACHE">
+			<Property PropName="port">1532</Property>
+			<Property PropName="server">DRTRNP</Property>
+			<Property PropName="sid">DRTRNP</Property>
+			<Property PropName="username">actu_cache_admin</Property>
+			<Property PropName="password">ltunes1_aca</Property>
+		</ConnectOptions>
+
+	</Runtime>
+</Config>

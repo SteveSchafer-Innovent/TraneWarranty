@@ -1,3 +1,0 @@
-CurrentTranslationLocale=en_US
-DependencyManagerState=<?xml version\="1.0" encoding\="UTF-8" standalone\="yes"?>\n<state>\n    <compilationUnit name\="/Data Sources/DRTRNP/srvr_info_map.sma">\n        <dependent>/test_iob/Information Objects/server_info_iob.iob</dependent>\n    </compilationUnit>\n</state>\n\n
-eclipse.preferences.version=1

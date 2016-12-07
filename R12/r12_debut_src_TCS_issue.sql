@@ -1,4 +1,4 @@
-SELECT hdr.invoice, hdr.customer_trx_id, bae.line_seq_num, hdr.ed_create_date, tbh.ed_create_date, bae.ed_create_date
+SELECT hdr.invoice, hdr.customer_trx_id, bae.line_seq_num, count(*)
 	FROM
 		R12_BI_HDR_STG HDR
 	INNER JOIN R12_TRNBI_BI_HDR_STG TBH  ON HDR.INVOICE = TBH.INVOICE AND HDR.CUSTOMER_TRX_ID = TBH.CUSTOMER_TRX_ID
@@ -10,7 +10,7 @@ SELECT hdr.invoice, hdr.customer_trx_id, bae.line_seq_num, hdr.ed_create_date, t
 		--    LEFT OUTER JOIN R12_TRANE_LOCATIONS DP   ON DP.R12_LOCATION = D.R12_LOCATION
 	WHERE
 		0 = 0
---		and HDR.INVOICE in (1521904,1519059)	
+		and HDR.INVOICE in (1521904,1519059)	-- 
 --		and HDR.CUSTOMER_TRX_ID in (50381339, 50381342)
 --		AND D.JOURNAL_DATE BETWEEN '01-oct-16' AND '31-oct-16'
 		--AND B.BILL_SOURCE_ID = 'P21'
@@ -29,6 +29,7 @@ SELECT hdr.invoice, hdr.customer_trx_id, bae.line_seq_num, hdr.ed_create_date, t
 		AND D.R12_PRODUCT <> '41499'
 		AND D.R12_PRODUCT <> '41205'
 		*/
+		group by hdr.invoice, hdr.customer_trx_id, bae.line_seq_num
 		order by 1, 2, 3, 4
 	
 		;

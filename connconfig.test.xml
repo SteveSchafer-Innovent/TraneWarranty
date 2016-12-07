@@ -1,6 +1,6 @@
  <Config>
 	<Runtime>
-		<!-- Information Object Example -->
+		<!-- Information Object Connections -->
 		<ConnectOptions Type="EssDataSource.Connection1">
 			<Property PropName="Datasource">Connection1</Property>
 			<Property PropName="ServerUri">http://actuatetest:8000</Property>
@@ -8,7 +8,6 @@
 			<Property PropName="Username">ccdcau</Property>
 			<Property PropName="Password">TEST0816</Property>
 		</ConnectOptions>
-		<!-- JDBC Connection -->
 		<ConnectOptions Type="EssDataSource.Connection2">
 			<Property PropName="Datasource">Connection2</Property>
 			<Property PropName="Driver">oracle.jdbc.driver.OracleDriver</Property>
@@ -24,33 +23,32 @@
 			<Property PropName="Password">act47pwd</Property>
 		</ConnectOptions>
 
+		<!-- Report Connections -->
 		<ConnectOptions Type="Report_AIS">
 			<Property PropName="ServerUri">http://actuatetest:8000</Property>
 			<Property PropName="Volume">lseusas1662</Property>
 			<Property PropName="UserName">ccdcau</Property>
 			<Property PropName="Password">TEST0816</Property>
 		</ConnectOptions>
-
 		<ConnectOptions Type="Report_DW">
 			<Property PropName="HostString">DWTRNT</Property>
 			<Property PropName="UserName">ent_rpt</Property>
 			<Property PropName="Password">act47pwd</Property>
 		</ConnectOptions>
-
 		<ConnectOptions Type="Report_DR">
 			<Property PropName="HostString">DRTRNT</Property>
 			<Property PropName="UserName">ent_rpt</Property>
 			<Property PropName="Password">act47pwd</Property>
 		</ConnectOptions>
-
-		<ConnectOptions Type="DW_RPT">
+	
+		<!-- IOB Connections -->
+	<ConnectOptions Type="DW_RPT">
 			<Property PropName="port">1521</Property>
 			<Property PropName="server">DWTRNT</Property>
 			<Property PropName="sid">DWTRNT</Property>
 			<Property PropName="username">ent_rpt</Property>
 			<Property PropName="password">act47pwd</Property>
 		</ConnectOptions>
-
 		<ConnectOptions Type="DR_RPT">
 			<Property PropName="port">1532</Property>
 			<Property PropName="server">DRTRNT</Property>
@@ -58,7 +56,6 @@
 			<Property PropName="username">ent_rpt</Property>
 			<Property PropName="password">act47pwd</Property>
 		</ConnectOptions>
-
 		<ConnectOptions Type="DR_CACHE">
 			<Property PropName="port">1532</Property>
 			<Property PropName="server">DRTRNT</Property>
@@ -74,7 +71,6 @@
 			<Property PropName="username">ccdcau</Property>
 			<Property PropName="password">Auckc_02</Property>
 		</ConnectOptions>
-
 
 	</Runtime>
 </Config>

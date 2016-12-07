@@ -16,6 +16,13 @@
 			<Property PropName="User">ccdcau</Property>
 			<Property PropName="Password">Kzbdc_02</Property>
 		</ConnectOptions>
+		<ConnectOptions Type="EssDataSource.Connection3">
+			<Property PropName="Datasource">Connection3</Property>
+			<Property PropName="Driver">oracle.jdbc.driver.OracleDriver</Property>
+			<Property PropName="Database">jdbc:oracle:thin:@DRTRNT:1533:DRTRNT</Property>
+			<Property PropName="User">ent_rpt</Property>
+			<Property PropName="Password">act47pwd</Property>
+		</ConnectOptions>
 
 		<ConnectOptions Type="Report_AIS">
 			<Property PropName="ServerUri">http://actuatetest:8000</Property>

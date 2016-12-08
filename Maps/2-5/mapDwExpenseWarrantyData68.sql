@@ -48,17 +48,15 @@ CREATE OR REPLACE
 						THEN 'NO'
 						ELSE FCW.WA_POLICY_TYPE
 					END) AS WARRANTY_TYPE,
-					(
-					CASE WHEN CCN_DATA.CLAIM_TYPE = 'EXTD PURCHASED LABOR'
-						THEN 'Out of Standard Warranty'
-						ELSE(
-							CASE                                   WHEN FCW.WA_RANGE = '1'
-								THEN '1st Year Standard Warranty'     WHEN FCW.WA_RANGE = '2'
-								THEN '2nd-5th Year Standard Warranty' WHEN FCW.WA_RANGE = '5'
-								THEN '> 5th Year Standard Warranty'
-								ELSE 'Out of Standard Warranty'
-							END)
-					END) AS WARRANTY_DURATION,
+					CASE
+						WHEN CCN_DATA.CLAIM_TYPE = 'EXTD PURCHASED LABOR' THEN 'Out of Standard Warranty'
+						ELSE CASE
+							WHEN FCW.WA_RANGE = '1' THEN '1st Year Standard Warranty'
+							WHEN FCW.WA_RANGE = '2' THEN '2nd-5th Year Standard Warranty'
+							WHEN FCW.WA_RANGE = '5' THEN '> 5th Year Standard Warranty'
+							ELSE 'Out of Standard Warranty'
+							END
+						END AS WARRANTY_DURATION,
 					CCN_DATA.TRX_CURRENCY AS CURRENCY,
 					(
 					CASE WHEN GLA.R12_ENTITY NOT IN('5773', '5588')
@@ -377,13 +375,12 @@ CREATE OR REPLACE
 							THEN 'NO'
 							ELSE FCW.WA_POLICY_TYPE
 						END) AS WARRANTY_TYPE,
-						(
-						CASE                                   WHEN FCW.WA_RANGE = '1'
-							THEN '1st Year Standard Warranty'     WHEN FCW.WA_RANGE = '2'
-							THEN '2nd-5th Year Standard Warranty' WHEN FCW.WA_RANGE = '5'
-							THEN '> 5th Year Standard Warranty'
+						CASE
+							WHEN FCW.WA_RANGE = '1' THEN '1st Year Standard Warranty'
+							WHEN FCW.WA_RANGE = '2' THEN '2nd-5th Year Standard Warranty'
+							WHEN FCW.WA_RANGE = '5' THEN '> 5th Year Standard Warranty'
 							ELSE 'Out of Standard Warranty'
-						END) AS WARRANTY_DURATION,
+							END AS WARRANTY_DURATION,
 						MLR.TRX_CURRENCY AS CURRENCY,
 						(
 						CASE WHEN GLA.R12_ENTITY NOT IN('5773', '5588')
@@ -621,22 +618,19 @@ CREATE OR REPLACE
 							TD1.FULL_DATE AS FAIL_DATE,
 							((TD3.TIME_KEY - TD1.TIME_KEY) / 30.42) AS INTMONTHS_FAIL_TO_TRX,
 							/* PER JACKIE'S REQUEST on 5/24/07 IF FAIL DATE = 1/1/1900 OR NULL THEN SET WARRANTY TYPE TO NO. */
-							(
 							CASE WHEN TD1.FULL_DATE = TO_DATE('1/1/1900', 'MM/DD/YYYY') OR TD1.FULL_DATE IS NULL
 								THEN 'NO'
 								ELSE FCW.WA_POLICY_TYPE
-							END) AS WARRANTY_TYPE,
-							(
-							CASE WHEN CCN_DATA.CLAIM_TYPE = 'EXTD PURCHASED LABOR'
-								THEN 'Out of Standard Warranty'
-								ELSE(
-									CASE                                   WHEN FCW.WA_RANGE = '1'
-										THEN '1st Year Standard Warranty'     WHEN FCW.WA_RANGE = '2'
-										THEN '2nd-5th Year Standard Warranty' WHEN FCW.WA_RANGE = '5'
-										THEN '> 5th Year Standard Warranty'
-										ELSE 'Out of Standard Warranty'
-									END)
-							END) AS WARRANTY_DURATION,
+							END AS WARRANTY_TYPE,
+							CASE
+								WHEN CCN_DATA.CLAIM_TYPE = 'EXTD PURCHASED LABOR' THEN 'Out of Standard Warranty'
+								ELSE CASE
+									WHEN FCW.WA_RANGE = '1' THEN '1st Year Standard Warranty'
+									WHEN FCW.WA_RANGE = '2' THEN '2nd-5th Year Standard Warranty'
+									WHEN FCW.WA_RANGE = '5' THEN '> 5th Year Standard Warranty'
+									ELSE 'Out of Standard Warranty'
+									END
+								END AS WARRANTY_DURATION,
 							CCN_DATA.TRX_CURRENCY AS CURRENCY,
 							(
 							CASE WHEN GLA.R12_ENTITY NOT IN('5773', '5588')

@@ -437,6 +437,7 @@ SELECT
 
 -- 80,076 rows inserted. 1637 seconds, 27 mins
 -- 20161208 - 0 rows inserted. 0 seconds
+-- 20161209 - 80,076 rows inserted. 1561 seconds (26 seconds)
 
 COMMIT;
 
@@ -545,6 +546,7 @@ SELECT
 		NATION_CURR;
 
 -- 25,712 rows inserted. 1767 seconds, 29 min
+-- 20161209 - 25,712 rows inserted. 1716 seconds (28.6 minutes)
 
 COMMIT;
 

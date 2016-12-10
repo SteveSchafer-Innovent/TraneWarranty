@@ -1,22 +1,22 @@
  <Config>
 	<Runtime>
 		<!-- Information Object Connections -->
-		<ConnectOptions Type="EssDataSource.Connection1">
-			<Property PropName="Datasource">Connection1</Property>
+		<ConnectOptions Type="EssDataSource.RESERVE_AIS">
+			<Property PropName="Datasource">RESERVE_AIS</Property>
 			<Property PropName="ServerUri">http://actuatetest:8000</Property>
 			<Property PropName="Volume">lseusas1662</Property>
 			<Property PropName="Username">ccdcau</Property>
 			<Property PropName="Password">TEST0816</Property>
 		</ConnectOptions>
-		<ConnectOptions Type="EssDataSource.Connection2">
-			<Property PropName="Datasource">Connection2</Property>
+		<ConnectOptions Type="EssDataSource.RESERVE_DW">
+			<Property PropName="Datasource">RESERVE_DW</Property>
 			<Property PropName="Driver">oracle.jdbc.driver.OracleDriver</Property>
 			<Property PropName="Database">jdbc:oracle:thin:@DWTRNT:1533:DWTRNT</Property>
 			<Property PropName="User">ccdcau</Property>
 			<Property PropName="Password">Kzbdc_02</Property>
 		</ConnectOptions>
-		<ConnectOptions Type="EssDataSource.Connection3">
-			<Property PropName="Datasource">Connection3</Property>
+		<ConnectOptions Type="EssDataSource.RESERVE_DR">
+			<Property PropName="Datasource">RESERVE_DR</Property>
 			<Property PropName="Driver">oracle.jdbc.driver.OracleDriver</Property>
 			<Property PropName="Database">jdbc:oracle:thin:@DRTRNT:1533:DRTRNT</Property>
 			<Property PropName="User">ent_rpt</Property>

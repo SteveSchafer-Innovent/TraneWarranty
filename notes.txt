@@ -223,3 +223,30 @@ DESCR                   VARCHAR2(240)
 -> R12_LOCATION_STG 
 R12_LOCATION        NOT NULL VARCHAR2(150) 
 R12_LOCATION_DESCR           VARCHAR2(240)  
+
+
+Old                        New
+Connection1       RESERVE_AIS
+Connection2       RESERVE_DW
+Connection3       RESERVE_DR
+
+[‎12/‎10/‎2016 9:35 AM] Rosenbaum, Scott: 
+okay, don't really need to talk. If you have a look at the Tavant Delivery page of the Report Testing spreadsheet it should make sense
+Reports are listed in the left column, the IOB they are dependent on in next col.
+Then I have the major work that needs to be completed in order to start testing those reports, with six base sets of work.
+[‎12/‎10/‎2016 9:37 AM] Rosenbaum, Scott: 
+Best I can tell, any report that only uses Sales data (e.g. DR tables - that are not linked to DW) does not need a change.
+Just need to modify the environment to support Tavant
+[‎12/‎10/‎2016 9:38 AM] Rosenbaum, Scott: 
+Then we have the MAP_WARRANTY_EXPENSE_DATA table will be populated by data from Tavant, through a different program. Probably will be a push from Tavant using Informatica, and then build from stage tables.
+Then we do the same for MAP_CONCESSION_EXPENSE_DATA
+Then the Extended Warranty IOBs (must have no change), need to update 3 
+[‎12/‎10/‎2016 9:40 AM] Rosenbaum, Scott: 
+Then the PKG_030_EXT_WARR..  and then PKG_031_RETROFIT
+
+[‎12/‎12/‎2016 8:34 AM] Rosenbaum, Scott: 
+Morning Steve.
+Priorities are: a) get the procedures running for Map_sales_data, Map_sales_data_68, Map_Concession_expense_data, and map_warranty_expense_data
+[‎12/‎12/‎2016 8:35 AM] Rosenbaum, Scott: 
+b) Solve any other incoming Pam issues.
+c) Work on the R12 load script.

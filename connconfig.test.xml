@@ -5,15 +5,15 @@
 			<Property PropName="Datasource">RESERVE_AIS</Property>
 			<Property PropName="ServerUri">http://actuatetest:8000</Property>
 			<Property PropName="Volume">lseusas1662</Property>
-			<Property PropName="Username">ccdcau</Property>
-			<Property PropName="Password">TEST0816</Property>
+			<Property PropName="Username">actuate</Property>
+			<Property PropName="Password">actuate81</Property>
 		</ConnectOptions>
 		<ConnectOptions Type="EssDataSource.RESERVE_DW">
 			<Property PropName="Datasource">RESERVE_DW</Property>
 			<Property PropName="Driver">oracle.jdbc.driver.OracleDriver</Property>
 			<Property PropName="Database">jdbc:oracle:thin:@DWTRNT:1533:DWTRNT</Property>
-			<Property PropName="User">ccdcau</Property>
-			<Property PropName="Password">Kzbdc_02</Property>
+			<Property PropName="User">actuate</Property>
+			<Property PropName="Password">act47pwd</Property>
 		</ConnectOptions>
 		<ConnectOptions Type="EssDataSource.RESERVE_DR">
 			<Property PropName="Datasource">RESERVE_DR</Property>
@@ -27,8 +27,8 @@
 		<ConnectOptions Type="Report_AIS">
 			<Property PropName="ServerUri">http://actuatetest:8000</Property>
 			<Property PropName="Volume">lseusas1662</Property>
-			<Property PropName="UserName">ccdcau</Property>
-			<Property PropName="Password">TEST0816</Property>
+			<Property PropName="UserName">actuate</Property>
+			<Property PropName="Password">actuate81</Property>
 		</ConnectOptions>
 		<ConnectOptions Type="Report_DW">
 			<Property PropName="HostString">DWTRNT</Property>
@@ -66,10 +66,10 @@
 
 		<ConnectOptions Type="TST">
 			<Property PropName="port">1521</Property>
-			<Property PropName="server">DWTRNP</Property>
-			<Property PropName="sid">DWTRNP</Property>
-			<Property PropName="username">ccdcau</Property>
-			<Property PropName="password">Auckc_02</Property>
+			<Property PropName="server">DWTRNT</Property>
+			<Property PropName="sid">DWTRNT</Property>
+			<Property PropName="username">ent_rpt</Property>
+			<Property PropName="password">act47pwd</Property>
 		</ConnectOptions>
 
 	</Runtime>

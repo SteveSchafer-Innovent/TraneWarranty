@@ -4,7 +4,7 @@
 		<ConnectOptions Type="EssDataSource.RESERVE_AIS">
 			<Property PropName="Datasource">RESERVE_AIS</Property>
 			<Property PropName="ServerUri">http://actuateprod:8000</Property>
-			<Property PropName="Volume">lseusas1662</Property>
+			<Property PropName="Volume">lseusas1169</Property>
 			<Property PropName="Username">actuate</Property>
 			<Property PropName="Password">actuate81</Property>
 		</ConnectOptions>
@@ -12,7 +12,7 @@
 			<Property PropName="Datasource">RESERVE_DW</Property>
 			<Property PropName="Driver">oracle.jdbc.driver.OracleDriver</Property>
 			<Property PropName="Database">jdbc:oracle:thin:@DWTRNP:1533:DWTRNP</Property>
-			<Property PropName="User">actuate</Property>
+			<Property PropName="User">ent_rpt</Property>
 			<Property PropName="Password">act47pwd</Property>
 		</ConnectOptions>
 		<ConnectOptions Type="EssDataSource.RESERVE_DR">
@@ -26,7 +26,7 @@
 		<!-- Report Connections -->
 		<ConnectOptions Type="Report_AIS">
 			<Property PropName="ServerUri">http://actuateprod:8000</Property>
-			<Property PropName="Volume">lseusas1662</Property>
+			<Property PropName="Volume">lseusas1169</Property>
 			<Property PropName="UserName">actuate</Property>
 			<Property PropName="Password">actuate81</Property>
 		</ConnectOptions>

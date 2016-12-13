@@ -64,13 +64,6 @@
 			<Property PropName="password">ltunes1_aca</Property>
 		</ConnectOptions>
 
-		<ConnectOptions Type="TST">
-			<Property PropName="port">1521</Property>
-			<Property PropName="server">DWTRNP</Property>
-			<Property PropName="sid">DWTRNP</Property>
-			<Property PropName="username">ent_rpt</Property>
-			<Property PropName="password">act47pwd</Property>
-		</ConnectOptions>
 
 	</Runtime>
 </Config>

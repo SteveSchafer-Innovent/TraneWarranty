@@ -11,14 +11,14 @@
 		<ConnectOptions Type="EssDataSource.RESERVE_DW">
 			<Property PropName="Datasource">RESERVE_DW</Property>
 			<Property PropName="Driver">oracle.jdbc.driver.OracleDriver</Property>
-			<Property PropName="Database">jdbc:oracle:thin:@DWTRNP:1533:DWTRNP</Property>
+			<Property PropName="Database">jdbc:oracle:thin:@DWTRNP:1521:DWTRNP</Property>
 			<Property PropName="User">ent_rpt</Property>
 			<Property PropName="Password">act47pwd</Property>
 		</ConnectOptions>
 		<ConnectOptions Type="EssDataSource.RESERVE_DR">
 			<Property PropName="Datasource">RESERVE_DR</Property>
 			<Property PropName="Driver">oracle.jdbc.driver.OracleDriver</Property>
-			<Property PropName="Database">jdbc:oracle:thin:@DRTRNP:1533:DRTRNP</Property>
+			<Property PropName="Database">jdbc:oracle:thin:@DRTRNP:1532:DRTRNP</Property>
 			<Property PropName="User">ent_rpt</Property>
 			<Property PropName="Password">act47pwd</Property>
 		</ConnectOptions>
@@ -64,13 +64,6 @@
 			<Property PropName="password">ltunes1_aca</Property>
 		</ConnectOptions>
 
-		<ConnectOptions Type="TST">
-			<Property PropName="port">1521</Property>
-			<Property PropName="server">DWTRNP</Property>
-			<Property PropName="sid">DWTRNP</Property>
-			<Property PropName="username">ent_rpt</Property>
-			<Property PropName="password">act47pwd</Property>
-		</ConnectOptions>
 
 	</Runtime>
 </Config>

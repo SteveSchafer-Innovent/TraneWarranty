@@ -12,7 +12,7 @@
 			<Property PropName="Datasource">RESERVE_DW</Property>
 			<Property PropName="Driver">oracle.jdbc.driver.OracleDriver</Property>
 			<Property PropName="Database">jdbc:oracle:thin:@DWTRNP:1533:DWTRNP</Property>
-			<Property PropName="User">actuate</Property>
+			<Property PropName="User">ent_rpt</Property>
 			<Property PropName="Password">act47pwd</Property>
 		</ConnectOptions>
 		<ConnectOptions Type="EssDataSource.RESERVE_DR">

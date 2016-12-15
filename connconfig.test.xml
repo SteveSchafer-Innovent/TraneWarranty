@@ -18,7 +18,7 @@
 		<ConnectOptions Type="EssDataSource.RESERVE_DR">
 			<Property PropName="Datasource">RESERVE_DR</Property>
 			<Property PropName="Driver">oracle.jdbc.driver.OracleDriver</Property>
-			<Property PropName="Database">jdbc:oracle:thin:@DRTRNT:1533:DRTRNT</Property>
+			<Property PropName="Database">jdbc:oracle:thin:@DRTRNT:1532:DRTRNT</Property>
 			<Property PropName="User">ent_rpt</Property>
 			<Property PropName="Password">act47pwd</Property>
 		</ConnectOptions>

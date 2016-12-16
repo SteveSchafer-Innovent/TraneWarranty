@@ -1,7 +1,7 @@
 /* MTD1 */
 SELECT
-  ADD_MONTHS(((LAST_DAY(to_date('1-' ||:RunDate, 'dd-mon-yy')))), - 1) AS GL_BEGINDATE,
-  (LAST_DAY(to_date('1-' ||:RunDate, 'dd-mon-yy'))) GL_END_DATE,
+  ADD_MONTHS(((LAST_DAY(to_date('1-' || :RunDate, 'dd-mon-yy')))), - 1) AS GL_BEGINDATE,
+  (LAST_DAY(to_date('1-' || :RunDate, 'dd-mon-yy'))) GL_END_DATE,
   CASE
     WHEN SALES.COUNTRY_INDICATOR IS NULL THEN BEGBALANCES.COUNTRY_INDICATOR
     ELSE SALES.COUNTRY_INDICATOR
@@ -31,7 +31,7 @@ FROM
       WHEN GL_LEDGERS.LEDGER_ID = '2022' THEN 'USA'
       WHEN GL_LEDGERS.LEDGER_ID = '2041' THEN 'CAN'
       END AS COUNTRY_INDICATOR, 
-    SUM(DECODE(GL_BALANCES.PERIOD_NAME, :RunDate, GL_BALANCES.BEGIN_BALANCE_DR - GL_BALANCES.BEGIN_BALANCE_CR, 0)) AS BEGBAL_BASE, 
+    SUM(DECODE(Upper(GL_BALANCES.PERIOD_NAME), Upper(:RunDate), GL_BALANCES.BEGIN_BALANCE_DR - GL_BALANCES.BEGIN_BALANCE_CR, 0)) AS BEGBAL_BASE, 
     AFU.DESCR || ' - (R12 A/C : ' || GL_CODE_COMBINATIONS.SEGMENT4 || '-' || GL_LEDGERS.NAME || ')' AS DESCR
 
   FROM SY_120_GL_LEDGERS_EW GL_LEDGERS
@@ -42,7 +42,7 @@ FROM
   RIGHT OUTER JOIN R12_ACCOUNT_FILTER_UPD AFU
     ON AFU.R12_ACCOUNT = GL_CODE_COMBINATIONS.SEGMENT4
 
-  WHERE GL_BALANCES.PERIOD_NAME = :RunDate
+  WHERE Upper(GL_BALANCES.PERIOD_NAME) = Upper(:RunDate)
   AND
     CASE
       WHEN GL_LEDGERS.LEDGER_ID = '2022' THEN 'USA'
@@ -53,7 +53,7 @@ FROM
   AND GL_CODE_COMBINATIONS.SEGMENT2 IN('113602', '129003') -- R12_LOCATION (DEPT LIKE 'SL00%' AND BU IN ('CAN', 'CSD'))
   AND GL_CODE_COMBINATIONS.SEGMENT1 IN('5773', '5588', '5575', '5612', '5743', '9256', '9258', '9298', '9299', '9984') -- R12_ENTITY 
   AND AFU.LIKE_52_53_54 = 'Y'
-  
+  and AFU.R12_ACCOUNT = 282103
   GROUP BY 
     AFU.R12_ACCOUNT, 
     GL_LEDGERS.LEDGER_ID, 
@@ -88,7 +88,7 @@ LEFT OUTER JOIN
   RIGHT OUTER JOIN R12_ACCOUNT_FILTER_UPD AFU 
     ON AFU.R12_ACCOUNT = GL_CODE_COMBINATIONS.SEGMENT4 
 
-  WHERE GL_BALANCES.PERIOD_NAME = :RunDate
+  WHERE Upper(GL_BALANCES.PERIOD_NAME) = Upper(:RunDate)
   AND CASE
     WHEN GL_LEDGERS.LEDGER_ID = '2022' THEN 'USA'
     ELSE 'CAN'
@@ -188,11 +188,11 @@ LEFT OUTER JOIN
     AND a.RUN_PERIOD < add_months(to_date('1-'|| :RunDate, 'dd-mon-yy'), 1)
     AND AFU.LIKE_5 = 'Y'
     AND A.FORECAST_PERIOD >= CASE
-      WHEN to_date('1-' ||:RunDate, 'dd-mon-yy') = TRUNC(TO_DATE(TO_DATE('1-'||:RunDate, 'dd-mon-yy')), 'YEAR')
-        THEN TRUNC(TRUNC(to_date('1-'||:RunDate, 'dd-mon-yy'), 'YEAR') - 1) - 30
-      ELSE TRUNC(TO_DATE(TO_DATE('1-'||:RunDate, 'dd-mon-yy')), 'YEAR')
+      WHEN to_date('1-' || :RunDate, 'dd-mon-yy') = TRUNC(TO_DATE(TO_DATE('1-'|| :RunDate, 'dd-mon-yy')), 'YEAR')
+        THEN TRUNC(TRUNC(to_date('1-'|| :RunDate, 'dd-mon-yy'), 'YEAR') - 1) - 30
+      ELSE TRUNC(TO_DATE(TO_DATE('1-'|| :RunDate, 'dd-mon-yy')), 'YEAR')
       END
-    AND A.FORECAST_PERIOD <(to_date('1-'||:RunDate, 'dd-mon-yy'))
+    AND A.FORECAST_PERIOD <(to_date('1-'|| :RunDate, 'dd-mon-yy'))
 
     GROUP BY A.GL_ACCOUNT, 
       A.GL_ACCOUNT_DESCR, 
@@ -217,9 +217,9 @@ LEFT OUTER JOIN
   FROM (
     SELECT A.GL_ACCOUNT, 
       A.GL_ACCOUNT_DESCR, 
-      to_date('1-'||:RunDate, 'dd-mon-yy'), 
+      to_date('1-'|| :RunDate, 'dd-mon-yy'), 
       (MAX(A.REC_REV_MNTHLY) + CASE
-        WHEN A.FORECAST_PERIOD = to_date('1-' ||:RunDate, 'dd-mon-yy')
+        WHEN A.FORECAST_PERIOD = to_date('1-' || :RunDate, 'dd-mon-yy')
           THEN MAX(A.DEFERRED_REVENUE)
         ELSE 0
         END) AS DEFERRED_REVENUE, 
@@ -231,11 +231,11 @@ LEFT OUTER JOIN
     
     WHERE 1=1
     AND A.COUNTRY_INDICATOR = UPPER(:COUNTRY)
-    AND a.RUN_PERIOD >= TO_DATE('1-'||:RunDate, 'dd-mon-yy')
-    AND a.RUN_PERIOD < LAST_DAY(to_date('1-'||:RunDate, 'dd-mon-yy'))
+    AND a.RUN_PERIOD >= TO_DATE('1-'|| :RunDate, 'dd-mon-yy')
+    AND a.RUN_PERIOD < LAST_DAY(to_date('1-'|| :RunDate, 'dd-mon-yy'))
     AND AFU.LIKE_5 = 'Y'
-    AND A.FORECAST_PERIOD >= TO_DATE('1-'||UPPER(:RunDate), 'dd-mon-yy')
-    AND A.FORECAST_PERIOD < LAST_DAY(to_date('1-'||:RunDate, 'dd-mon-yy'))
+    AND A.FORECAST_PERIOD >= TO_DATE('1-'|| :RunDate, 'dd-mon-yy')
+    AND A.FORECAST_PERIOD < LAST_DAY(to_date('1-'|| :RunDate, 'dd-mon-yy'))
 
     GROUP BY A.GL_ACCOUNT, 
       A.GL_ACCOUNT_DESCR, 
@@ -267,11 +267,12 @@ GROUP BY CAST(BEGBALANCES.ACCOUNT AS NUMBER),
   REV.SHORT_TERM_BALA, 
   REV.LONG_TERM_BALA
 
+
 UNION
 
 SELECT
-  ADD_MONTHS(((LAST_DAY(to_date('1-'||:RunDate, 'dd-mon-yy')))), - 1) AS gl_BeginDate, 
-  LAST_DAY(to_date('1-'||:RunDate, 'dd-mon-yy')) gl_End_Date, 
+  ADD_MONTHS(((LAST_DAY(to_date('1-'|| :RunDate, 'dd-mon-yy')))), - 1) AS gl_BeginDate, 
+  LAST_DAY(to_date('1-'|| :RunDate, 'dd-mon-yy')) gl_End_Date, 
   '' AS COUNTRY_INDICATOR, 
   CAST(AFU.R12_ACCOUNT AS NUMBER) AS ACCOUNT,
   AFU.DESCR AS GL_ACC_DESCR,
@@ -297,7 +298,7 @@ AND NOT EXISTS (
   INNER JOIN SY_120_GL_CODE_COMBO_EW GL_CODE_COMBINATIONS
     ON GL_BALANCES.CODE_COMBINATION_ID = GL_CODE_COMBINATIONS.CODE_COMBINATION_ID
     
-  WHERE GL_BALANCES.PERIOD_NAME = :RunDate
+  WHERE Upper(GL_BALANCES.PERIOD_NAME) = Upper(:RunDate)
   AND CASE
     WHEN GL_LEDGERS.LEDGER_ID = '2022' THEN 'USA'
     ELSE 'CAN'

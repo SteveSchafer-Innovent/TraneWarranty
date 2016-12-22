@@ -154,7 +154,7 @@ FROM
 
     WHERE 
       A.COUNTRY_INDICATOR = UPPER(:COUNTRY)
-    AND A.RUN_PERIOD >= TO_DATE('1-'||UPPER(:RunDate), 'dd-mon-yy')
+    AND A.RUN_PERIOD >= TO_DATE('1-'||:RunDate, 'dd-mon-yy')
     AND A.RUN_PERIOD < ADD_MONTHS(TO_DATE('1-'||:RunDate, 'dd-mon-yy'), 1)
     AND AFU.LIKE_5 = 'Y' 
     AND A.SHIP_PERIOD >= CASE
@@ -221,7 +221,7 @@ AND NOT EXISTS (
     
   FROM DW_DM_030_COMM_AMORTIZATION A
 
-  WHERE A.RUN_PERIOD >= TO_DATE('1-'||UPPER(:RunDate), 'dd-mon-yy')
+  WHERE A.RUN_PERIOD >= TO_DATE('1-'||:RunDate, 'dd-mon-yy')
   AND A.RUN_PERIOD < ADD_MONTHS(TO_DATE('1-'||:RunDate, 'dd-mon-yy'), 1)
   AND A.GL_ACCOUNT = AFU.R12_ACCOUNT 
   AND A.SHIP_PERIOD >= CASE

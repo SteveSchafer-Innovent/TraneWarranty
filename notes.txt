@@ -250,3 +250,103 @@ Priorities are: a) get the procedures running for Map_sales_data, Map_sales_data
 [‎12/‎12/‎2016 8:35 AM] Rosenbaum, Scott: 
 b) Solve any other incoming Pam issues.
 c) Work on the R12 load script.
+
+Compare MAP_EXTWARRANTYSALESDATA_VW view to MAP_SALES_DATA table
+
+Output (* means no corresponding field)
+  View
+    COUNTRY_INDICATOR,
+    JRNL_YEAR_MONTH,
+    BU,
+    GL_ACCOUNT,
+    GL_DEP_ID (= DEPT_ID),
+    QUERY_SOURCE,
+    GL_PRODUCT_ID (= DIST_GL_PRODUCT?),
+    JOURNAL_DATE (= JRNL_DATE),
+    JOURNAL_ID (= JRNL_ID),
+    REVENUE_AMOUNT,
+    REVENUE_AMOUNT_DEC
+  Table:
+    QUERY_SOURCE,
+    BU,
+    REVENUE_AMOUNT,
+    REVENUE_AMOUNT_DEC,
+    GL_ACCOUNT,
+    DEPT_ID (= GL_DEP_ID),
+    DEPT_DESCR *,
+    MANF_PROD_ID *,
+    MANF_PROD_DESCR *,
+    DIST_GL_PRODUCT (= GL_PRODUCT_ID?),
+    RESERVE_GROUP *,
+    JRNL_DATE (= JOURNAL_DATE),
+    JRNL_YEAR (derived),
+    JRNL_MONTH (derived), 
+    JRNL_YEAR_MONTH (derived),
+    JRNL_ID (= JOURNAL_ID),
+    CURRENCY *,
+    COUNTRY_INDICATOR,
+    TWO_FIVE *
+
+View has 4 segments.
+Segment 1 is based on R12_AP_030_ARC_BILL and is limited to 2000 - 2004.  No equivalent section in table.
+Segment 2 is based on R12_BI_%_PSB.  In table, PBS and P21 are based on these tables.
+Segment 3 is based on R12_BI_%_STG, dates after 1/2003.  In table, P21R12 is based on these tables.
+Segment 4 is based on MD_030_SALES_DTL_UPD and is limited to 1998 - 2003.  No equivalent section in table.
+
+Segment 2
+  Joins
+    Table PBS outer joins to OTR_PROD_CODE_XREF_RCPO, R12_PRODUCT_STG, R12_LOCATION_STG.  View does not.
+  Filters
+    BILL_SOURCE_ID
+      View: not specified
+      Table: PBS or P21
+    TRNBI_PROJECT_TYPE
+      View: not specified
+      Table: '7'
+    Dates:
+      View: on or after 1/1/2003
+      Table PBS: on or after 3/1/2003 and before current month.
+      Table P21: on or after 1/11/2014 and before current month.
+    LEDGER
+      View: not specified
+      Table: 'ACTUALS'
+    R12_ENTITY
+      View:  '5773', '5588', '5575', '5612', '5743', '9256', '9258', '9298', '9299', '9984'
+      Table: '5773', '5588', '5575', '5612', '5743', '9256', '9258', '9298', '9299'
+    ENTRY_TYPE
+      View: 'IN'
+      Table: not specified
+    ACCOUNT
+      View: LIKE_52_53_54 = 'Y'
+      Table: '700000' (PS only)
+    PS_PRODUCT
+      View: not specified
+      Table: not in ('804180', '804120', '804190')
+
+Segment 3
+  Joins
+    Table:
+      inner join to OTR_PROD_CODE_XREF_RCPO
+      outer joins to R12_PRODUCT_STG, R12_LOCATION_STG
+  Filters
+    Dates
+      View: >= 1/1/2003
+      Table: >= 1/11/2014 and < current month
+    TRNBI_PROJECT_TYPE
+      View: not specified
+      Table: '7'
+    LEDGER
+      View: not specified
+      Table: 'ACTUALS'
+    ACCOUNT
+      View: LIKE_52_53_54 = 'Y'
+      Table: EQUAL_700000 = 'Y'
+    R12_PRODUCT
+      View: not specified
+      Table: not in ('41208', '41399', '41132', '41499', '41205')
+    ENTRY_TYPE:
+      View: 'INV'
+      Table: not specified
+    R12_ENTITY
+      View: '5773', '5588', '5575', '5612', '5743', '9256', '9258', '9298', '9299', '9984'
+      Table: '5773', '5588', '5575', '5612', '5743', '9256', '9258', '9298', '9299'

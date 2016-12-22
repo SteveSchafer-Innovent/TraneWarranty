@@ -1,8 +1,8 @@
 /* $Workfile: MAP_SALES_DATA.sql $
-*  $Revision: 1 $
+*  $Revision: 5 $
 *  $Archive: /DRTRNT_or_P/ORACLE R12/Warranty and Reserve/Tables/MAP_SALES_DATA/MAP_SALES_DATA.sql $
-*  $Author: Laiqi $
-*  $Date: 12/10/16 4:01p $
+*  $Author: Ccdcas $
+*  $Date: 12/22/16 4:21p $
 *
 * Description: Loads MAP_SALES_DATA table that is used by the
 *           Actuate IOBs for the Warranty and Reserve reports. This table improves IOB caching performance.
@@ -536,7 +536,7 @@ INSERT /*+ APPEND */ INTO MAP_SALES_DATA
 (
 QUERY_SOURCE,
 BU,
-REVENUE_AMOUNT * -1 AS REVENUE_AMOUNT,
+REVENUE_AMOUNT,
 REVENUE_AMOUNT_DEC,
 GL_ACCOUNT,
 DEPT_ID,
@@ -558,7 +558,7 @@ SELECT
 		/*+ NO_CPU_COSTING */
 		'P21R12' AS QUERY_SOURCE,
 		BUSINESS_UNIT AS BU,
-		SUM(P7_TOTAL) AS REVENUE_AMOUNT,
+		SUM(P7_TOTAL) * -1 AS REVENUE_AMOUNT,
 		SUM(100 *(P7_TOTAL - TRUNC(P7_TOTAL))) AS REVENUE_AMOUNT_DEC,
 		GL_ACCOUNT AS GL_ACCOUNT,
 		DEPTID AS DEPT_ID,
@@ -586,7 +586,7 @@ SELECT
 					D.JOURNAL_ID AS JRNL_ID,
 					D.JOURNAL_DATE AS JRNL_DATE,
 					D.R12_ACCOUNT AS GL_ACCOUNT, 
-					D.MONETARY_AMOUNT * -1 AS P7_TOTAL,
+					D.MONETARY_AMOUNT AS P7_TOTAL,
 					D.R12_LOCATION AS DEPTID, 
 					DP.R12_LOCATION_DESCR AS DEPT_DESCR,
 					PR.R12_PRODUCT_DESCR AS PROD_DESCR,

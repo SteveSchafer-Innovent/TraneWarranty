@@ -21,10 +21,12 @@ SELECT
 	INNER JOIN LINE_ITEM_GROUP LIG   ON LIGS.LINE_ITEM_GROUPS = LIG.ID
 	INNER JOIN CURRENT_PART_INFO CPI ON LIG.ID = CPI.LINE_ITEM_GROUP
 	INNER JOIN PART_PAYMENT_INFO PPI ON CPI.CURRENT_PART_PAYMENT_INFO = PPI.ID --NOTE: If modifier is not picked, PART_PAYMENT_INFO_MODIFIER table will be empty.
-	INNER JOIN ITEM I                ON I.ID = PPI.ITEM ;
+	INNER JOIN ITEM I                ON I.ID = PPI.ITEM 
 -- do we need an outer join here?
--- AND c.claim_number = 'C-10765255'
+	where 0=0
+	AND c.claim_number = 'C-10764292'
 --'C-10765552'
 --     or c.claim_number = 'C-10764718'
 --     or c.claim_number = 'C-10764743'
 --   or c.claim_number = 'C-10764732')
+;

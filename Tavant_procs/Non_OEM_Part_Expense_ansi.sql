@@ -1,5 +1,3 @@
-
-
 --Expense Query  for Cost Categories labor, non oem parts, travel, etc, everything but OEM parts
 SELECT DISTINCT
 		C.CLAIM_NUMBER,
@@ -7,9 +5,7 @@ SELECT DISTINCT
 		LIG.NAME AS COST_CATEGORY, --formerly expense type
 		LIG.GL_CODE_WNTY_EXPENSE_REV,
 		LIG.GL_AMT,
-		LIG.GL_CURR,
-		'---',
-		lig.*
+		LIG.GL_CURR
 	FROM
 		CLAIM C
 	INNER JOIN PAYMENT P             ON C.PAYMENT = P.ID
@@ -19,7 +15,9 @@ SELECT DISTINCT
 		0 = 0
 		AND LIG.NAME NOT IN('Oem Parts', 'Claim Amount')
 		AND GL_CODE_WNTY_EXPENSE_REV IS NOT NULL 
-		AND C.CLAIM_NUMBER IN (
+AND C.CLAIM_NUMBER = 'C-10764004'
+/*
+AND C.CLAIM_NUMBER IN (
 'C-10763992',
 'C-10764004',
 'C-10764005',
@@ -54,6 +52,7 @@ SELECT DISTINCT
 'C-10764323_D',
 'C-10764338',
 'C-10764534')
+*/
 order by 1, 2, 3
 ;
 describe LINE_ITEM_GROUPS;

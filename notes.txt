@@ -143,7 +143,11 @@ Actuate server:
 http://igrappndc808:8900/acadmin 
 You should use your ccdcaX name and TEST0816 pw.
 
+http://actuateprod:8900/acadmin
+actuate / actuate81
+
 --------------------------------------------------------------------
+
 Monitor and kill Oracle processes:
 Login as DBO and run this:
 SELECT
@@ -350,3 +354,37 @@ Segment 3
     R12_ENTITY
       View: '5773', '5588', '5575', '5612', '5743', '9256', '9258', '9298', '9299', '9984'
       Table: '5773', '5588', '5575', '5612', '5743', '9256', '9258', '9298', '9299'
+
+tavant claims processing
+goodwill = concessions
+std 1yr, 2-5, etc
+ext war
+2 tables
+war exp - claim/step unique
+  claim type
+  reserve group link to rcpo table based on mfg prod code
+  
+claim_to_policy
+tavant doesn't have step numbers, could use line_item_group.id or part number or serial number
+business_unit pull out of siop seg 1
+reserve group - rcpo manf prod id, siop seg 6
+claim type - need to look up
+expense amount - from either non_oem_part_expeonse or oem_part_expense
+gl account - siop seg 4
+
+claim lvl vs detail lvl
+1 claim - multiple policys, warranty types
+1 claim - 1 sales order
+1 claim - single part #
+1 claim - multiple labor items
+
+stg table, straight pull, then reorganization?  keep query into tavant as simple as possible
+
+keep prod code xref rcpo
+keep dm war csn rsv pct
+
+TAVANT DB SERVER: 10.34.129.142 
+PORT: 1523 
+SID: HVACUAT_STBY 
+USER: BU_RO_USER 
+PASSWORD: HvAc22#TWmsRO 

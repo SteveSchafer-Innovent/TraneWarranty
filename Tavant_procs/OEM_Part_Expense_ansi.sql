@@ -24,6 +24,8 @@ SELECT
 	INNER JOIN ITEM I                ON I.ID = PPI.ITEM 
 -- do we need an outer join here?
 	where 0=0
+AND C.CLAIM_NUMBER = 'C-10763992'
+/*
 		AND C.CLAIM_NUMBER IN (
 'C-10763992',
 'C-10764004',
@@ -59,4 +61,5 @@ SELECT
 'C-10764323_D',
 'C-10764338',
 'C-10764534')
+*/
 order by 1, 2, 3;

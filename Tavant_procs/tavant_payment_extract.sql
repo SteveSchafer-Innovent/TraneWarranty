@@ -128,11 +128,11 @@ SELECT DISTINCT
 		-- AND CLAIM.FILED_ON_DATE > '13-NOV-2016'
 		--AND claim.business_unit_info = 'HVAC TCP' --Jean Skemp recommends using original source id insteal
 		AND STATE = 'ACCEPTED_AND_CLOSED'
-		-- AND SALES_ORDER.ORIGINAL_SOURCE_ID IN('CS', 'GP')
+		AND SALES_ORDER.ORIGINAL_SOURCE_ID IN('CS', 'GP')
 		-- and claim.claim_number = 'C-10764292'
 		-- and inventory_item.serial_number like '11492KBA3R'
 		--ORDER BY claim, serial_number, priority
--- AND CLAIM.CLAIM_NUMBER = 'C-10764292'
+		-- AND CLAIM.CLAIM_NUMBER = 'C-10764292'
 /**/
 AND CLAIM.CLAIM_NUMBER IN (
 'C-10763992',

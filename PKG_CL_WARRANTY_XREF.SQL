@@ -1,3 +1,7 @@
+/* Provided by Jill to Scott, procedure that is run monthly to rebuild the DM_FAL_CLAIMS_WARRANTY_XR
+*/
+
+
 CREATE OR REPLACE PACKAGE DBO.Pkg_Cl_Warranty_Xref AS
 /***********************************************************************************
     * Author: Venu Hemadri

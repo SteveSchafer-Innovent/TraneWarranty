@@ -1,0 +1,65 @@
+2-5 Year Warranty Reserve Calculation.sod
+	2-5/WarrantyActualProjectRate68.iob
+		WarrantyActualProjectRate68SubQuery1.iob
+		union
+		WarrantyActualProjectRate68SubQuery2.iob
+
+WarrantyActualProjectRate68SubQuery1.iob
+	WarrantyRateRowCol68.iob
+	inner join
+	WarrantySalesMonthlyTotal68.iob on
+		WarrantyRateRowCol.COUNTRY_INDICATOR = SalesMonthlyTotals.COUNTRY_INDICATOR AND
+		WarrantyRateRowCol.SHIP_ROW = SalesMonthlyTotals.MONTHS_FROM_BASE
+
+WarrantyActualProjectRate68SubQuery2.iob
+	WarrantyProjectRowCol68.iob
+	inner join
+	WarrantySalesMonthlyTotal68.iob on
+		WarrantyProjectRowCol.SHIP_ROW = SalesMonthlyTotals.MONTHS_FROM_BASE AND
+		WarrantyProjectRowCol.COUNTRY_INDICATOR = SalesMonthlyTotals.COUNTRY_INDICATOR
+
+WarrantyRateRowCol68.iob (IOB_25_WRRC68)
+	RowCol79.iob
+	left outer join
+	WarrantySumRates68.iob on
+		RowCol79.COUNTRY_INDICATOR = WarrantySumRates68.COUNTRY_INDICATOR AND
+		RowCol79.RESERVE_GROUP in ('Large') AND
+		RowCol79.SHIP_ROW = WarrantySumRates68.eSheet_Row AND
+		RowCol79.TRX_COLUMN=WarrantySumRates68.eSheet_Column
+
+WarrantyProjectRowCol68.iob
+	RowCol79.iob
+	left outer join
+	WarrantyRateMonthAvg68.iob on
+		RowCol79.COUNTRY_INDICATOR = WarrantyRateMonthAvg.COUNTRY_INDICATOR AND 
+		RowCol79.TRX_COLUMN = WarrantyRateMonthAvg.TRX_COLUMN
+
+WarrantySalesMonthlyTotal68.iob (IOB_25_WSMT68)
+	WarrantySalesMonthlyTotalForDecimal168.iob
+		WarrantySalesMonthlyTotalForDecimal68.iob
+			DR_RPT/mapSalesData68.sma
+			DR_RPT/CurrDtCreator.sma
+
+RowCol79.iob (IOB_25_RC79)
+	DW_RPT/Rows_79.sma
+	inner join
+	DW_RPT/Cols_79.sma on
+		Rows_79.RESERVE_GROUP = Cols_79.RESERVE_GROUP AND
+		Rows_79.COUNTRY_INDICATOR = Cols_79.COUNTRY_INDICATOR
+
+WarrantySumRates68.iob
+	WarrantyDataWithRate68.iob
+
+WarrantyRateMonthAvg68.iob
+	WarrantyRateRowCol68.iob
+
+WarrantyDataWithRate68.iob
+	DR_RPT/CurrDtCreator.sma
+	WarrantyExpenseData68.iob
+	inner join
+	WarrantySalesMonthlyTotal68.iob on
+		WarrantyExpenseData.COUNTRY_INDICATOR = WarrantySalesMonthlyTotal.COUNTRY_INDICATOR AND
+		WarrantyExpenseData.SHIP_YEAR_MONTH = WarrantySalesMonthlyTotal.JRNL_YEAR_MONTH
+
+WarrantyExpenseData68.iob (IOB_25_WEXD68)
+	DW_RPT/mapExpenseWarrantyData68.sma

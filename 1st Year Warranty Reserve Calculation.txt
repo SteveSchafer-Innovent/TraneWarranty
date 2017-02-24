@@ -1,0 +1,85 @@
+1st Year Warranty Reserve Calculation.sod
+	WCIO/WarrantyActualProjectRate.iob
+		WarrantyActualProjectRateSubQuery1.iob
+		union
+		WarrantyActualProjectRateSubQuery2.iob
+
+WarrantyActualProjectRateSubQuery1.iob
+	WarrantyRateRowCol.iob
+	inner join
+	WarrantySalesMonthlyTotal.iob on
+		WarrantyRateRowCol.COUNTRY_INDICATOR = SalesMonthlyTotals.COUNTRY_INDICATOR AND
+		WarrantyRateRowCol.SHIP_ROW = SalesMonthlyTotals.MONTHS_FROM_BASE AND
+		WarrantyRateRowCol.RESERVE_GROUP = SalesMonthlyTotals.RESERVE_GROUP
+
+WarrantyActualProjectRateSubQuery2.iob
+	WarrantyProjectRowCol.iob
+	inner join
+	WarrantySalesMonthlyTotal.iob on
+		WarrantyProjectRowCol.SHIP_ROW = SalesMonthlyTotals.MONTHS_FROM_BASE AND
+		WarrantyProjectRowCol.COUNTRY_INDICATOR = SalesMonthlyTotals.COUNTRY_INDICATOR AND
+		WarrantyProjectRowCol.RESERVE_GROUP = SalesMonthlyTotals.RESERVE_GROUP
+
+WarrantyRateRowCol.iob
+	RowCol66.iob
+	left outer  join
+	WarrantySumRates.iob on
+		RowCol66.COUNTRY_INDICATOR = WarrantySumRates.COUNTRY_INDICATOR AND 
+		upper(RowCol66.RESERVE_GROUP) = WarrantySumRates.RESERVE_GROUP AND 
+		RowCol66.SHIP_ROW = WarrantySumRates.eSheet_Row AND 
+		RowCol66.TRX_COLUMN = WarrantySumRates.eSheet_Column
+
+WarrantyProjectRowCol.iob
+	RowCol66.iob
+	left outer  join
+	WarrantyRateMonthAvg.iob
+		RowCol66.COUNTRY_INDICATOR = WarrantyRateMonthAvg.COUNTRY_INDICATOR AND 
+		RowCol66.RESERVE_GROUP =WarrantyRateMonthAvg.RESERVE_GROUP AND 
+		RowCol66.TRX_COLUMN=WarrantyRateMonthAvg.TRX_COLUMN
+
+WarrantySalesMonthlyTotal.iob
+
+RowCol66.iob
+
+WarrantySumRates.iob
+
+WarrantyRateMonthAvg.iob
+
+
+---------------------------
+WarrantySalesMonthlyTotalForDecimal.iob:
+SELECT
+case
+	when UPPER(mapSalesData.RESERVE_GROUP)  like '%LARGE%' then 'Large'
+	else 'Light'
+	end AS RESERVE_GROUP,
+case
+	when mapSalesData.Query_source <> 'PUEBLO' then mapSalesData.REVENUE_AMOUNT * - cast(1 as DOUBLE)
+	ELSE mapSalesData.REVENUE_AMOUNT
+	end AS REVENUE_AMOUNT,
+case
+	when mapSalesData.COUNTRY_INDICATOR = 'USD' then 'USA'
+	else 'CAN'
+	end AS COUNTRY_INDICATOR,
+(
+	(
+		(
+			Datepart('yyyy', DateAdd('m', -1, mapCurrDay.MY_CURR_DT))
+			- mapSalesData.JRNL_YEAR
+		)
+		* cast(12 as double)
+	)
+	+
+	(
+		Datepart('m', DateAdd('m', -1, mapCurrDay.MY_CURR_DT))
+		- mapSalesData.JRNL_MONTH
+	)
+	+ 1
+) AS MONTHS_FROM_BASE,
+cast(mapSalesData.JRNL_YEAR_MONTH as double) AS JRNL_YEAR_MONTH
+
+FROM "../Data Sources/DR_RPT/mapSalesData1.sma" AS mapSalesData,
+"../Data Sources/DR_RPT/current_day.sma" AS mapCurrDay
+
+WHERE mapSalesData.JRNL_DATE BETWEEN Dateserial(Datepart('yyyy',Dateadd('m',-66,mapCurrDay.MY_CURR_DT)),Datepart('m',Dateadd('m',-66,mapCurrDay.MY_CURR_DT)),Cast('1'  as Integer), 0 ,0, 0) 
+and Dateadd('d',-1,Dateserial(Datepart('yyyy',mapCurrDay.MY_CURR_DT),Datepart('m',mapCurrDay.MY_CURR_DT),Cast('1' as Integer), 12 , 59, 59))

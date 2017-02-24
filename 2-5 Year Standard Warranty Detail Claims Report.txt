@@ -1,0 +1,7 @@
+2-5 Year Standard Warranty Detail Claims Report.rod
+	2-5/WarrantyDataDetailReport68.iob
+		WarrantyDataDetailReport68_case.iob
+			WarrantyExpenseData68.iob (IOB_25_WEXD68)
+				mapExpenseWarrantyData68.sma
+					MAP_WARRANTY_EXPENSE_DATA
+

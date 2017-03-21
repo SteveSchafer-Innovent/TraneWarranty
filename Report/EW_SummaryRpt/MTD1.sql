@@ -185,7 +185,7 @@ LEFT OUTER JOIN
         WHEN A.R12_ENTITY IN('5773', '5588') THEN 'CAN'
         ELSE 'USA'
         END = UPPER(:COUNTRY)
-    AND C.ENTRY_TYPE = 'INV'
+    AND C.ENTRY_TYPE in ('INV','CM')
     AND AFU.LIKE_5 = 'Y'
   )
 

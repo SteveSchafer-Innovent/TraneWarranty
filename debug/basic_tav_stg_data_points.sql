@@ -1,0 +1,215 @@
+select distinct claim_number from Tav_Payment_Raw;
+select count(*), count(distinct claim_number) from Tav_Item_Raw;
+select * from tav_stg;
+select * from tav_temp;
+select count(*) numLines, count(distinct claim_number) uniqueClaimNum, sum(case when claim_number > 0 then 1 else 0 end) fal_claim_cnt, sum(case when claim_number < 0 then 1 else 0 end) tav_claim_cnt from Map_Warranty_Expense_Data;
+select count(*) numLines, count(distinct claim_number) uniqueClaimNum, sum(case when claim_number > 0 then 1 else 0 end) fal_claim_cnt, sum(case when claim_number < 0 then 1 else 0 end) tav_claim_cnt from Map_Concession_Expense_Data;
+select * from Map_Warranty_Expense_Data where claim_number < 0;
+select * from Map_Concession_Expense_Data;
+select * from PROD_CODE_XREF_RCPO_DR where Manf_Prod_Code = '0508';
+SELECT DISTINCT COST_CATEGORY, count(*) FROM TAV_RESERVE_PCT group by cost_category;
+select cost_category,cost_category_sv, count(*) from tav_temp Group by  cost_category,cost_category_sv;
+SELECT DISTINCT tavant_warranty_type, count(*) FROM TAV_RESERVE_PCT group by tavant_warranty_type;
+select tavant_warranty_type, count(*) from tav_temp Group by tavant_warranty_type;
+select commercial_policy, count(*) from tav_temp Group by commercial_policy;
+
+SELECT DISTINCT
+--		A.CLAIM_NUMBER,
+		UPPER(A.TAVANT_CLAIM_TYPE),
+		UPPER(A.COMMERCIAL_POLICY),
+		UPPER(A.TAVANT_WARRANTY_TYPE),
+		UPPER(A.COST_CATEGORY_SV),
+		UPPER(A.COMPANY_OWNED),
+		UPPER(A.CREDIT_TO_THIRD_PARTY),
+		RES_PCT.*
+	FROM
+		(
+			SELECT
+					CLAIM_NUMBER,
+					BUSINESS_UNIT,
+					RESERVE_GROUP,
+					CLAIM_TYPE,
+					WARRANTY_DURATION_CODE,
+					CONCESSION_DAYS,
+					WARRANTY_DURATION,
+					EXPENSE_AMOUNT,
+					MATERIAL_LABOR,
+					GL_ACCOUNT,
+					GL_LOCATION,
+					EXPENSE_TYPE_DESCR,
+					OFFICE_NAME,
+					GL_PROD_CODE,
+					MANF_PROD_CODE,
+					COMPANY_OWNED,
+					CUSTOMER_NUMBER,
+					CUSTOMER_NAME,
+					INTERNAL_EXTERNAL,
+					TRX_DATE,
+					TRX_YEAR,
+					TRX_MONTH,
+					INTMONTHS_TRX_TO_BASE,
+					INTMONTHS_SHIP_TO_BASE,
+					SHIP_DATE,
+					SHIP_YEAR_MONTH,
+					INTMONTHS_SHIP_TO_TRX,
+					START_DATE,
+					INTMONTHS_START_TO_TRX,
+					FAIL_DATE,
+					INTMONTHS_FAIL_TO_TRX,
+					WARRANTY_TYPE,
+					CURRENCY,
+					COUNTRY_INDICATOR,
+					RETROFIT_ID,
+					IN_RESERVE_PERCENT,
+					IN_RESERVE_PERCENT_25,
+					TRX_LAG,
+					START_LAG_25,
+					TRXYEARMONTH,
+					EXPENSE_AMT_IN_RES,
+					EXPENSE_AMT_NOT_IN_RES,
+					CREDIT_TO_THIRD_PARTY,
+					TAVANT_CLAIM_TYPE,
+					TAVANT_WARRANTY_TYPE,
+					COMMERCIAL_POLICY,
+					COST_CATEGORY_SV,
+					RS_PERCENT
+				FROM
+					TAV_TEMP
+				WHERE
+					QUERY_SOURCE <> 'COMM'
+					AND EXPENSE_AMOUNT <> 0
+			UNION ALL
+			SELECT
+					CLAIM_NUMBER,
+					BUSINESS_UNIT,
+					RESERVE_GROUP,
+					CLAIM_TYPE,
+					WARRANTY_DURATION_CODE,
+					CONCESSION_DAYS,
+					WARRANTY_DURATION,
+					EXPENSE_AMOUNT * ACCEPTED_AMT_LABOR /(ACCEPTED_AMT_LABOR + ACCEPTED_AMT_MATERIAL) AS EXPENSE_AMOUNT,
+					'LABOR' AS MATERIAL_LABOR,
+					GL_ACCOUNT,
+					GL_LOCATION,
+					EXPENSE_TYPE_DESCR,
+					OFFICE_NAME,
+					GL_PROD_CODE,
+					MANF_PROD_CODE,
+					COMPANY_OWNED,
+					CUSTOMER_NUMBER,
+					CUSTOMER_NAME,
+					INTERNAL_EXTERNAL,
+					TRX_DATE,
+					TRX_YEAR,
+					TRX_MONTH,
+					INTMONTHS_TRX_TO_BASE,
+					INTMONTHS_SHIP_TO_BASE,
+					SHIP_DATE,
+					SHIP_YEAR_MONTH,
+					INTMONTHS_SHIP_TO_TRX,
+					START_DATE,
+					INTMONTHS_START_TO_TRX,
+					FAIL_DATE,
+					INTMONTHS_FAIL_TO_TRX,
+					WARRANTY_TYPE,
+					CURRENCY,
+					COUNTRY_INDICATOR,
+					RETROFIT_ID,
+					IN_RESERVE_PERCENT,
+					IN_RESERVE_PERCENT_25,
+					TRX_LAG,
+					START_LAG_25,
+					TRXYEARMONTH,
+					EXPENSE_AMT_IN_RES,
+					EXPENSE_AMT_NOT_IN_RES,
+					CREDIT_TO_THIRD_PARTY,
+					TAVANT_CLAIM_TYPE,
+					TAVANT_WARRANTY_TYPE,
+					COMMERCIAL_POLICY,
+					COST_CATEGORY_SV || ' LABOR' AS COST_CATEGORY_SV,
+					RS_PERCENT
+				FROM
+					TAV_TEMP
+				WHERE
+					QUERY_SOURCE = 'COMM'
+					AND EXPENSE_AMOUNT <> 0
+					AND ACCEPTED_AMT_LABOR <> 0
+			UNION ALL
+			SELECT
+					CLAIM_NUMBER,
+					BUSINESS_UNIT,
+					RESERVE_GROUP,
+					CLAIM_TYPE,
+					WARRANTY_DURATION_CODE,
+					CONCESSION_DAYS,
+					WARRANTY_DURATION,
+					EXPENSE_AMOUNT * ACCEPTED_AMT_MATERIAL /(ACCEPTED_AMT_LABOR + ACCEPTED_AMT_MATERIAL) AS EXPENSE_AMOUNT,
+					'MATERIAL' AS MATERIAL_LABOR,
+					GL_ACCOUNT,
+					GL_LOCATION,
+					EXPENSE_TYPE_DESCR,
+					OFFICE_NAME,
+					GL_PROD_CODE,
+					MANF_PROD_CODE,
+					COMPANY_OWNED,
+					CUSTOMER_NUMBER,
+					CUSTOMER_NAME,
+					INTERNAL_EXTERNAL,
+					TRX_DATE,
+					TRX_YEAR,
+					TRX_MONTH,
+					INTMONTHS_TRX_TO_BASE,
+					INTMONTHS_SHIP_TO_BASE,
+					SHIP_DATE,
+					SHIP_YEAR_MONTH,
+					INTMONTHS_SHIP_TO_TRX,
+					START_DATE,
+					INTMONTHS_START_TO_TRX,
+					FAIL_DATE,
+					INTMONTHS_FAIL_TO_TRX,
+					WARRANTY_TYPE,
+					CURRENCY,
+					COUNTRY_INDICATOR,
+					RETROFIT_ID,
+					IN_RESERVE_PERCENT,
+					IN_RESERVE_PERCENT_25,
+					TRX_LAG,
+					START_LAG_25,
+					TRXYEARMONTH,
+					EXPENSE_AMT_IN_RES,
+					EXPENSE_AMT_NOT_IN_RES,
+					CREDIT_TO_THIRD_PARTY,
+					TAVANT_CLAIM_TYPE,
+					TAVANT_WARRANTY_TYPE,
+					COMMERCIAL_POLICY,
+					COST_CATEGORY_SV || ' MATERIAL' AS COST_CATEGORY_SV,
+					RS_PERCENT
+				FROM
+					TAV_TEMP
+				WHERE
+					QUERY_SOURCE = 'COMM'
+					AND EXPENSE_AMOUNT <> 0
+					AND ACCEPTED_AMT_MATERIAL <> 0
+		)
+		A
+	LEFT OUTER JOIN TAV_RESERVE_PCT RES_PCT ON 
+		UPPER(A.TAVANT_CLAIM_TYPE) = UPPER(RES_PCT.TAVANT_CLAIM_TYPE) 
+		AND UPPER(A.COMPANY_OWNED) = UPPER(RES_PCT.COMPANY_OWNED_IND) 
+		AND UPPER(A.CREDIT_TO_THIRD_PARTY) = UPPER(RES_PCT.CREDIT_TO_THIRD_PARTY) 
+		AND UPPER(A.COST_CATEGORY_SV) = UPPER(RES_PCT.COST_CATEGORY) 
+		AND UPPER(A.COMMERCIAL_POLICY) = UPPER(RES_PCT.COMMERCIAL_POLICY) 
+		AND UPPER(A.TAVANT_WARRANTY_TYPE) = UPPER(RES_PCT.TAVANT_WARRANTY_TYPE)
+	WHERE
+		0 = 0
+		-- and claim_number = 'C-20000577'
+		and reserve_pct is null
+--		AND RES_PCT.RESERVE_PCT 
+		and a.tavant_Warranty_type not like 'EXTENDED'
+--		AND a.COST_CATEGORY LIKE 'Comm%'
+--		and a.Company_Owned_Ind = 'Y'
+	ORDER BY
+		1,
+		2,
+		3,
+		4,
+		5 ;

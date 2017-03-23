@@ -3,9 +3,9 @@ select claim_number, r12_invoice, Accepted_Amt_Labor, Accepted_Amt_Material from
 select a.claim_number, a.r12_invoice, A.Expense_Amount, A.Cost_Category_Sv from tav_stg a where claim_number = 'C-20000402' order by 1,2, cost_category_sv;
 
 select distinct claim_number from Map_Warranty_Expense_Data;
-select count(*) from Map_Warranty_Expense_Data where claim_number < 0;
+select count(*), min(trx_date), max(trx_date) from Map_Warranty_Expense_Data where claim_number < 0;
 select count(*) from Map_Warranty_Expense_Data where claim_number > 0;
-select count(*) from Map_Concession_Expense_Data where claim_number < 0;
+select count(*), min(trx_date), max(trx_date)  from Map_Concession_Expense_Data where claim_number < 0;
 select count(*) from Map_Concession_Expense_Data where claim_number > 0;
 
 select cost_category_sv, count(*)from tav_stg group by cost_category_sv;

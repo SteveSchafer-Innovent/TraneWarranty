@@ -46,7 +46,9 @@ WHERE claim_number like 'C-20000402%'
 			A.R12_ACCOUNT Account, 
 			AFU.DESCR, 
 			A.MONETARY_AMOUNT * - 1 AS REVENUE_AMOUNT,
-			C.ENTRY_TYPE
+			C.ENTRY_TYPE,
+			a.r12_entity,
+			a.journal_date
 			
 		FROM R12_BI_ACCT_ENTRY_STG A
 		INNER JOIN R12_TRNBI_BI_HDR_STG B
@@ -60,7 +62,8 @@ WHERE claim_number like 'C-20000402%'
 		AND A.R12_ENTITY IN ('5773', '5588', '5575', '5612', '5743', '9256', '9258', '9298', '9299', '9984')
 		AND C.ENTRY_TYPE in ('INV', 'CM')
 		AND AFU.LIKE_5 = 'Y'
-		and claim_number like 'C%'
+		AND A.R12_ACCOUNT = 282109
+		and A.claim_number like 'C%'
 ;
 		
 -- YTD4
